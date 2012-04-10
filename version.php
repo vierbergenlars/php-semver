@@ -1,5 +1,6 @@
 <?php
-class version {
+class versionExpression {
+	const version='0.1.0';
 	static protected $global_single_version='(([0-9]+)(\\.([0-9]+)(\\.([0-9]+))?)?)';
 	static protected $global_single_xrange='(([0-9xX*]+)(\\.([0-9xX*]+)(\\.([0-9xX*]+))?)?)';
 	static protected $global_single_comparator='([<>]=?)?\\s*';
@@ -26,6 +27,36 @@ class version {
 			$orchunk=$and;
 		}
 		$this->chunks=$or;
+	}
+	function satisfiedBy(version $version) {
+		$version1=$version->getString();
+		$expression=sprintf(self::$regexp_mask,self::$global_single_comparator.self::$global_single_version);
+		$ok=false;
+		foreach($this->chunks as $orblocks) { //Or loop
+			foreach($orblocks as $ablocks) { //And loop
+				$matches=array();
+				preg_match($expression, $ablocks, $matches);
+				$comparators=$matches[1];
+				$version2=$matches[2];
+				if($comparators=='') $comparators='=='; //Use equal if no comparator is set
+				if(!version_compare($version, $version2, $comparators)) { //If one chunk of the and-loop does not match...
+					$ok=false; //It is not okay
+					break; //And this loop will surely fail: return to or-loop
+				}
+				else {
+					$ok=true;
+				}
+			}
+			if($ok) return true; //Only one or block has to match
+		}
+		return false; //No matches found :(
+	}
+	/**
+	 * Get the raw data blocks
+	 * @return array
+	 */
+	function getChunks() {
+		return $this->chunks;
 	}
 	/**
 	 * Get the whole or object as a string
@@ -68,7 +99,7 @@ class version {
 	 * @throws versionException
 	 * @return string
 	 */
-	static private function standarizeSingleComparator($version) {
+	static protected function standarizeSingleComparator($version) {
 		$expression=sprintf(self::$regexp_mask,self::$global_single_comparator.self::$global_single_version);
 		$matches=array();
 		if(!preg_match($expression,$version,$matches)) throw new versionException('Invalid version string given');
@@ -84,7 +115,7 @@ class version {
 	 * @param string $versions
 	 * @return string
 	 */
-	static private function standarizeMultipleComparators($versions) {
+	static protected function standarizeMultipleComparators($versions) {
 		$versions=preg_replace('/'.self::$global_single_comparator.self::$global_single_xrange.'/','$1$2',$versions); //Paste comparator and version together
 		$versions=preg_replace('/\\s+/', ' ', $versions); //Condense multiple spaces to one
 		$or=explode('||', $versions);
@@ -105,7 +136,7 @@ class version {
 	 * @throws versionException
 	 * @return string
 	 */
-	static private function rangesToComparators($range) {
+	static protected function rangesToComparators($range) {
 		$range_expression=sprintf(self::$range_mask,self::$global_single_version);
 		$expression=sprintf(self::$regexp_mask,$range_expression);
 		if(!preg_match($expression,$range)) throw new versionException('Invalid range given');
@@ -118,7 +149,7 @@ class version {
 	 * @param string $ranges
 	 * @return string
 	 */
-	static private function xRangesToComparators($ranges) {
+	static protected function xRangesToComparators($ranges) {
 		$expression=sprintf(self::$regexp_mask,self::$global_single_xrange);
 		return preg_replace_callback($expression, array('self','xRangesToComparatorsCallback'), $ranges);
 	}
@@ -154,6 +185,17 @@ class version {
 		if(is_numeric($patch)) $patch=intval($patch);
 		if(is_numeric($minor)) $minor=intval($minor);
 		if(is_numeric($major)) $major=intval($major);
+	}
+}
+class version extends versionExpression {
+	const version='0.1.0';
+	function __construct($version) {
+		$expression=sprintf(parent::$regexp_mask,parent::$global_single_version);
+		if(!preg_match($expression, $version)) throw new versionException('This is not a simple, singular version! No comparators nor ranges allowed!');
+		parent::__construct($version);
+	}
+	function satisfies(versionExpression $versions) {
+		return $versions->satisfiedBy($this->getString());
 	}
 }
 class versionException extends Exception {}
