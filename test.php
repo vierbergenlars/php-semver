@@ -146,12 +146,24 @@ class versioningTest extends UnitTestCase {
 	function testSatisfiedBy() {
 		$t=array(
 			'1.0.0'=>'1.0.0',
-			'1.2.3'=>'1.2.3'
+			'1.2.3'=>'1.2.3',
+			'>=1.0.1'=>array('1.0.1','1.0.2','1.2.0','2.0.0'),
+			'>=2'=>array('2.0.0','2.0.1','2.1.5','3.0.0'),
+			'<=2.4'=>array('1.2.0','2.0.0','2.4.0'),
+			'3.x'=>array('3.0.1','3.2.0','3.1.5'),
+			'1.5.6 - 2.3.4'=>array('1.5.6','1.5.7','1.6.0','2.1.0','2.3.0','2.3.3'),
+			'1 - 2 || >=2.0.5'=>array('1.0.0','2.1.0','1.4.0','1.0.2','3.0.4','2.0.6','3.0.0'),
+			'>4.0.0 <=4.2.3'=>array('4.0.1','4.1.2','4.2.3','4.1.0')
 		);
-		foreach($t as $range=>$version) {
+		foreach($t as $range=>$satisfies) {
 			$e=new versionExpression($range);
-			$v=new version($version);
-			$this->assertTrue($e->satisfiedBy($v), '['.$range.' :: '.$version.'] %s');
+			if(!is_array($satisfies)) {
+				$satisfies=array($satisfies);
+			}
+			foreach($satisfies as $version) {
+				$v=new version($version);
+				$this->assertTrue($e->satisfiedBy($v), '['.$range.' :: '.$version.'] %s');
+			}
 		}
 	}
 }
