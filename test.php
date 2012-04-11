@@ -78,7 +78,7 @@ class versioningTest extends UnitTestCase {
 				'1.x.x'=>'>=1.0.0 <2.0.0',
 				'1.x'=>'>=1.0.0 <2.0.0',
 				'1.x.5'=>'>=1.0.0 <2.0.0',
-				'3.x2'=>'>=3.0.0 <4.0.0',
+				'3.x'=>'>=3.0.0 <4.0.0',
 				'1.X.X'=>'>=1.0.0 <2.0.0',
 				'1.*.*'=>'>=1.0.0 <2.0.0',
 				'2.X.x'=>'>=2.0.0 <3.0.0',
@@ -109,6 +109,24 @@ class versioningTest extends UnitTestCase {
 		foreach($t as $original=>$result) {
 			$v=new versionExpression($original);
 			$this->assertEqual($v->getString(),$result,'['.$original.'] %s');
+		}
+	}
+	function testInvalidVersion() {
+		$t=array(
+			'3.x2',
+			'',
+			'xx',
+			'2.xx',
+			'**.2',
+			'Xx*',
+			'.2.2',
+			'1..2',
+			'1.5.6.x',
+			'1.5.6.7'
+		);
+		foreach($t as $original) {
+			$this->expectException(new versionException('Invalid version string given'));
+			$v=new versionExpression($original);
 		}
 	}
 	function testAndOperator() {
