@@ -4,4 +4,4 @@ php:
   - 5.4
 before_script:
   - git submodule update --init --quiet
-script: php test.php
+script: php all_tests.php

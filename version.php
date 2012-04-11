@@ -1,12 +1,12 @@
 <?php
 class versionExpression {
-	const version='0.2.0';
+	const version='0.3.0';
 	static protected $global_single_version='(([0-9]+)(\\.([0-9]+)(\\.([0-9]+))?)?)';
 	static protected $global_single_xrange='(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*]))?)?)';
 	static protected $global_single_comparator='([<>]=?)?\\s*';
 	static protected $global_single_spermy='(~?)>?\\s*';
 	static protected $range_mask='%1$s\\s+-\\s+%1$s';
-	static protected $regexp_mask='/%s/';
+	static protected $regexp_mask='/[v=]*%s/';
 	static protected $wildcards=array('x','X','*');
 	private $chunks=array();
 	/**
@@ -24,15 +24,20 @@ class versionExpression {
 		foreach($or as &$orchunk) {
 			$orchunk=trim($orchunk); //Remove spaces
 			$and=explode(' ', $orchunk);
-			foreach($and as &$achunk) {
+			foreach($and as $order=>&$achunk) {
 				$achunk=self::standarizeSingleComparator($achunk);
+				if(strstr($achunk,' ')) {
+					$pieces=explode(' ', $achunk);
+					unset($and[$order]);
+					$and=array_merge($and, $pieces);
+				}
 			}
 			$orchunk=$and;
 		}
 		$this->chunks=$or;
 	}
 	function satisfiedBy(version $version) {
-		$version1=$version->getString();
+		$version1=$version->getVersion();
 		$expression=sprintf(self::$regexp_mask,self::$global_single_comparator.self::$global_single_version);
 		$ok=false;
 		foreach($this->chunks as $orblocks) { //Or loop
@@ -42,7 +47,7 @@ class versionExpression {
 				$comparators=$matches[1];
 				$version2=$matches[2];
 				if($comparators==='') $comparators='=='; //Use equal if no comparator is set
-				if(!version_compare($version, $version2, $comparators)) { //If one chunk of the and-loop does not match...
+				if(!version::cmp($version1, $comparators, $version2)) { //If one chunk of the and-loop does not match...
 					$ok=false; //It is not okay
 					break; //And this loop will surely fail: return to or-loop
 				}
@@ -60,6 +65,9 @@ class versionExpression {
 	 */
 	function getChunks() {
 		return $this->chunks;
+	}
+	function getChunk($x,$y) {
+		return $this->chunks[$x][$y];
 	}
 	/**
 	 * Get the whole or object as a string
@@ -216,52 +224,72 @@ class versionExpression {
 	}
 }
 class version extends versionExpression {
-	const version='0.1.0';
+	const version='0.3.0';
+	private $version='0.0.0';
+	private $major='0';
+	private $minor='0';
+	private $patch='0';
 	function __construct($version) {
 		$expression=sprintf(parent::$regexp_mask,parent::$global_single_version);
 		if(!preg_match($expression, $version)) throw new versionException('This is not a simple, singular version! No comparators nor ranges allowed!');
 		parent::__construct($version);
+		$this->version=$this->getChunk(0, 0);
+		list($this->major,$this->minor,$this->patch)=explode('.', $this->version, 3);
+	}
+	function getVersion() {
+		return $this->version;
+	}
+	function getMajor() {
+		return (int)$this->major;
+	}
+	function getMinor() {
+		return (int)$this->minor;
+	}
+	function getPatch() {
+		return (int)$this->patch;
 	}
 	function satisfies(versionExpression $versions) {
 		return $versions->satisfiedBy($this);
 	}
 	static function cmp($v1,$cmp,$v2) {
-		if($cmp=='===') return $v1===$v2;
-		if($cmp=='!==') return $v1!==$v2;
-		$not=false;
-		if($cmp=='==') $cmp='';
-		if($cmp=='!=') {
-			$not=true;
-			$cmp='';
+		switch($cmp) {
+			case '==': return self::eq($v1, $v2);
+			case '!=': return self::neq($v1, $v2);
+			case '>':  return self::gt($v1, $v2);
+			case '>=': return self::gte($v1, $v2);
+			case '<': return self::lt($v1, $v2);
+			case '<=': return self::lte($v1, $v2);
+			case '===': return $v1===$v2;
+			case '!==': return $v1!==$v2;
+			default: throw new UnexpectedValueException('Invalid comparator');
 		}
-		if(isset($cmp[0])&&$cmp[0]=='!')  {
-			$not=true;
-			$cmp=substr($cmp, 1);
-		}
-		$v1=new versionExpression($cmp.$v1);
-		$v2=new version($v2);
-		if($not) {
-			return !$v2->satisfies($v1);
-		}
-		return $v2->satisfies($v1);
 	}
 	static function gt($v1,$v2) {
-		return self::cmp($v1, '>', $v2);
+		$v1=new version($v1);
+		$v2=new version($v2);
+		if($v1->getMajor() > $v2->getMajor()) return true;
+		if($v1->getMajor() < $v2->getMajor()) return false;
+		if($v1->getMinor() > $v2->getMinor()) return true;
+		if($v1->getMinor() < $v2->getMinor()) return false;
+		if($v1->getPatch() > $v2->getPatch()) return true;
+		if($v1->getPatch() < $v2->getPatch()) return false;
 	}
 	static function gte($v1,$v2) {
-		return self::cmp($v1, '>=', $v2);
+		return !self::lt($v1, $v2);
 	}
 	static function lt($v1,$v2) {
-		return self::cmp($v1, '<', $v2);
+		return self::gt($v2, $v1);
 	}
 	static function lte($v1,$v2) {
-		return self::cmp($v1, '<=', $v2);
+		return !self::gt($v1, $v2);
 	}
 	static function eq($v1,$v2) {
-		return self::cmp($v1, '==', $v2);
+		$v1=new version($v1);
+		$v2=new version($v2);
+		return $v1->getVersion()==$v2->getVersion();
 	}
 	static function neq($v1,$v2) {
-		return self::cmp($v1, '!=', $v2);
+		return !self::eq($v1, $v2);
 	}
 }
 class versionException extends Exception {}

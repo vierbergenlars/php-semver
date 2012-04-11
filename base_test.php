@@ -1,6 +1,6 @@
 <?php
-require 'simpletest/simpletest.phar';
-require 'version.php';
+require_once 'simpletest/simpletest.phar';
+require_once 'version.php';
 class versioningTest extends UnitTestCase {
 	function testKeepSimpleversion() {
 		$t=array(
