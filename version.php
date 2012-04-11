@@ -195,7 +195,7 @@ class version extends versionExpression {
 		parent::__construct($version);
 	}
 	function satisfies(versionExpression $versions) {
-		return $versions->satisfiedBy($this->getString());
+		return $versions->satisfiedBy($this);
 	}
 }
 class versionException extends Exception {}

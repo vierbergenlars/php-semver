@@ -163,6 +163,7 @@ class versioningTest extends UnitTestCase {
 			foreach($satisfies as $version) {
 				$v=new version($version);
 				$this->assertTrue($e->satisfiedBy($v), '['.$range.' :: '.$version.'] %s');
+				$this->assertTrue($v->satisfies($e), '['.$range.' :: '.$version.'] %s');
 			}
 		}
 	}
