@@ -12,14 +12,18 @@ Higher version: >
 Lower or equal version: <=
 Higher or equal version: >=
 x or * as a wildcard
-  e.g.: 1.x.x ~ >= 1.0.0 < 2.0.0
-        1.2.* ~ >= 1.2.0 < 1.3.0
+  e.g.: 1.x.x		>= 1.0.0 < 2.0.0
+        1.2.*		>= 1.2.0 < 1.3.0
 A range can be expressed with -
-  e.g.: 1.0.0 - 1.2.3 ~ >=1.0.0 <1.2.3
-        1.2.0 - 2.0.0 ~ >=1.2.0 <2.0.0
+  e.g.: 1.0.0 - 1.2.3		>=1.0.0 <1.2.3
+        1.2.0 - 2.0.0		>=1.2.0 <2.0.0
 A range can be expressed by omitting lower order numbers
-  e.g.: 1   ~ >=1.0.0 <2.0.0
-        1.2 ~ >=1.2.0 <1.3.0
+  e.g.: 1		>=1.0.0 <2.0.0
+        1.2		>=1.2.0 <1.3.0
+A range can be expressed with ~
+  e.g.: ~1		>=1.0.0 <2.0.0
+        ~1.2	>=1.2.0 <1.3.0
+        ~1.2.3	>=1.2.3 <1.3.0
 
 ##Logic
 Two or more comparators in one string with only spaces between them: AND

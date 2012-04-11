@@ -111,6 +111,19 @@ class versioningTest extends UnitTestCase {
 			$this->assertEqual($v->getString(),$result,'['.$original.'] %s');
 		}
 	}
+	function testSpermies() {
+		$t=array(
+			'~1'=>'>=1.0.0 <2.0.0',
+			'~2.3'=>'>=2.3.0 <2.4.0',
+			'~3.7.2'=>'>=3.7.2 <3.8.0',
+			'~1.x'=>'>=1.0.0 <2.0.0',
+			'~1.2.x'=>'>=1.2.0 <1.3.0',
+		);
+		foreach($t as $original=>$result) {
+			$v=new versionExpression($original);
+			$this->assertEqual($v->getString(),$result,'['.$original.'] %s');
+		}
+	}
 	function testInvalidVersion() {
 		$t=array(
 			'3.x2',
