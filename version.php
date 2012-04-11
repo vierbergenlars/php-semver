@@ -225,5 +225,43 @@ class version extends versionExpression {
 	function satisfies(versionExpression $versions) {
 		return $versions->satisfiedBy($this);
 	}
+	static function cmp($v1,$cmp,$v2) {
+		if($cmp=='===') return $v1===$v2;
+		if($cmp=='!==') return $v1!==$v2;
+		$not=false;
+		if($cmp=='==') $cmp='';
+		if($cmp=='!=') {
+			$not=true;
+			$cmp='';
+		}
+		if(isset($cmp[0])&&$cmp[0]=='!')  {
+			$not=true;
+			$cmp=substr($cmp, 1);
+		}
+		$v1=new versionExpression($cmp.$v1);
+		$v2=new version($v2);
+		if($not) {
+			return !$v2->satisfies($v1);
+		}
+		return $v2->satisfies($v1);
+	}
+	static function gt($v1,$v2) {
+		return self::cmp($v1, '>', $v2);
+	}
+	static function gte($v1,$v2) {
+		return self::cmp($v1, '>=', $v2);
+	}
+	static function lt($v1,$v2) {
+		return self::cmp($v1, '<', $v2);
+	}
+	static function lte($v1,$v2) {
+		return self::cmp($v1, '<=', $v2);
+	}
+	static function eq($v1,$v2) {
+		return self::cmp($v1, '==', $v2);
+	}
+	static function neq($v1,$v2) {
+		return self::cmp($v1, '!=', $v2);
+	}
 }
 class versionException extends Exception {}
