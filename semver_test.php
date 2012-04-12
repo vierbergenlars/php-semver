@@ -4,22 +4,31 @@ require_once('version.php');
 class SemVerTest extends UnitTestCase {
 	function testComparison() {
 		$compare=array(
-		  array("0.0.1","0.0.0")
+	//	  array("0.0.0","0.0.0foo")
+	/*	,*/ array("0.0.1","0.0.0")
 		, array("1.0.0","0.9.9")
 		, array("0.10.0","0.9.0")
 		, array("0.99.0","0.10.0")
 		, array("2.0.0","1.2.3")
+	//	, array("v0.0.0","0.0.0foo")
 		, array("v0.0.1","0.0.0")
 		, array("v1.0.0","0.9.9")
 		, array("v0.10.0","0.9.0")
 		, array("v0.99.0","0.10.0")
 		, array("v2.0.0","1.2.3")
+	//	, array("0.0.0","v0.0.0foo")
 		, array("0.0.1","v0.0.0")
 		, array("1.0.0","v0.9.9")
 		, array("0.10.0","v0.9.0")
 		, array("0.99.0","v0.10.0")
 		, array("2.0.0","v1.2.3")
-);
+	//	, array("1.2.3","1.2.3-asdf")
+		, array("1.2.3-4","1.2.3")
+	//	, array("1.2.3-4-foo","1.2.3")
+	//	, array("1.2.3-5","1.2.3-5-foo")
+		, array("1.2.3-5","1.2.3-4")
+	//	, array("1.2.3-5-foo","1.2.3-5-Foo")
+		);
 		foreach($compare as $set) {
 			$a=$set[0];
 			$b=$set[1];
@@ -45,7 +54,32 @@ class SemVerTest extends UnitTestCase {
 		, array("1.2.3"," v1.2.3")
 		, array("1.2.3"," =1.2.3")
 		, array("1.2.3"," v 1.2.3")
-		, array("1.2.3"," = 1.2.3"));
+		, array("1.2.3"," = 1.2.3")
+		, array("1.2.3-0","v1.2.3-0")
+		, array("1.2.3-0","=1.2.3-0")
+		, array("1.2.3-0","v 1.2.3-0")
+		, array("1.2.3-0","= 1.2.3-0")
+		, array("1.2.3-0"," v1.2.3-0")
+		, array("1.2.3-0"," =1.2.3-0")
+		, array("1.2.3-0"," v 1.2.3-0")
+		, array("1.2.3-0"," = 1.2.3-0")
+		, array("1.2.3-01","v1.2.3-1")
+		, array("1.2.3-01","=1.2.3-1")
+		, array("1.2.3-01","v 1.2.3-1")
+		, array("1.2.3-01","= 1.2.3-1")
+		, array("1.2.3-01"," v1.2.3-1")
+		, array("1.2.3-01"," =1.2.3-1")
+		, array("1.2.3-01"," v 1.2.3-1")
+		, array("1.2.3-01"," = 1.2.3-1")
+	/*	, array("1.2.3beta","v1.2.3beta")
+		, array("1.2.3beta","=1.2.3beta")
+		, array("1.2.3beta","v 1.2.3beta")
+		, array("1.2.3beta","= 1.2.3beta")
+		, array("1.2.3beta"," v1.2.3beta")
+		, array("1.2.3beta"," =1.2.3beta")
+		, array("1.2.3beta"," v 1.2.3beta")
+		, array("1.2.3beta"," = 1.2.3beta")
+	*/	);
 		foreach($compare as $set) {
 			$a=$set[0];
 			$b=$set[1];
@@ -62,11 +96,13 @@ class SemVerTest extends UnitTestCase {
 		}
 	}
 	function testRange() {
-		$compare=array(array("1.0.0 - 2.0.0","1.2.3")
+	$compare=array(
+		 array("1.0.0 - 2.0.0","1.2.3")
 		, array("1.0.0","1.0.0")
 		, array(">=*","0.2.4")
-		//, array("", "1.0.0")
+	//	, array("", "1.0.0")
 		, array("*","1.2.3")
+	//	, array("*","v1.2.3-foo")
 		, array(">=1.0.0","1.0.0")
 		, array(">=1.0.0","1.0.1")
 		, array(">=1.0.0","1.1.0")
@@ -93,7 +129,7 @@ class SemVerTest extends UnitTestCase {
 		, array(">=0.2.3 || <0.0.1","0.0.0")
 		, array(">=0.2.3 || <0.0.1","0.2.3")
 		, array(">=0.2.3 || <0.0.1","0.2.4")
-		//, array("||","1.3.4")
+	//	, array("||","1.3.4")
 		, array("2.x.x","2.1.3")
 		, array("1.2.x","1.2.3")
 		, array("1.2.x || 2.x","2.1.3")
@@ -117,7 +153,11 @@ class SemVerTest extends UnitTestCase {
 		, array(">=1","1.0.0")
 		, array(">= 1","1.0.0")
 		, array("<1.2","1.1.1")
-		, array("< 1.2","1.1.1"));
+		, array("< 1.2","1.1.1")
+	//	, array("1","1.0.0beta")
+	//	, array("~v0.5.4-pre","0.5.5")
+	//	, array("~v0.5.4-pre","0.5.4")
+		);
 		foreach($compare as $set) {
 			$v=new version($set[1]);
 			$this->assertTrue($v->satisfies(new versionExpression($set[0])), "%s > $set[0] should be satisfied by $set[1]");
@@ -125,7 +165,8 @@ class SemVerTest extends UnitTestCase {
 
 	}
 	function testNegativeRange() {
-		$compare=array(array("1.0.0 - 2.0.0","2.2.3")
+		$compare=array(
+		  array("1.0.0 - 2.0.0","2.2.3")
 		, array("1.0.0","1.0.1")
 		, array(">=1.0.0","0.0.0")
 		, array(">=1.0.0","0.0.1")
@@ -162,18 +203,33 @@ class SemVerTest extends UnitTestCase {
 		, array("~>1","2.2.3")
 		, array("~1.0","1.1.0") // >=1.0.0 <1.1.0
 		, array("<1","1.0.0")
-		, array(">=1.2","1.1.1"));
+		, array(">=1.2","1.1.1")
+	//	, array("1","2.0.0beta")
+	//	, array("~v0.5.4-beta","0.5.4-alpha")
+	//	, array("<1","1.0.0beta")
+	//	, array("< 1","1.0.0beta")
+		);
 		foreach($compare as $set) {
 			$v=new version($set[1]);
 			$this->assertFalse($v->satisfies(new versionExpression($set[0])), "%s > $set[0] should not be satisfied by $set[1]");
 		}
 	}
 	/*function testIncrementVersions() {
-		$compare=array(array("1.2.3","major","2.0.0")
+		$compare=array(
+		  array("1.2.3","major","2.0.0")
 		, array("1.2.3","minor","1.3.0")
 		, array("1.2.3","patch","1.2.4")
+		, array("1.2.3","build","1.2.3-1")
+		, array("1.2.3-4","build","1.2.3-5")
+	//	, array("1.2.3tag","major","2.0.0")
+	//	, array("1.2.3-tag","major","2.0.0")
+	//	, array("1.2.3tag","build","1.2.3-1")
+	//	, array("1.2.3-tag","build","1.2.3-1")
+	//	, array("1.2.3-4-tag","build","1.2.3-5")
+	//	, array("1.2.3-4tag","build","1.2.3-5")
 		, array("1.2.3","fake",null)
-		, array("fake","major",null));
+		, array("fake","major",null)
+		);
 		foreach($compare as $set) {
 			$s=$set[0];
 			if($set[2]===null) $this->expectException();
@@ -182,10 +238,11 @@ class SemVerTest extends UnitTestCase {
 		}
 	}*/
 	function testValidRange() {
-		$compare=array(array("1.0.0 - 2.0.0",">=1.0.0 <2.0.0")
+		$compare=array(
+		  array("1.0.0 - 2.0.0",">=1.0.0 <=2.0.0")
 		, array("1.0.0","1.0.0")
 		, array(">=*",">=0.0.0")
-		//, array("",">=0.0.0")
+	//	, array("","")
 		, array("*",">=0.0.0")
 		, array(">=1.0.0",">=1.0.0")
 		, array(">1.0.0",">1.0.0")
@@ -207,7 +264,9 @@ class SemVerTest extends UnitTestCase {
 		, array(">=0.1.97",">=0.1.97")
 		, array("0.1.20 || 1.2.4","0.1.20||1.2.4")
 		, array(">=0.2.3 || <0.0.1",">=0.2.3||<0.0.1")
-		//, array("||","||")
+		, array(">=0.2.3 || <0.0.1",">=0.2.3||<0.0.1")
+		, array(">=0.2.3 || <0.0.1",">=0.2.3||<0.0.1")
+	//	, array("||","||")
 		, array("2.x.x",">=2.0.0 <3.0.0")
 		, array("1.2.x",">=1.2.0 <1.3.0")
 		, array("1.2.x || 2.x",">=1.2.0 <1.3.0||>=2.0.0 <3.0.0")
@@ -231,17 +290,19 @@ class SemVerTest extends UnitTestCase {
 		, array(">= 1",">=1.0.0")
 		, array("<1.2","<1.2.0")
 		, array("< 1.2","<1.2.0")
-		, array("1",">=1.0.0 <2.0.0"));
+		, array("1",">=1.0.0 <2.0.0")
+		);
 		foreach($compare as $set) {
 			$v=new versionExpression($set[0]);
 			$this->assertEqual($v->getString(), $set[1], "%s > validRange($set[0]) === $set[1]");
 		}
 	}
 	function testComparators() {
-		$compare=array( array("1.0.0 - 2.0.0", array(array(">=1.0.0", "<2.0.0")) )
+		$compare=array(
+		  array("1.0.0 - 2.0.0", array(array(">=1.0.0", "<=2.0.0")) )
 		, array("1.0.0", array(array("1.0.0")) )
 		, array(">=*", array(array(">=0.0.0")) )
-		//, array("", array(array(">=0.0.0")))
+	//	, array("", array(array("")))
 		, array("*", array(array(">=0.0.0")) )
 		, array(">=1.0.0", array(array(">=1.0.0")) )
 		, array(">1.0.0", array(array(">1.0.0")) )
@@ -262,7 +323,7 @@ class SemVerTest extends UnitTestCase {
 		, array(">=0.1.97", array(array(">=0.1.97")) )
 		, array("0.1.20 || 1.2.4", array(array("0.1.20"), array("1.2.4")) )
 		, array(">=0.2.3 || <0.0.1", array(array(">=0.2.3"), array("<0.0.1")) )
-		//, array("||", array(array(">0.0.0"), array(">=0.0.0")) )
+	//	, array("||", array(array(""), array("")) )
 		, array("2.x.x", array(array(">=2.0.0", "<3.0.0")) )
 		, array("1.2.x", array(array(">=1.2.0", "<1.3.0")) )
 		, array("1.2.x || 2.x", array(array(">=1.2.0", "<1.3.0"), array(">=2.0.0", "<3.0.0")) )

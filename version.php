@@ -1,8 +1,8 @@
 <?php
 class versionExpression {
 	const version='0.3.0';
-	static protected $global_single_version='(([0-9]+)(\\.([0-9]+)(\\.([0-9]+))?)?)';
-	static protected $global_single_xrange='(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*]))?)?)';
+	static protected $global_single_version='(([0-9]+)(\\.([0-9]+)(\\.([0-9]+)(-([0-9]+))?)?)?)';
+	static protected $global_single_xrange='(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+|[xX*]))?)?)?)';
 	static protected $global_single_comparator='([<>]=?)?\\s*';
 	static protected $global_single_spermy='(~?)>?\\s*';
 	static protected $range_mask='%1$s\\s+-\\s+%1$s';
@@ -17,7 +17,7 @@ class versionExpression {
 	function __construct($versions) {
 		$versions=preg_replace('/'.self::$global_single_comparator.'(\\s+-\\s+)?'.self::$global_single_xrange.'/','$1$2$3',$versions); //Paste comparator and version together
 		$versions=preg_replace('/\\s+/', ' ', $versions); //Condense multiple spaces to one
-		if(strstr($versions, '-')) $versions=self::rangesToComparators($versions); //Replace all ranges with comparators
+		if(strstr($versions, ' - ')) $versions=self::rangesToComparators($versions); //Replace all ranges with comparators
 		if(strstr($versions,'~')) $versions=self::spermiesToComparators($versions); //Replace all spermies with comparators
 		if(strstr($versions, 'x')||strstr($versions,'X')||strstr($versions,'*')) $versions=self::xRangesToComparators($versions); //Replace all x-ranges with comparators
 		$or=explode('||', $versions);
@@ -95,12 +95,14 @@ class versionExpression {
 		$expression=sprintf(self::$regexp_mask,self::$global_single_version);
 		if(!preg_match($expression,$version,$matches)) throw new versionException('Invalid version string given');
 		if($hasComparator) { //If there is a comparator set undefined parts to 0
-			self::matchesToVersionParts($matches, $major, $minor, $patch);
-			return $major.'.'.$minor.'.'.$patch;
+			self::matchesToVersionParts($matches, $major, $minor, $patch, $build);
+			if($build!=='') $build='-'.$build;
+			return $major.'.'.$minor.'.'.$patch.$build;
 		}
 		else { //If it is just a number, convert to a range
-			self::matchesToVersionParts($matches, $major, $minor, $patch, 'x');
-			$version=$major.'.'.$minor.'.'.$patch;
+			self::matchesToVersionParts($matches, $major, $minor, $patch, $build, 'x');
+			if($build!=='') $build='-'.$build;
+			$version=$major.'.'.$minor.'.'.$patch.$build;
 			return self::xRangesToComparators($version);
 		}
 	}
@@ -151,7 +153,7 @@ class versionExpression {
 		$range_expression=sprintf(self::$range_mask,self::$global_single_version);
 		$expression=sprintf(self::$regexp_mask,$range_expression);
 		if(!preg_match($expression,$range)) throw new versionException('Invalid range given');
-		$versions=preg_replace($expression, '>=$1 <$7', $range);
+		$versions=preg_replace($expression, '>=$1 <=$9', $range);
 		$versions=self::standarizeMultipleComparators($versions);
 		return $versions;
 	}
@@ -171,11 +173,13 @@ class versionExpression {
 	 * @return string
 	 */
 	static private function xRangesToComparatorsCallback($matches) {
-		self::matchesToVersionParts($matches, $major, $minor, $patch, 'x');
+		self::matchesToVersionParts($matches, $major, $minor, $patch, $build, 'x');
+		if($build!=='') $build='-'.$build;
 		if($major==='x') return '>=0.0.0';
 		if($minor==='x') return '>='.$major.'.0.0 <'.($major+1).'.0.0';
 		if($patch==='x') return '>='.$major.'.'.$minor.'.0 <'.$major.'.'.($minor+1).'.0';
-		return $major.'.'.$minor.'.'.$patch;
+		if($build==='x') return '>='.$major.'.'.$minor.'.'.$patch.' <'.$major.'.'.$minor.'.'.($patch+1);
+		return $major.'.'.$minor.'.'.$patch.$build;
 	}
 	/**
 	 * standarizes a bunch of ~-ranges to comparators
@@ -193,11 +197,13 @@ class versionExpression {
 	 * @return string
 	 */
 	static private function spermiesToComparatorsCallback($matches) {
-		self::matchesToVersionParts($matches, $major, $minor, $patch,'x',3);
+		self::matchesToVersionParts($matches, $major, $minor, $patch, $build,'x',3);
+		if($build!=='') $build='-'.$build;
 		if($major==='x') return '>=0.0.0';
 		if($minor==='x') return '>='.$major.'.0.0 <'.($major+1).'.0.0';
 		if($patch==='x') return '>='.$major.'.'.$minor.'.0 <'.$major.'.'.($minor+1).'.0';
-		return '>='.$major.'.'.$minor.'.'.$patch.' <'.$major.'.'.($minor+1).'.0';
+		if($build==='x') return '>='.$major.'.'.$minor.'.'.$patch.' <'.$major.'.'.($minor+1).'.0';
+		return '>='.$major.'.'.$minor.'.'.$patch.$build.' <'.$major.'.'.($minor+1).'.0';
 	}
 	/**
 	 * Converts matches to named version parts, replaces all wildcards by lowercase x
@@ -208,19 +214,23 @@ class versionExpression {
 	 * @param int|string $default Default value for a version if not found in matches array
 	 * @param int $offset The position of the raw occurence of the major version number
 	 */
-	static private function matchesToVersionParts($matches, &$major, &$minor, &$patch, $default=0, $offset=2) {
+	static private function matchesToVersionParts($matches, &$major, &$minor, &$patch, &$build, $default=0, $offset=2) {
 		$major=$minor=$patch=$default;
+		$build='';
 		switch(count($matches)) {
+			case $offset+7: $build=$matches[$offset+6];
 			case $offset+5: $patch=$matches[$offset+4];
 			case $offset+3: $minor=$matches[$offset+2];
 			case $offset+1: $major=$matches[$offset];
 		}
+		if(is_numeric($build)) $build=intval($build);
 		if(is_numeric($patch)) $patch=intval($patch);
 		if(is_numeric($minor)) $minor=intval($minor);
 		if(is_numeric($major)) $major=intval($major);
 		if(in_array($major, self::$wildcards,true)) $major='x';
 		if(in_array($minor, self::$wildcards,true)) $minor='x';
 		if(in_array($patch, self::$wildcards,true)) $patch='x';
+		if(in_array($build, self::$wildcards,true)) $patch='x';
 	}
 }
 class version extends versionExpression {
@@ -229,12 +239,13 @@ class version extends versionExpression {
 	private $major='0';
 	private $minor='0';
 	private $patch='0';
+	private $build='0';
 	function __construct($version) {
 		$expression=sprintf(parent::$regexp_mask,parent::$global_single_version);
 		if(!preg_match($expression, $version)) throw new versionException('This is not a simple, singular version! No comparators nor ranges allowed!');
 		parent::__construct($version);
 		$this->version=$this->getChunk(0, 0);
-		list($this->major,$this->minor,$this->patch)=explode('.', $this->version, 3);
+		@list($this->major,$this->minor,$this->patch,$this->build)=preg_split('/[.-]/', $this->version, 4);
 	}
 	function getVersion() {
 		return $this->version;
@@ -247,6 +258,9 @@ class version extends versionExpression {
 	}
 	function getPatch() {
 		return (int)$this->patch;
+	}
+	function getBuild() {
+		return (int)$this->build;
 	}
 	function satisfies(versionExpression $versions) {
 		return $versions->satisfiedBy($this);
@@ -273,6 +287,8 @@ class version extends versionExpression {
 		if($v1->getMinor() < $v2->getMinor()) return false;
 		if($v1->getPatch() > $v2->getPatch()) return true;
 		if($v1->getPatch() < $v2->getPatch()) return false;
+		if($v1->getBuild() > $v2->getBuild()) return true;
+		if($v1->getBuild() < $v2->getBuild()) return false;
 	}
 	static function gte($v1,$v2) {
 		return !self::lt($v1, $v2);
