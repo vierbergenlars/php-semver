@@ -1,5 +1,5 @@
 <?php
-require_once 'simpletest/simpletest.php';
+require_once 'simpletest/simpletest.phar';
 class RemoteCPVersioningTests extends TestSuite {
 	function __construct() {
 		parent::__construct('RemoteCP Versioning System Tests');
