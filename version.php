@@ -221,7 +221,7 @@ class versionExpression {
 	 * @param int|string $default Default value for a version if not found in matches array
 	 * @param int $offset The position of the raw occurence of the major version number
 	 */
-	static private function matchesToVersionParts($matches, &$major, &$minor, &$patch, &$build, &$prtag, $default=0, $offset=2) {
+	static protected function matchesToVersionParts($matches, &$major, &$minor, &$patch, &$build, &$prtag, $default=0, $offset=2) {
 		$major=$minor=$patch=$default;
 		$build='';
 		$prtag='';
@@ -260,11 +260,12 @@ class version extends versionExpression {
 		if(!preg_match($expression, $version)) throw new versionException('This is not a simple, singular version! No comparators nor ranges allowed!');
 		parent::__construct($version);
 		$this->version=$this->getChunk(0, 0);
-		@list($this->major,$this->minor,$this->patch,$this->build,$this->prtag)=preg_split('/[.-]/', $this->version, 5);
+		preg_match($expression, $this->version, $matches);
+		parent::matchesToVersionParts($matches, $this->major, $this->minor, $this->patch, $this->build, $this->prtag, NULL);
 		if($this->major===NULL) $this->major=-1;
 		if($this->minor===NULL) $this->minor=-1;
 		if($this->patch===NULL) $this->patch=-1;
-		if($this->build===NULL) $this->build=-1;
+		if($this->build==='') $this->build=-1;
 	}
 	function getVersion() {
 		return $this->version;
@@ -282,7 +283,7 @@ class version extends versionExpression {
 		return (int)$this->build;
 	}
 	function getTag() {
-		return $this->prtag;
+		return (string)$this->prtag;
 	}
 	function satisfies(versionExpression $versions) {
 		return $versions->satisfiedBy($this);
