@@ -2,6 +2,7 @@
 
 Ported from node-semver [1.0.13](https://github.com/isaacs/node-semver/commit/6602827f306e456dcb51bb441874e3d6818ff33f) to PHP
 
+[![Build Status](https://secure.travis-ci.org/vierbergenlars/php-semver.png?branch=master)](http://travis-ci.org/vierbergenlars/php-semver)
 
 ## Usage
 
