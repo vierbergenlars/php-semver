@@ -1,7 +1,7 @@
 <?php
 class versionExpression {
 	const version='0.5.0';
-	static protected $global_single_version='(([0-9]+)(\\.([0-9]+)(\\.([0-9]+)(-([0-9]+))?)(-?([a-zA-Z-][a-zA-Z0-9\\.-:]*)?)?)?)';
+	static protected $global_single_version='(([0-9]+)(\.([0-9]+)(\.([0-9]+)(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\.-:]*)?)?)?)?)';
 	static protected $global_single_xrange='(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+|[xX*]))?)(-?([a-zA-Z-][a-zA-Z0-9\\.-:]*)?)?)?)';
 	static protected $global_single_comparator='([<>]=?)?\\s*';
 	static protected $global_single_spermy='(~?)>?\\s*';
@@ -16,9 +16,8 @@ class versionExpression {
 	 * @param unknown_type $versions
 	 */
 	function __construct($versions) {
-		$versions=preg_replace('/'.self::$global_single_comparator.'(\\s+-\\s+)?'.self::$global_single_xrange.'/','$1$2$3',$versions); //Paste comparator and version together
+		$versions=preg_replace(sprintf(self::$dirty_regexp_mask,self::$global_single_comparator.'(\\s+-\\s+)?'.self::$global_single_xrange),'$1$2$3',$versions); //Paste comparator and version together
 		$versions=preg_replace('/\\s+/', ' ', $versions); //Condense multiple spaces to one
-		$versions=preg_replace(sprintf(self::$dirty_regexp_mask,''), '', $versions); //Remove the v= at the beginning
 		if(strstr($versions, ' - ')) $versions=self::rangesToComparators($versions); //Replace all ranges with comparators
 		if(strstr($versions,'~')) $versions=self::spermiesToComparators($versions); //Replace all spermies with comparators
 		if(strstr($versions, 'x')||strstr($versions,'X')||strstr($versions,'*')) $versions=self::xRangesToComparators($versions); //Replace all x-ranges with comparators
