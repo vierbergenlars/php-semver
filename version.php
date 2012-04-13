@@ -2,7 +2,7 @@
 class versionExpression {
 	const version='0.5.0';
 	static protected $global_single_version='(([0-9]+)(\.([0-9]+)(\.([0-9]+)(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\.-:]*)?)?)?)?)';
-	static protected $global_single_xrange='(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+|[xX*]))?)(-?([a-zA-Z-][a-zA-Z0-9\\.-:]*)?)?)?)';
+	static protected $global_single_xrange='(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\.-:]*)?)?)?)?)';
 	static protected $global_single_comparator='([<>]=?)?\\s*';
 	static protected $global_single_spermy='(~?)>?\\s*';
 	static protected $range_mask='%1$s\\s+-\\s+%1$s';
@@ -208,8 +208,6 @@ class versionExpression {
 		if($major==='x') return '>=0.0.0';
 		if($minor==='x') return '>='.$major.'.0.0 <'.($major+1).'.0.0';
 		if($patch==='x') return '>='.$major.'.'.$minor.'.0 <'.$major.'.'.($minor+1).'.0';
-		if($build==='') return '>='.$major.'.'.$minor.'.'.$patch.' <'.$major.'.'.($minor+1).'.0';
-		if($prtag==='') return '>='.$major.'.'.$minor.'.'.$patch.$build.' <'.$major.'.'.($minor+1).'.0';
 		return '>='.$major.'.'.$minor.'.'.$patch.$build.$prtag.' <'.$major.'.'.($minor+1).'.0';
 	}
 	/**
