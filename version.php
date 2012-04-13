@@ -1,6 +1,6 @@
 <?php
 class versionExpression {
-	const version='0.4.0';
+	const version='0.4.1';
 	static protected $global_single_version='(([0-9]+)(\\.([0-9]+)(\\.([0-9]+)(-([0-9]+))?)?)?)';
 	static protected $global_single_xrange='(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+|[xX*]))?)?)?)';
 	static protected $global_single_comparator='([<>]=?)?\\s*';
@@ -245,6 +245,10 @@ class version extends versionExpression {
 		parent::__construct($version);
 		$this->version=$this->getChunk(0, 0);
 		@list($this->major,$this->minor,$this->patch,$this->build)=preg_split('/[.-]/', $this->version, 4);
+		if($this->major===NULL) $this->major=-1;
+		if($this->minor===NULL) $this->minor=-1;
+		if($this->patch===NULL) $this->patch=-1;
+		if($this->build===NULL) $this->build=-1;
 	}
 	function getVersion() {
 		return $this->version;
