@@ -28,6 +28,7 @@ class SemVerTest extends UnitTestCase {
 	//	, array("1.2.3-5","1.2.3-5-foo")
 		, array("1.2.3-5","1.2.3-4")
 	//	, array("1.2.3-5-foo","1.2.3-5-Foo")
+		, array('1.2.3-0','1.2.3')
 		);
 		foreach($compare as $set) {
 			$a=$set[0];
