@@ -1,6 +1,6 @@
 <?php
 require_once('simpletest/simpletest.phar');
-require_once('version.php');
+require_once('semver.php');
 class SemVerTest extends UnitTestCase {
 	function testComparison() {
 		$compare=array(
