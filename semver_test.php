@@ -4,30 +4,30 @@ require_once('version.php');
 class SemVerTest extends UnitTestCase {
 	function testComparison() {
 		$compare=array(
-	//	  array("0.0.0","0.0.0foo")
-	/*	,*/ array("0.0.1","0.0.0")
+		  array("0.0.0","0.0.0foo")
+		, array("0.0.1","0.0.0")
 		, array("1.0.0","0.9.9")
 		, array("0.10.0","0.9.0")
 		, array("0.99.0","0.10.0")
 		, array("2.0.0","1.2.3")
-	//	, array("v0.0.0","0.0.0foo")
+		, array("v0.0.0","0.0.0foo")
 		, array("v0.0.1","0.0.0")
 		, array("v1.0.0","0.9.9")
 		, array("v0.10.0","0.9.0")
 		, array("v0.99.0","0.10.0")
 		, array("v2.0.0","1.2.3")
-	//	, array("0.0.0","v0.0.0foo")
+		, array("0.0.0","v0.0.0foo")
 		, array("0.0.1","v0.0.0")
 		, array("1.0.0","v0.9.9")
 		, array("0.10.0","v0.9.0")
 		, array("0.99.0","v0.10.0")
 		, array("2.0.0","v1.2.3")
-	//	, array("1.2.3","1.2.3-asdf")
+		, array("1.2.3","1.2.3-asdf")
 		, array("1.2.3-4","1.2.3")
-	//	, array("1.2.3-4-foo","1.2.3")
-	//	, array("1.2.3-5","1.2.3-5-foo")
+		, array("1.2.3-4-foo","1.2.3")
+		, array("1.2.3-5","1.2.3-5-foo")
 		, array("1.2.3-5","1.2.3-4")
-	//	, array("1.2.3-5-foo","1.2.3-5-Foo")
+		, array("1.2.3-5-foo","1.2.3-5-Foo")
 		, array('1.2.3-0','1.2.3')
 		);
 		foreach($compare as $set) {
@@ -72,7 +72,7 @@ class SemVerTest extends UnitTestCase {
 		, array("1.2.3-01"," =1.2.3-1")
 		, array("1.2.3-01"," v 1.2.3-1")
 		, array("1.2.3-01"," = 1.2.3-1")
-	/*	, array("1.2.3beta","v1.2.3beta")
+		, array("1.2.3beta","v1.2.3beta")
 		, array("1.2.3beta","=1.2.3beta")
 		, array("1.2.3beta","v 1.2.3beta")
 		, array("1.2.3beta","= 1.2.3beta")
@@ -80,7 +80,7 @@ class SemVerTest extends UnitTestCase {
 		, array("1.2.3beta"," =1.2.3beta")
 		, array("1.2.3beta"," v 1.2.3beta")
 		, array("1.2.3beta"," = 1.2.3beta")
-	*/	);
+		);
 		foreach($compare as $set) {
 			$a=$set[0];
 			$b=$set[1];
@@ -103,7 +103,7 @@ class SemVerTest extends UnitTestCase {
 		, array(">=*","0.2.4")
 	//	, array("", "1.0.0")
 		, array("*","1.2.3")
-	//	, array("*","v1.2.3-foo")
+		, array("*","v1.2.3-foo")
 		, array(">=1.0.0","1.0.0")
 		, array(">=1.0.0","1.0.1")
 		, array(">=1.0.0","1.1.0")
@@ -155,9 +155,11 @@ class SemVerTest extends UnitTestCase {
 		, array(">= 1","1.0.0")
 		, array("<1.2","1.1.1")
 		, array("< 1.2","1.1.1")
-	//	, array("1","1.0.0beta")
-	//	, array("~v0.5.4-pre","0.5.5")
-	//	, array("~v0.5.4-pre","0.5.4")
+		, array("1","2.0.0beta")
+		, array("<1","1.0.0beta")
+		, array("< 1","1.0.0beta")
+		, array("~v0.5.4-pre","0.5.5")
+		, array("~v0.5.4-pre","0.5.4")
 		);
 		foreach($compare as $set) {
 			$v=new version($set[1]);
@@ -205,10 +207,8 @@ class SemVerTest extends UnitTestCase {
 		, array("~1.0","1.1.0") // >=1.0.0 <1.1.0
 		, array("<1","1.0.0")
 		, array(">=1.2","1.1.1")
-	//	, array("1","2.0.0beta")
-	//	, array("~v0.5.4-beta","0.5.4-alpha")
-	//	, array("<1","1.0.0beta")
-	//	, array("< 1","1.0.0beta")
+		, array("1","1.0.0beta")
+		, array("~v0.5.4-beta","0.5.4-alpha")
 		);
 		foreach($compare as $set) {
 			$v=new version($set[1]);
