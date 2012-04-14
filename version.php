@@ -347,5 +347,14 @@ class version extends versionExpression {
 	static function neq($v1,$v2) {
 		return !self::eq($v1, $v2);
 	}
+	static function compare($v1,$v2) {
+		$g=self::gt($v1, $v2);
+		if($g===NULL) return 0;
+		if($g) return 1;
+		return -1;
+	}
+	static function rcompare($v1,$v2) {
+		return self::compare($v2, $v1);
+	}
 }
 class versionException extends Exception {}
