@@ -155,7 +155,9 @@ class SemVerTest extends UnitTestCase {
 		, array(">= 1","1.0.0")
 		, array("<1.2","1.1.1")
 		, array("< 1.2","1.1.1")
-		, array("1","1.0.0beta")
+		, array("1","2.0.0beta")
+		, array("<1","1.0.0beta")
+		, array("< 1","1.0.0beta")
 		, array("~v0.5.4-pre","0.5.5")
 		, array("~v0.5.4-pre","0.5.4")
 		);
@@ -205,10 +207,8 @@ class SemVerTest extends UnitTestCase {
 		, array("~1.0","1.1.0") // >=1.0.0 <1.1.0
 		, array("<1","1.0.0")
 		, array(">=1.2","1.1.1")
-		, array("1","2.0.0beta")
+		, array("1","1.0.0beta")
 		, array("~v0.5.4-beta","0.5.4-alpha")
-		, array("<1","1.0.0beta")
-		, array("< 1","1.0.0beta")
 		);
 		foreach($compare as $set) {
 			$v=new version($set[1]);
