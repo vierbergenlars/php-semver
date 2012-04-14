@@ -59,7 +59,7 @@ $dir=new RecursiveIteratorIterator(new RecursiveDirectoryIterator($output));
 foreach($dir as $file) {
 	if(in_array(realpath($file), $blacklist)) continue;
 	$contents1=file_get_contents($file);
-	$contents2=str_replace('{{{version}}}', $version, $contents1);
+	$contents2=str_replace(array('{{{version}}}','{{{'.'version}}}'), $version, $contents1);
 	if($contents1!=$contents2) {
 		fwrite(STDOUT,'Writing version information to file '.$file.PHP_EOL);
 		if($dry_run) {
