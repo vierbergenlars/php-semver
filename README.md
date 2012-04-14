@@ -83,8 +83,8 @@ Ranges can be joined with either a space (which implies "and") or a
 
 ## Functions
 
-* valid(v): Return the parsed version, or null if it's not valid.
-* inc(v, release): Return the version incremented by the release type
+* $version->valid(): Return the parsed version, or null if it's not valid.
+* $version->inc(v): Return the version incremented by the release type
   (major, minor, patch, or build), or null if it's not valid.
 
 ### Comparison
@@ -101,18 +101,18 @@ Ranges can be joined with either a space (which implies "and") or a
   the corresponding function above.  `"==="` and `"!=="` do simple
   string comparison, but are included for completeness.  Throws if an
   invalid comparison string is provided.
-* compare(v1, v2): Return 0 if v1 == v2, or 1 if v1 is greater, or -1 if
+* version::compare(v1, v2): Return 0 if v1 == v2, or 1 if v1 is greater, or -1 if
   v2 is greater.  Sorts in ascending order if passed to Array.sort().
-* rcompare(v1, v2): The reverse of compare.  Sorts an array of versions
+* version::rcompare(v1, v2): The reverse of compare.  Sorts an array of versions
   in descending order when passed to Array.sort().
 
 
 ### Ranges
 
-* validRange(range): Return the valid range or null if it's not valid
+* $versionExpression->validRange(): Return the valid range or null if it's not valid
 * $version->satisfies($range): Return true if the version satisfies the
   range.
-* maxSatisfying(versions, range): Return the highest version in the list
+* $versionExpression->maxSatisfying(versions): Return the highest version in the list
   that satisfies the range, or null if none of them do.
 
 ## Thanks to
