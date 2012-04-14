@@ -89,8 +89,7 @@ class versionExpression {
 	}
 	function maxSatisfying($versions) {
 		if(!is_array($versions)) $versions=array($versions);
-		sort($versions);
-		$versions=array_reverse($versions);
+		usort($versions,'version::rcompare');
 		foreach($versions as $version) {
 			try {
 				if(!is_a($version, 'version')) $version=new version($version);
@@ -315,7 +314,7 @@ class version extends versionExpression {
 			if($this->build==-1) return new version($this->major.'.'.$this->minor.'.'.$this->patch.'-1');
 			return new version($this->major.'.'.$this->minor.'.'.$this->patch.'-'.($this->build+1));
 		}
-		throw new versionException('Invalid version part name given');
+		throw new versionException('Invalid increment value given');
 	}
 	function satisfies(versionExpression $versions) {
 		return $versions->satisfiedBy($this);
