@@ -215,29 +215,29 @@ class SemVerTest extends UnitTestCase {
 			$this->assertFalse($v->satisfies(new versionExpression($set[0])), "%s > $set[0] should not be satisfied by $set[1]");
 		}
 	}
-	/*function testIncrementVersions() {
+	function testIncrementVersions() {
 		$compare=array(
 		  array("1.2.3","major","2.0.0")
 		, array("1.2.3","minor","1.3.0")
 		, array("1.2.3","patch","1.2.4")
 		, array("1.2.3","build","1.2.3-1")
 		, array("1.2.3-4","build","1.2.3-5")
-	//	, array("1.2.3tag","major","2.0.0")
-	//	, array("1.2.3-tag","major","2.0.0")
-	//	, array("1.2.3tag","build","1.2.3-1")
-	//	, array("1.2.3-tag","build","1.2.3-1")
-	//	, array("1.2.3-4-tag","build","1.2.3-5")
-	//	, array("1.2.3-4tag","build","1.2.3-5")
+		, array("1.2.3tag","major","2.0.0")
+		, array("1.2.3-tag","major","2.0.0")
+		, array("1.2.3tag","build","1.2.3-1")
+		, array("1.2.3-tag","build","1.2.3-1")
+		, array("1.2.3-4-tag","build","1.2.3-5")
+		, array("1.2.3-4tag","build","1.2.3-5")
 		, array("1.2.3","fake",null)
 		, array("fake","major",null)
 		);
 		foreach($compare as $set) {
 			$s=$set[0];
 			if($set[2]===null) $this->expectException();
-			$this->semver->inc($s, $set[1]);
-			$this->assertEqual($s, $set[2], "%s > inc($set[0], $set[1]) === $set[2]");
+			$v=new version($s);
+			$this->assertEqual($v->inc($set[1])->getVersion(), $set[2], "%s > inc($set[0], $set[1]) === $set[2]");
 		}
-	}*/
+	}
 	function testValidRange() {
 		$compare=array(
 		  array("1.0.0 - 2.0.0",">=1.0.0 <=2.0.0")

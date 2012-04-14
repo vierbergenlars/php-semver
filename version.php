@@ -84,6 +84,24 @@ class versionExpression {
 	function __toString() {
 		return $this->getString();
 	}
+	function validRange() {
+		return $this->getString();
+	}
+	function maxSatisfying($versions) {
+		if(!is_array($versions)) $versions=array($versions);
+		sort($versions);
+		$versions=array_reverse($versions);
+		foreach($versions as $version) {
+			try {
+				if(!is_a($version, 'version')) $version=new version($version);
+			}
+			catch(versionException $e) {
+				continue;
+			}
+			if($version->satisfies($this)) return $version;
+		}
+		return false;
+	}
 	/**
 	 * standarizes a single version
 	 * @param string $version
@@ -285,6 +303,19 @@ class version extends versionExpression {
 	function getTag() {
 		return (string)$this->prtag;
 	}
+	function valid() {
+		return $this->getVersion();
+	}
+	function inc($what) {
+		if($what=='major') return new version(($this->major+1).'.0.0');
+		if($what=='minor') return new version($this->major.'.'.($this->minor+1).'.0');
+		if($what=='patch') return new version($this->major.'.'.$this->minor.'.'.($this->patch+1));
+		if($what=='build')  {
+			if($this->build==-1) return new version($this->major.'.'.$this->minor.'.'.$this->patch.'-1');
+			return new version($this->major.'.'.$this->minor.'.'.$this->patch.'-'.($this->build+1));
+		}
+		throw new versionException('Invalid version part name given');
+	}
 	function satisfies(versionExpression $versions) {
 		return $versions->satisfiedBy($this);
 	}
@@ -333,6 +364,15 @@ class version extends versionExpression {
 	}
 	static function neq($v1,$v2) {
 		return !self::eq($v1, $v2);
+	}
+	static function compare($v1,$v2) {
+		$g=self::gt($v1, $v2);
+		if($g===NULL) return 0;
+		if($g) return 1;
+		return -1;
+	}
+	static function rcompare($v1,$v2) {
+		return self::compare($v2, $v1);
 	}
 }
 class versionException extends Exception {}
