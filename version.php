@@ -285,6 +285,9 @@ class version extends versionExpression {
 	function getTag() {
 		return (string)$this->prtag;
 	}
+	function valid() {
+		return $this->version;
+	}
 	function satisfies(versionExpression $versions) {
 		return $versions->satisfiedBy($this);
 	}
