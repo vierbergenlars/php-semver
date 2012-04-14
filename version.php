@@ -84,6 +84,9 @@ class versionExpression {
 	function __toString() {
 		return $this->getString();
 	}
+	function validRange() {
+		return $this->getString();
+	}
 	/**
 	 * standarizes a single version
 	 * @param string $version
@@ -286,7 +289,7 @@ class version extends versionExpression {
 		return (string)$this->prtag;
 	}
 	function valid() {
-		return $this->version;
+		return $this->getVersion();
 	}
 	function inc($what) {
 		if($what=='major') return new version(($this->major+1).'.0.0');
