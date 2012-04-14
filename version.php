@@ -87,6 +87,21 @@ class versionExpression {
 	function validRange() {
 		return $this->getString();
 	}
+	function maxSatisfying($versions) {
+		if(!is_array($versions)) $versions=array($versions);
+		sort($versions);
+		$versions=array_reverse($versions);
+		foreach($versions as $version) {
+			try {
+				if(!is_a($version, 'version')) $version=new version($version);
+			}
+			catch(versionException $e) {
+				continue;
+			}
+			if($version->satisfies($this)) return $version;
+		}
+		return false;
+	}
 	/**
 	 * standarizes a single version
 	 * @param string $version
