@@ -3,6 +3,7 @@ require('semver.php');
 $input=null;
 $output=null;
 $root=null;
+$dry_run=false;
 // Get all arguments
 while(count($argv) > 0) {
 	$arg=array_shift($argv);
@@ -17,6 +18,10 @@ while(count($argv) > 0) {
 			break;
 		case '--root':
 			$root=array_shift($argv);
+			break;
+		case '--dry-run':
+			$dry_run=true;
+			break;
 	}
 }
 if($root===null) $root='.';
@@ -34,7 +39,17 @@ catch(versionException $e) {
 $version=$version->getString();
 $dir=new RecursiveIteratorIterator(new RecursiveDirectoryIterator($output));
 foreach($dir as $file) {
-	$contents=file_get_contents($file);
-	$contents=str_replace('{{{version}}}', $version, $contents);
-	file_put_contents($file, $contents);
+	$contents1=file_get_contents($file);
+	$contents2=str_replace('{{'.'{version}}}', $version, $contents1);
+	if($contents1!=$contents2) {
+		fwrite(STDOUT,'Writing version information to file '.$file.PHP_EOL);
+		if($dry_run) {
+			fwrite(STDOUT,'\\_Not writing to disk'.PHP_EOL);
+		}
+		else {
+			file_put_contents($file, $contents2);
+		}
+
+	}
+
 }
