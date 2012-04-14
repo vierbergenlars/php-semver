@@ -142,6 +142,7 @@ class versionExpression {
 		$hasComparators=true;
 		if($comparators==='') $hasComparators=false;
 		$version=self::standarize($version, $hasComparators);
+		if((isset($comparators[0])&&$comparators[0]=='<'||!isset($comparators[0]))&&substr($version,-2)!='--') return $comparators.$version.'--';
 		return $comparators.$version;
 	}
 	/**
@@ -174,7 +175,7 @@ class versionExpression {
 		$range_expression=sprintf(self::$range_mask,self::$global_single_version);
 		$expression=sprintf(self::$regexp_mask,$range_expression);
 		if(!preg_match($expression,$range,$matches)) throw new versionException('Invalid range given');
-		$versions=preg_replace($expression, '>=$1 <=$11', $range);
+		$versions=preg_replace($expression, '>=$1 <=$11--', $range);
 		$versions=self::standarizeMultipleComparators($versions);
 		return $versions;
 	}
@@ -198,8 +199,8 @@ class versionExpression {
 		if($build!=='') $build='-'.$build;
 		if($prtag!=='') $prtag='-'.$prtag;
 		if($major==='x') return '>=0.0.0';
-		if($minor==='x') return '>='.$major.'.0.0 <'.($major+1).'.0.0';
-		if($patch==='x') return '>='.$major.'.'.$minor.'.0 <'.$major.'.'.($minor+1).'.0';
+		if($minor==='x') return '>='.$major.'.0.0 <'.($major+1).'.0.0--';
+		if($patch==='x') return '>='.$major.'.'.$minor.'.0 <'.$major.'.'.($minor+1).'.0--';
 		//if($build==='') return '>='.$major.'.'.$minor.'.'.$patch.' <'.$major.'.'.$minor.'.'.($patch+1);
 		//if($prtag==='') return '>='.$major.'.'.$minor.'.'.$patch.$build.' <'.$major.'.'.$minor.'.'.$patch.'-'.(substr($build, 1)+1);
 		return $major.'.'.$minor.'.'.$patch.$build.$prtag;
@@ -224,9 +225,9 @@ class versionExpression {
 		if($build!=='') $build='-'.$build;
 		if($prtag!=='') $prtag='-'.$prtag;
 		if($major==='x') return '>=0.0.0';
-		if($minor==='x') return '>='.$major.'.0.0 <'.($major+1).'.0.0';
-		if($patch==='x') return '>='.$major.'.'.$minor.'.0 <'.$major.'.'.($minor+1).'.0';
-		return '>='.$major.'.'.$minor.'.'.$patch.$build.$prtag.' <'.$major.'.'.($minor+1).'.0';
+		if($minor==='x') return '>='.$major.'.0.0 <'.($major+1).'.0.0--';
+		if($patch==='x') return '>='.$major.'.'.$minor.'.0 <'.$major.'.'.($minor+1).'.0--';
+		return '>='.$major.'.'.$minor.'.'.$patch.$build.$prtag.' <'.$major.'.'.($minor+1).'.0--';
 	}
 	/**
 	 * Converts matches to named version parts, replaces all wildcards by lowercase x
@@ -335,6 +336,9 @@ class version extends versionExpression {
 	static function gt($v1,$v2) {
 		$v1=new version($v1);
 		$v2=new version($v2);
+		$t=array(''=>true,'-'=>true,'--'=>true);
+		if(isset($t[$v1->getTag()])&&!isset($t[$v2->getTag()])) return true; //v1 has no tag, v2 has tag
+		if(!isset($t[$v1->getTag()])&&isset($t[$v2->getTag()])) return false; //v1 has tag, v2 has no tag
 		if($v1->getMajor() > $v2->getMajor()) return true;
 		if($v1->getMajor() < $v2->getMajor()) return false;
 		if($v1->getMinor() > $v2->getMinor()) return true;
@@ -343,8 +347,6 @@ class version extends versionExpression {
 		if($v1->getPatch() < $v2->getPatch()) return false;
 		if($v1->getBuild() > $v2->getBuild()) return true;
 		if($v1->getBuild() < $v2->getBuild()) return false;
-		if($v1->getTag()===''&&$v2->getTag()!=='') return true;
-		if($v1->getTag()!==''&&$v2->getTag()==='') return false;
 		if($v1->getTag() > $v2->getTag()) return true;
 		if($v1->getTag() < $v2->getTag()) return false;
 	}
