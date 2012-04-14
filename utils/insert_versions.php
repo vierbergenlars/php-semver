@@ -6,6 +6,7 @@ $output='';
 $root='.';
 $dry_run=false;
 $blacklist='version.blacklist.json';
+$shell=NULL;
 // Get all arguments
 while(count($argv) > 0) {
 	$arg=array_shift($argv);
@@ -28,6 +29,8 @@ while(count($argv) > 0) {
 		case '--blacklist':
 			$blacklist=array_shift($argv);
 			break;
+		case '--shell':
+			$shell=array_shift($argv);
 	}
 }
 //Add root paths
@@ -63,6 +66,10 @@ foreach($dir as $file) {
 	$contents2=str_replace(array('{{{version}}}','{{{'.'version}}}'), $version, $contents1);
 	if($contents1!=$contents2) {
 		fwrite(STDOUT,'Writing version information to file '.$file.PHP_EOL);
+		if($shell!==null){
+			system($shell.' "'.$file.'"',$exit_code);
+			if($exit_code!=0) fail('Subshell exited '.$exit_code);
+		}
 		if($dry_run) {
 			fwrite(STDOUT,'\\_Not writing to disk'.PHP_EOL);
 		}
@@ -73,7 +80,6 @@ foreach($dir as $file) {
 	}
 
 }
-
 function fail($message='') {
 	fwrite(STDERR,$message.PHP_EOL);
 	exit(1);
