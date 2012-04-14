@@ -288,6 +288,16 @@ class version extends versionExpression {
 	function valid() {
 		return $this->version;
 	}
+	function inc($what) {
+		if($what=='major') return new version(($this->major+1).'.0.0');
+		if($what=='minor') return new version($this->major.'.'.($this->minor+1).'.0');
+		if($what=='patch') return new version($this->major.'.'.$this->minor.'.'.($this->patch+1));
+		if($what=='build')  {
+			if($this->build==-1) return new version($this->major.'.'.$this->minor.'.'.$this->patch.'-1');
+			return new version($this->major.'.'.$this->minor.'.'.$this->patch.'-'.($this->build+1));
+		}
+		throw new versionException('Invalid version part name given');
+	}
 	function satisfies(versionExpression $versions) {
 		return $versions->satisfiedBy($this);
 	}
