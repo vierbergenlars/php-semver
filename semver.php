@@ -1,6 +1,6 @@
 <?php
 class versionExpression {
-	const version='1.1.0--dev';
+	const version='{{{version}}}';
 	static protected $global_single_version='(([0-9]+)(\.([0-9]+)(\.([0-9]+)(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\.-:]*)?)?)?)?)';
 	static protected $global_single_xrange='(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\.-:]*)?)?)?)?)';
 	static protected $global_single_comparator='([<>]=?)?\\s*';
