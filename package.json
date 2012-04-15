@@ -24,11 +24,9 @@
 		"dependency management",
 		"cli"
 	],
-	"dependencies": {
-	},
-	"devDependencies": {
-		"simpletest": "1.1.x"
-	},
+	"bundleDependencies": [
+		"simpletest"
+	],
 	"license": "MIT",
 	"engine": {
 		"php-cli": ">=5"
