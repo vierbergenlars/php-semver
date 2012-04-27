@@ -1,5 +1,5 @@
 <?php
-require('semver.php');
+require(__DIR__.'/../semver.php');
 //Defaults
 $input='package.json';
 $output='';
