@@ -1,6 +1,6 @@
 {
 	"name":"php-semver",
-	"version":"1.2.1",
+	"version":"1.2.2",
 	"author":"Lars Vierbergen <vierbergenlars@gmail.com>",
 	"description":"The Semantic Versioner for PHP",
 	"bin": {

@@ -67,7 +67,7 @@ foreach($dir as $file) {
 		}
 	}
 	$contents1=file_get_contents($file);
-	$contents2=str_replace(array('1.2.1--','{{{'.'version}}}'), $version, $contents1);
+	$contents2=str_replace(array('1.2.2--','{{{'.'version}}}'), $version, $contents1);
 	if($contents1!=$contents2) {
 		fwrite(STDOUT,'Writing version information to file '.$file.PHP_EOL);
 		if($shell!==null){
