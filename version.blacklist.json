@@ -1,4 +1,5 @@
 [
-	"base_test.php",
-	"semver_test.php"
+	"*_test.php",
+	".travis.yml",
+	"simpletest"
 ]
