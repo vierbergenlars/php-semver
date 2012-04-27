@@ -1,5 +1,5 @@
 <?php
-require('semver.php');
+require(__DIR__.'/../semver.php');
 //Defaults
 $input='package.json';
 $output='';
@@ -63,7 +63,7 @@ foreach($dir as $file) {
 	if(preg_match('/[\\\\\\/]\\./', $file)) continue; //Ignore . directories
 	if(in_array(realpath($file), $blacklist)) continue;
 	$contents1=file_get_contents($file);
-	$contents2=str_replace(array('{{{version}}}','{{{'.'version}}}'), $version, $contents1);
+	$contents2=str_replace(array('1.2.0--','{{{'.'version}}}'), $version, $contents1);
 	if($contents1!=$contents2) {
 		fwrite(STDOUT,'Writing version information to file '.$file.PHP_EOL);
 		if($shell!==null){
