@@ -49,6 +49,9 @@ else {
 if(!$blacklist||!$input) {
 	fail('Invalid JSON files!');
 }
+foreach($blacklist as &$list) {
+	$list=str_replace('/', DIRECTORY_SEPARATOR, $list);
+}
 //Initialize the version from package file
 try {
 	$version=new version($input['version']);
