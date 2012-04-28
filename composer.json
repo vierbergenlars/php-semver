@@ -1,7 +1,8 @@
 {
 	"name":"vierbergenlars/php-semver",
 	"provides": {
-		"remotecp/php-semver":"dev-master"
+		"remotecp/php-semver":"dev-master",
+		"vierbergenlars/php-semver":"dev-master"
 	}
 	"authors": [
             {
