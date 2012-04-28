@@ -50,7 +50,10 @@ if(!$blacklist||!$input) {
 	fail('Invalid JSON files!');
 }
 foreach($blacklist as &$list) {
+        $list='./'.$list;
 	$list=str_replace('/', DIRECTORY_SEPARATOR, $list);
+        $list=  preg_quote($list,'/');
+        $list=  str_replace(array('\\*','\\[0-9\\]'), array('.*','[0-9]'), $list);
 }
 //Initialize the version from package file
 try {
@@ -63,12 +66,15 @@ $version=$version->getString();
 $dir=new RecursiveIteratorIterator(new RecursiveDirectoryIterator($output));
 foreach($dir as $file) {
 	if(preg_match('/[\\\\\\/]\\./', $file)) continue; //Ignore . directories
+        $next=false;
 	foreach($blacklist as $rule) {
-		if(preg_match('/^'.str_replace(array('\\*','\\[0-9\\]'),array('.*','[0-9]'),preg_quote($rule,'/')).'/',$file)) {
+		if(preg_match('/^'.$rule.'/',$file)) {
 			fwrite(STDOUT,'Ignoring file '.$file.PHP_EOL);
-			continue;
+                        $next=true;
+			break;
 		}
 	}
+        if($next) continue;
 	$contents1=file_get_contents($file);
 	$contents2=str_replace(array('{{{version}}}','{{{'.'version}}}'), $version, $contents1);
 	if($contents1!=$contents2) {
