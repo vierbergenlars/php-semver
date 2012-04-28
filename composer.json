@@ -1,0 +1,33 @@
+{
+	"name":"remotecp/php-semver",
+	"authors": [
+            {
+                "name":"Lars Vierbergen",
+                "email":"vierbergenlars@gmail.com"
+            }
+        ],
+	"description":"The Semantic Versioner for PHP",
+	"bin": [
+		"utils/version.php",
+                "utils/insert_versions.php"
+        ],
+	"main":"./semver.php",
+	"repositories": [
+            {
+		"type":"vcs",
+		"url":"https://github.com/remotecp/php-semver"
+            }
+        ],
+	"keywords": [
+		"semver",
+		"versioning",
+		"semantic"
+	],
+	"license": "MIT",
+        "require-dev": {
+            "vierbergenlars/simpletest":"1.1.x"
+        },
+	"require": {
+		"php": ">=5.3.0"
+	}
+}
