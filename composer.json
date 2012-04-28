@@ -19,7 +19,7 @@
 	"repositories": [
             {
 		"type":"vcs",
-		"url":"http://github.com/remotecp/php-semver"
+		"url":"http://github.com/vierbergenlars/php-semver"
             }
         ],
 	"keywords": [
