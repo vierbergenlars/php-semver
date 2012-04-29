@@ -1,0 +1,127 @@
+#!/usr/bin/env php
+<?php
+namespace vierbergenlars\SemVer\Application\UpdateVersions;
+require __DIR__.'/../vendor/autoload.php';
+use vierbergenlars\SemVer\version;
+use vierbergenlars\SemVer\expression;
+use vierbergenlars\SemVer\SemVerException;
+//Defaults
+/**
+ * Input file containing the version
+ * @var string
+ */
+$input='composer.json';
+/**
+ * Array of paths to write to
+ * @var array
+ */
+$writeto=array();
+/**
+ * Root directory
+ * @var string
+ */
+$root='.';
+/**
+ * Do not do anything
+ * @var bool
+ */
+$dry_run=false;
+/**
+ * Blacklist of files to ignore
+ * @var string
+ */
+$blacklist='version.blacklist.json';
+/**
+ * Shell command to execute for each updated file
+ * @var string
+ */
+$shell=NULL;
+// Get all arguments
+while(\count($argv) > 0) {
+	$arg=\array_shift($argv);
+	switch($arg) {
+		case '-p':
+		case '--package':
+			$input=\array_shift($argv);
+			break;
+		case '-s':
+		case '--source':
+			$writeto[]=\array_shift($argv);
+			break;
+		case '-b':
+		case '--base':
+			$root=\array_shift($argv);
+			break;
+		case '--dry-run':
+			$dry_run=true;
+			break;
+		case '--blacklist':
+			$blacklist=\array_shift($argv);
+			break;
+		case '--shell':
+			$shell=\array_shift($argv);
+	}
+}
+//Defaults writeto
+if($writeto===array()) {
+    $writeto=array('src','bin');
+}
+//Add root paths
+$input=$root.'/'.$input;
+foreach($writeto as &$write) {
+    $write=$root.'/'.$write;
+}
+$blacklist=$root.'/'.$blacklist;
+//Read those JSON files
+if(!\file_exists($input)) fail('Package file does not exist');
+$input=\json_decode(\file_get_contents($input),true);
+if(\file_exists($blacklist)) {
+	$blacklist=\json_decode(\file_get_contents($blacklist),true);
+}
+else {
+	$blacklist=array();
+}
+if(!$blacklist||!$input) {
+	fail('Invalid JSON files!');
+}
+//Initialize the version from package file
+try {
+	$version=new version($input['version']);
+}
+catch(SemVerException $e) {
+	fail($e->getMessage());
+}
+$version=$version->getString();
+foreach ($writeto as $output) {
+    $dir=new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($output));
+    foreach($dir as $file) {
+            if(\preg_match('/[\\\\\\/]\\./', $file)) continue; //Ignore . directories
+            foreach($blacklist as $rule) {
+                    if(\preg_match('/^'.\str_replace(array('\\*','\\[0-9\\]'),array('.*','[0-9]'),\preg_quote($rule,'/')).'/',$file)) {
+                            \fwrite(\STDOUT,'Ignoring file '.$file.\PHP_EOL);
+                            continue;
+                    }
+            }
+            $contents1=\file_get_contents($file);
+            $contents2=\str_replace(array('2.0.0--','{{{'.'version}}}'), $version, $contents1);
+            if($contents1!=$contents2) {
+                    fwrite(\STDOUT,'Writing version information to file '.$file.\PHP_EOL);
+                    if($shell!==null){
+                            \system($shell.' "'.$file.'"',$exit_code);
+                            if($exit_code!=0) fail('Subshell exited '.$exit_code);
+                    }
+                    if($dry_run) {
+                            \fwrite(\STDOUT,'\\_Not writing to disk'.\PHP_EOL);
+                    }
+                    else {
+                            \file_put_contents($file, $contents2);
+                    }
+
+            }
+
+    }
+}
+function fail($message='') {
+	\fwrite(\STDERR,$message.\PHP_EOL);
+	exit(1);
+}

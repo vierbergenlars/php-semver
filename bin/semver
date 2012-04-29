@@ -1,26 +1,29 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
-require('semver.php');
-$help=false;
+namespace vierbergenlars\SemVer\Application\SemVer;
+require __DIR__.'/../vendor/autoload.php';
+use vierbergenlars\SemVer\version;
+use vierbergenlars\SemVer\expression;
+use vierbergenlars\SemVer\SemVerException;
 $version=false;
 $range=array();
 $increment=false;
 
 // Get all arguments
-while(count($argv) > 0) {
-	$arg=array_shift($argv);
+while(\count($argv) > 0) {
+	$arg=\array_shift($argv);
 	switch($arg) {
 		case '-v':
 		case '--version':
-			$version[]=array_shift($argv);
+			$version[]=\array_shift($argv);
 			break;
 		case '-r':
 		case '--range':
-			$range[]=array_shift($argv);
+			$range[]=\array_shift($argv);
 			break;
 		case '-i':
 		case '--increment':
-			$increment=array_shift($argv);
+			$increment=\array_shift($argv);
 			break;
 		case '-?':
 		case '-h':
@@ -50,7 +53,7 @@ function help() {
 		,'Versions are printed in ascending order, so supplying'
 		,'multiple versions to the utility will just sort them.'
 	);
-	echo implode(PHP_EOL, $e);
+	echo \implode(PHP_EOL, $e);
 	exit;
 }
 function main() {
@@ -68,22 +71,22 @@ function fail($message='') {
 	exit(1);
 }
 function increment($version, $what) {
-	if(file_exists($version)) $version=file_get_contents($version);
-	if($version=='-') $version=fgets(STDIN);
+	if(\file_exists($version)) $version=\file_get_contents($version);
+	if($version=='-') $version=\fgets(STDIN);
 	try {
 		$v=new version($version);
 		echo $v->inc($what);
 		exit;
 	}
-	catch(versionException $e) {
+	catch(SemVerException $e) {
 		fail($e->getMessage());
 	}
 }
 function filter($versions,$ranges) {
-	if(file_exists($versions[0])) $versions=file($versions[0],FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+	if(\file_exists($versions[0])) $versions=\file($versions[0],\FILE_IGNORE_NEW_LINES|\FILE_SKIP_EMPTY_LINES);
 	if($versions[0]=='-'){
 		unset($versions[0]);
-		while($version=fgets(STDIN)) {
+		while($version=\fgets(\STDIN)) {
 			$versions[]=$version;
 		}
 	}
@@ -99,12 +102,12 @@ function filter($versions,$ranges) {
 			}
 			if($ok) $matching_versions[]=$v;
 		}
-		catch(versionException $e) { }
+		catch(SemVerException $e) { }
 	}
-	usort($matching_versions, 'version::compare');
+	\usort($matching_versions, '\\vierbergenlars\\SemVer\\version::compare');
 	foreach($matching_versions as $version) {
 		echo $version.PHP_EOL;
 	}
-	if(count($matching_versions)==0) fail();
+	if(\count($matching_versions)==0) fail();
 	exit;
 }

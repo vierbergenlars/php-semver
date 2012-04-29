@@ -1,7 +1,9 @@
 <?php
-require_once('simpletest/simpletest.phar');
-require_once('semver.php');
-class SemVerTest extends UnitTestCase {
+namespace vierbergenlars\SemVer\Tests;
+use vierbergenlars\SemVer;
+require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/../vendor/vierbergenlars/simpletest/autorun.php';
+class SemVerTest extends \UnitTestCase {
 	function testComparison() {
 		$compare=array(
 		  array("0.0.0","0.0.0foo")
@@ -33,17 +35,17 @@ class SemVerTest extends UnitTestCase {
 		foreach($compare as $set) {
 			$a=$set[0];
 			$b=$set[1];
-			$this->assertTrue(version::gt($a, $b), "%s > gt('".$a."', '".$b."')");
-			$this->assertTrue(version::lt($b, $a), "%s > lt('".$b."', '".$a."')");
-			$this->assertFalse(version::gt($b, $a), "%s > !gt('".$b."', '".$a."')");
-			$this->assertFalse(version::lt($a, $b), "%s > !lt('".$a."', '".$b."')");
-			$this->assertTrue(version::eq($a, $a), "%s > eq('".$a."', '".$a."')");
-			$this->assertTrue(version::eq($b, $b), "%s > eq('".$b."', '".$b."')");
-			$this->assertTrue(version::neq($a, $b), "%s > neq('".$a."', '".$b."')");
-			$this->assertTrue(version::cmp($b, "==", $b), "%s > cmp('".$b."' == '".$b."')");
-			$this->assertTrue(version::cmp($a, ">=", $b), "%s > cmp('".$a."' >= '".$b."')");
-			$this->assertTrue(version::cmp($b, "<=", $a), "%s > cmp('".$b."' <= '".$a."')");
-			$this->assertTrue(version::cmp($a, "!=", $b), "%s > cmp('".$a."' != '".$b."')");
+			$this->assertTrue(SemVer\version::gt($a, $b), "%s > gt('".$a."', '".$b."')");
+			$this->assertTrue(SemVer\version::lt($b, $a), "%s > lt('".$b."', '".$a."')");
+			$this->assertFalse(SemVer\version::gt($b, $a), "%s > !gt('".$b."', '".$a."')");
+			$this->assertFalse(SemVer\version::lt($a, $b), "%s > !lt('".$a."', '".$b."')");
+			$this->assertTrue(SemVer\version::eq($a, $a), "%s > eq('".$a."', '".$a."')");
+			$this->assertTrue(SemVer\version::eq($b, $b), "%s > eq('".$b."', '".$b."')");
+			$this->assertTrue(SemVer\version::neq($a, $b), "%s > neq('".$a."', '".$b."')");
+			$this->assertTrue(SemVer\version::cmp($b, "==", $b), "%s > cmp('".$b."' == '".$b."')");
+			$this->assertTrue(SemVer\version::cmp($a, ">=", $b), "%s > cmp('".$a."' >= '".$b."')");
+			$this->assertTrue(SemVer\version::cmp($b, "<=", $a), "%s > cmp('".$b."' <= '".$a."')");
+			$this->assertTrue(SemVer\version::cmp($a, "!=", $b), "%s > cmp('".$a."' != '".$b."')");
 		}
 	}
 	function testEquality() {
@@ -84,16 +86,16 @@ class SemVerTest extends UnitTestCase {
 		foreach($compare as $set) {
 			$a=$set[0];
 			$b=$set[1];
-			$this->assertTrue(version::eq($a, $b), "%s > eq('".$a."', '".$b."')");
-			$this->assertFalse(version::neq($a, $b), "%s > !neq('".$a."', '".$b."')");
-			$this->assertTrue(version::cmp($a, "==", $b), "%s > cmp(".$a."==".$b.")");
-			$this->assertFalse(version::cmp($a, "!=", $b), "%s > !cmp(".$a."!=".$b.")");
-			$this->assertFalse(version::cmp($a, "===", $b), "%s > !cmp(".$a."===".$b.")");
-			$this->assertTrue(version::cmp($a, "!==", $b), "%s > cmp(".$a."!==".$b.")");
-			$this->assertFalse(version::gt($a, $b), "%s > !gt('".$a."', '".$b."')");
-			$this->assertTrue(version::gte($a, $b), "%s > gte('".$a."', '".$b."')");
-			$this->assertFalse(version::lt($a, $b), "%s > !lt('".$a."', '".$b."')");
-			$this->assertTrue(version::lte($a, $b), "%s > lte('".$a."', '".$b."')");
+			$this->assertTrue(SemVer\version::eq($a, $b), "%s > eq('".$a."', '".$b."')");
+			$this->assertFalse(SemVer\version::neq($a, $b), "%s > !neq('".$a."', '".$b."')");
+			$this->assertTrue(SemVer\version::cmp($a, "==", $b), "%s > cmp(".$a."==".$b.")");
+			$this->assertFalse(SemVer\version::cmp($a, "!=", $b), "%s > !cmp(".$a."!=".$b.")");
+			$this->assertFalse(SemVer\version::cmp($a, "===", $b), "%s > !cmp(".$a."===".$b.")");
+			$this->assertTrue(SemVer\version::cmp($a, "!==", $b), "%s > cmp(".$a."!==".$b.")");
+			$this->assertFalse(SemVer\version::gt($a, $b), "%s > !gt('".$a."', '".$b."')");
+			$this->assertTrue(SemVer\version::gte($a, $b), "%s > gte('".$a."', '".$b."')");
+			$this->assertFalse(SemVer\version::lt($a, $b), "%s > !lt('".$a."', '".$b."')");
+			$this->assertTrue(SemVer\version::lte($a, $b), "%s > lte('".$a."', '".$b."')");
 		}
 	}
 	function testRange() {
@@ -160,8 +162,8 @@ class SemVerTest extends UnitTestCase {
 		, array("~v0.5.4-pre","0.5.4")
 		);
 		foreach($compare as $set) {
-			$v=new version($set[1]);
-			$this->assertTrue($v->satisfies(new versionExpression($set[0])), "%s > $set[0] should be satisfied by $set[1]");
+			$v=new SemVer\version($set[1]);
+			$this->assertTrue($v->satisfies(new SemVer\expression($set[0])), "%s > $set[0] should be satisfied by $set[1]");
 		}
 
 	}
@@ -211,8 +213,8 @@ class SemVerTest extends UnitTestCase {
 		, array("~v0.5.4-beta","0.5.4-alpha")
 		);
 		foreach($compare as $set) {
-			$v=new version($set[1]);
-			$this->assertFalse($v->satisfies(new versionExpression($set[0])), "%s > $set[0] should not be satisfied by $set[1]");
+			$v=new SemVer\version($set[1]);
+			$this->assertFalse($v->satisfies(new SemVer\expression($set[0])), "%s > $set[0] should not be satisfied by $set[1]");
 		}
 	}
 	function testIncrementVersions() {
@@ -234,7 +236,7 @@ class SemVerTest extends UnitTestCase {
 		foreach($compare as $set) {
 			$s=$set[0];
 			if($set[2]===null) $this->expectException();
-			$v=new version($s);
+			$v=new SemVer\version($s);
 			$this->assertEqual($v->inc($set[1])->getVersion(), $set[2], "%s > inc($set[0], $set[1]) === $set[2]");
 		}
 	}
@@ -294,7 +296,7 @@ class SemVerTest extends UnitTestCase {
 		, array("1",">=1.0.0 <2.0.0--")
 		);
 		foreach($compare as $set) {
-			$v=new versionExpression($set[0]);
+			$v=new SemVer\expression($set[0]);
 			$this->assertEqual($v->getString(), $set[1], "%s > validRange($set[0]) === $set[1]");
 		}
 	}
@@ -351,7 +353,7 @@ class SemVerTest extends UnitTestCase {
 		, array("1", array(array(">=1.0.0", "<2.0.0--")) )
 		);
 		foreach($compare as $set) {
-			$v=new versionExpression($set[0]);
+			$v=new SemVer\expression($set[0]);
 			$this->assertEqual($v->getChunks(), $set[1], "%s > toComparators($set[0]) === Expected: ".json_encode($set[1])." ::: Real: ".json_encode($v->getChunks()));
 		}
 	}
