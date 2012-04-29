@@ -27,11 +27,6 @@ $root='.';
  */
 $dry_run=false;
 /**
- * Blacklist of files to ignore
- * @var string
- */
-$blacklist='version.blacklist.json';
-/**
  * Shell command to execute for each updated file
  * @var string
  */
@@ -55,9 +50,6 @@ while(\count($argv) > 0) {
 		case '--dry-run':
 			$dry_run=true;
 			break;
-		case '--blacklist':
-			$blacklist=\array_shift($argv);
-			break;
 		case '--shell':
 			$shell=\array_shift($argv);
 	}
@@ -71,18 +63,11 @@ $input=$root.'/'.$input;
 foreach($writeto as &$write) {
     $write=$root.'/'.$write;
 }
-$blacklist=$root.'/'.$blacklist;
 //Read those JSON files
 if(!\file_exists($input)) fail('Package file does not exist');
 $input=\json_decode(\file_get_contents($input),true);
-if(\file_exists($blacklist)) {
-	$blacklist=\json_decode(\file_get_contents($blacklist),true);
-}
-else {
-	$blacklist=array();
-}
-if(!$blacklist||!$input) {
-	fail('Invalid JSON files!');
+if(!$input) {
+	fail('Invalid JSON file!');
 }
 //Initialize the version from package file
 try {
@@ -96,12 +81,6 @@ foreach ($writeto as $output) {
     $dir=new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($output));
     foreach($dir as $file) {
             if(\preg_match('/[\\\\\\/]\\./', $file)) continue; //Ignore . directories
-            foreach($blacklist as $rule) {
-                    if(\preg_match('/^'.\str_replace(array('\\*','\\[0-9\\]'),array('.*','[0-9]'),\preg_quote($rule,'/')).'/',$file)) {
-                            \fwrite(\STDOUT,'Ignoring file '.$file.\PHP_EOL);
-                            continue;
-                    }
-            }
             $contents1=\file_get_contents($file);
             $contents2=\str_replace(array('2.0.0--','{{{'.'version}}}'), $version, $contents1);
             if($contents1!=$contents2) {
