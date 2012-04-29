@@ -18,7 +18,7 @@ class versioningTest extends \UnitTestCase {
 		);
 		foreach($t as $original=>$result) {
 			if(!is_string($original)) $original=$result;
-			$v=new SemVer\Expression($original);
+			$v=new SemVer\expression($original);
 			$this->assertEqual($v->getString(),$result,'['.$original.'] %s');
 		}
 	}
@@ -47,7 +47,7 @@ class versioningTest extends \UnitTestCase {
 		);
 		foreach($t as $original=>$result) {
 			if(!is_string($original)) $original=$result;
-			$v=new SemVer\Expression($original);
+			$v=new SemVer\expression($original);
 			$this->assertEqual($v->getString(),$result,'['.$original.'] %s');
 		}
 	}
@@ -59,7 +59,7 @@ class versioningTest extends \UnitTestCase {
 				'501'=>'>=501.0.0 <502.0.0--'
 		);
 		foreach($t as $original=>$result) {
-			$v=new SemVer\Expression($original);
+			$v=new SemVer\expression($original);
 			$this->assertEqual($v->getString(),$result,'['.$original.'] %s');
 		}
 	}
@@ -71,7 +71,7 @@ class versioningTest extends \UnitTestCase {
 				'>=3'=>'>=3.0.0'
 		);
 		foreach($t as $original=>$result) {
-			$v=new SemVer\Expression($original);
+			$v=new SemVer\expression($original);
 			$this->assertEqual($v->getString(),$result,'['.$original.'] %s');
 		}
 	}
@@ -88,7 +88,7 @@ class versioningTest extends \UnitTestCase {
 				'x'=>'>=0.0.0'
 		);
 		foreach($t as $original=>$result) {
-			$v=new SemVer\Expression($original);
+			$v=new SemVer\expression($original);
 			$this->assertEqual($v->getString(),$result,'['.$original.'] %s');
 		}
 	}
@@ -99,7 +99,7 @@ class versioningTest extends \UnitTestCase {
 				'4.3.0 - 4.3.1'=> '>=4.3.0 <=4.3.1--'
 		);
 		foreach($t as $original=>$result) {
-			$v=new SemVer\Expression($original);
+			$v=new SemVer\expression($original);
 			$this->assertEqual($v->getString(),$result,'['.$original.'] %s');
 		}
 	}
@@ -109,7 +109,7 @@ class versioningTest extends \UnitTestCase {
 				'1.2 - 2.1'=>'>=1.2.0 <=2.1.0--'
 		);
 		foreach($t as $original=>$result) {
-			$v=new SemVer\Expression($original);
+			$v=new SemVer\expression($original);
 			$this->assertEqual($v->getString(),$result,'['.$original.'] %s');
 		}
 	}
@@ -122,7 +122,7 @@ class versioningTest extends \UnitTestCase {
 			'~1.2.x'=>'>=1.2.0 <1.3.0--',
 		);
 		foreach($t as $original=>$result) {
-			$v=new SemVer\Expression($original);
+			$v=new SemVer\expression($original);
 			$this->assertEqual($v->getString(),$result,'['.$original.'] %s');
 		}
 	}
@@ -141,7 +141,7 @@ class versioningTest extends \UnitTestCase {
 		);
 		foreach($t as $original) {
 			$this->expectException(new SemVer\SemVerException('Invalid version string given'));
-			$v=new SemVer\Expression($original);
+			$v=new SemVer\expression($original);
 		}
 	}
 	function testAndOperator() {
@@ -152,7 +152,7 @@ class versioningTest extends \UnitTestCase {
 				'>=1.2.4'=>array(array('>=1.2.4'))
 		);
 		foreach($t as $original=>$result) {
-			$v=new SemVer\Expression($original);
+			$v=new SemVer\expression($original);
 			$this->assertEqual($v->getChunks(),$result,'['.$original.'] %s');
 		}
 	}
@@ -162,7 +162,7 @@ class versioningTest extends \UnitTestCase {
 				'<1.3 || >3.0 <3.5 || >4'=>array(array('<1.3.0--'),array('>3.0.0','<3.5.0--'),array('>4.0.0'))
 		);
 		foreach($t as $original=>$result) {
-			$v=new SemVer\Expression($original);
+			$v=new SemVer\expression($original);
 			$this->assertEqual($v->getChunks(),$result,'['.$original.'] %s');
 		}
 	}
@@ -172,7 +172,7 @@ class versioningTest extends \UnitTestCase {
 				'2.0.x || 2.1 - 4 || 4 - 4.5' => '>=2.0.0 <2.1.0--||>=2.1.0 <=4.0.0--||>=4.0.0 <=4.5.0--'
 		);
 		foreach($t as $original=>$result) {
-			$v=new SemVer\Expression($original);
+			$v=new SemVer\expression($original);
 			$this->assertEqual($v->getString(),$result,'['.$original.'] %s');
 		}
 	}
@@ -189,7 +189,7 @@ class versioningTest extends \UnitTestCase {
 			'>4.0.0 <=4.2.3'=>array('4.0.1','4.1.2','4.2.3','4.1.0')
 		);
 		foreach($t as $range=>$satisfies) {
-			$e=new SemVer\Expression($range);
+			$e=new SemVer\expression($range);
 			if(!is_array($satisfies)) {
 				$satisfies=array($satisfies);
 			}
@@ -213,7 +213,7 @@ class versioningTest extends \UnitTestCase {
 			'>4.0.0 <=4.2.3'=>array('4.0.0','4.2.4','4.5.0','3.2.2')
 		);
 		foreach($t as $range=>$satisfies) {
-			$e=new SemVer\Expression($range);
+			$e=new SemVer\expression($range);
 			if(!is_array($satisfies)) {
 				$satisfies=array($satisfies);
 			}
