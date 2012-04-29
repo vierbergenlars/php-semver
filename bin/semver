@@ -35,7 +35,7 @@ while(\count($argv) > 0) {
 main();
 function help() {
 	$e=array(
-		 'Usage: version -v|--version <version> [options]'
+		 'Usage: semver -v|--version <version> [options]'
 		,''
 		,'  -r <range>			Test if version satisfies the supplied range.'
 		,'  --range <range>'
