@@ -3,5 +3,5 @@ php:
   - 5.3
   - 5.4
 before_script:
-  - git submodule update --init --quiet
-script: php all_tests.php
+  - php composer.phar install --dev
+script: php tests/all_tests.php
