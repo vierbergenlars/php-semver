@@ -90,7 +90,7 @@ class expression {
 	}
 	function maxSatisfying($versions) {
 		if(!is_array($versions)) $versions=array($versions);
-		usort($versions,'version::rcompare');
+		usort($versions,__NAMESPACE__.'\\version::rcompare');
 		foreach($versions as $version) {
 			try {
 				if(!is_a($version, 'version')) $version=new version($version);
