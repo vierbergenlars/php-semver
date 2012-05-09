@@ -1,7 +1,6 @@
 <?php
 namespace vierbergenlars\SemVer;
 class expression {
-	const version='2.0.0--';
 	static protected $global_single_version='(([0-9]+)(\.([0-9]+)(\.([0-9]+)(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\.-:]*)?)?)?)?)';
 	static protected $global_single_xrange='(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\.-:]*)?)?)?)?)';
 	static protected $global_single_comparator='([<>]=?)?\\s*';
