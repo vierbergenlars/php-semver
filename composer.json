@@ -1,6 +1,5 @@
 {
     "name":"vierbergenlars/php-semver",
-    "version":"2.0.1",
     "description":"The Semantic Versioner for PHP",
     "keywords": ["semver", "versioning", "semantic"],
     "type":"library",
