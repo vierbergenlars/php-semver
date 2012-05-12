@@ -224,4 +224,18 @@ class versioningTest extends \UnitTestCase {
 			}
 		}
 	}
+        function testNoShitAsVersion() {
+            $t=array (
+                'ce16575adbf06e5771b4bb4d5ac9609a685c1504',
+                'faeih178.58498uinv-dibqo',
+                '1.2.vqosbie',
+                'vce16575adbf06e5771b4bb4d5ac9609a685.c1504'
+            );
+            foreach($t as $version) {
+                $this->expectException();
+                new SemVer\expression($version);
+                $this->expectException();
+                new SemVer\version($version);
+            }
+        }
 }
