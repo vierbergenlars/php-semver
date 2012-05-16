@@ -9,7 +9,7 @@ class version extends expression {
 	private $prtag='';
 	function __construct($version) {
 		$expression=sprintf(parent::$dirty_regexp_mask,parent::$global_single_version);
-		if(!preg_match($expression, $version)) throw new SemVerException('This is not a simple, singular version! No comparators nor ranges allowed!');
+		if(!preg_match($expression, $version)) throw new SemVerException('['.$version.']This is not a simple, singular version! No comparators nor ranges allowed!');
 		parent::__construct($version);
 		$this->version=$this->getChunk(0, 0);
 		preg_match($expression, $this->version, $matches);

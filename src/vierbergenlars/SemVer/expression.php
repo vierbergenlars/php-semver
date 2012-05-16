@@ -1,13 +1,13 @@
 <?php
 namespace vierbergenlars\SemVer;
 class expression {
-	static protected $global_single_version='(([0-9]+)(\.([0-9]+)(\.([0-9]+)(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\.-:]*)?)?)?)?)';
-	static protected $global_single_xrange='(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\.-:]*)?)?)?)?)';
+	static protected $global_single_version='(([0-9]+)(\\.([0-9]+)(\\.([0-9]+)(-([0-9]+)?)?(-?([a-zA-Z-][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
+	static protected $global_single_xrange='(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+)?)?(-?([a-zA-Z-][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
 	static protected $global_single_comparator='([<>]=?)?\\s*';
 	static protected $global_single_spermy='(~?)>?\\s*';
 	static protected $range_mask='%1$s\\s+-\\s+%1$s';
 	static protected $regexp_mask='/%s/';
-	static protected $dirty_regexp_mask='/[v=]*%s/';
+	static protected $dirty_regexp_mask='/^[v= ]*%s$/';
 	static protected $wildcards=array('x','X','*');
 	private $chunks=array();
 	/**
