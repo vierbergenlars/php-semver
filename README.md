@@ -1,6 +1,6 @@
 # php-semver -- The semantic versioner for npm ported to PHP
 
-Ported from node-semver [1.0.13](https://github.com/isaacs/node-semver/commit/6602827f306e456dcb51bb441874e3d6818ff33f) to PHP
+Ported from node-semver [1.1.2](https://github.com/isaacs/node-semver/tree/v1.1.2) to PHP
 
 [![Build Status](https://secure.travis-ci.org/vierbergenlars/php-semver.png?branch=master)](http://travis-ci.org/vierbergenlars/php-semver)
 
@@ -8,22 +8,22 @@ Ported from node-semver [1.0.13](https://github.com/isaacs/node-semver/commit/66
 
     <?php
     require('version.php');
-    
+
     // Check if a version is valid
     $semver=new version('1.2.3');
     $semver=new version('a.b.c'); //versionException thrown
-    
+
     //Get a clean version string
     $semver=new version('=v1.2.3');
     $semver->getVersion(); //'1.2.3'
-    
+
     //Check if a version satisfies a range
     $semver=new version('1.2.3');
     $semver->satisfies(new versionExpression('1.x || >=2.5.0 || 5.0.0 - 7.2.3')); //true
     # OR
     $range=new versionExpression('1.x || >=2.5.0 || 5.0.0 - 7.2.3');
     $range->satisfiedBy(new version('1.2.3')); //true
-    
+
     //Compare two versions
     version::gt('1.2.3', '9.8.7'); //false
     version::lt('1.2.3', '9.8.7'); //true

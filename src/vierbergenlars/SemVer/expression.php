@@ -3,9 +3,8 @@
 namespace vierbergenlars\SemVer;
 
 class expression {
-
-    static protected $global_single_version = '(([0-9]+)(\\.([0-9]+)(\\.([0-9]+)(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
-    static protected $global_single_xrange = '(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
+    static protected $global_single_version = '(([0-9]+)(\\.([0-9]+)(\\.([0-9]+)(-([0-9]+))?(-?([a-zA-Z-+][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
+    static protected $global_single_xrange = '(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+))?(-?([a-zA-Z-+][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
     static protected $global_single_comparator = '([<>]=?)?\\s*';
     static protected $global_single_spermy = '(~?)>?\\s*';
     static protected $range_mask = '%1$s\\s+-\\s+%1$s';
@@ -47,7 +46,7 @@ class expression {
     /**
      * Checks if this range is statisfied by the given version
      * @param version $version
-     * @return boolean 
+     * @return boolean
      */
     function satisfiedBy(version $version) {
         $version1 = $version->getVersion();
@@ -86,7 +85,7 @@ class expression {
      * Get the raw data block at a given offset
      * @param int $x
      * @param int $y
-     * @return string 
+     * @return string
      */
     function getChunk($x, $y) {
         return $this->chunks[$x][$y];
@@ -106,7 +105,7 @@ class expression {
 
     /**
      * Get the object as an expression
-     * @return string 
+     * @return string
      */
     function __toString() {
         return $this->getString();
@@ -114,7 +113,7 @@ class expression {
 
     /**
      * Get the object as a range expression
-     * @return string 
+     * @return string
      */
     function validRange() {
         return $this->getString();
@@ -123,7 +122,7 @@ class expression {
     /**
      * Find the maximum satisfying version
      * @param array|string $versions An array of version objects or version strings, one version string
-     * @return \vierbergenlars\SemVer\version|boolean 
+     * @return \vierbergenlars\SemVer\version|boolean
      */
     function maxSatisfying($versions) {
         if (!is_array($versions))
@@ -327,9 +326,9 @@ class expression {
         if (in_array($patch, self::$wildcards, true))
             $patch = 'x';
     }
-    
+
     /**
-     * Converts all parameters to a version string 
+     * Converts all parameters to a version string
      * @param bool $padZero Pad the missing version parts with zeroes or not?
      * @param int $ma The major version number
      * @param int $mi The minor version number
