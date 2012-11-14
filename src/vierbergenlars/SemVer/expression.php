@@ -190,8 +190,6 @@ class expression {
         if ($comparators === '')
             $hasComparators = false;
         $version = self::standarize($version, $hasComparators);
-        if ((isset($comparators[0]) && $comparators[0] == '<' || !isset($comparators[0])) && substr($version, -2) != '--')
-            return $comparators . $version . '--';
         return $comparators . $version;
     }
 
@@ -227,7 +225,7 @@ class expression {
         $expression = sprintf(self::$regexp_mask, $range_expression);
         if (!preg_match($expression, $range, $matches))
             throw new SemVerException('Invalid range given', $version);
-        $versions = preg_replace($expression, '>=$1 <=$11--', $range);
+        $versions = preg_replace($expression, '>=$1 <=$11', $range);
         $versions = self::standarizeMultipleComparators($versions);
         return $versions;
     }
@@ -257,11 +255,9 @@ class expression {
         if ($major === 'x')
             return '>=0.0.0';
         if ($minor === 'x')
-            return '>=' . $major . '.0.0 <' . ($major + 1) . '.0.0--';
+            return '>=' . $major . '.0.0 <' . ($major + 1) . '.0.0';
         if ($patch === 'x')
-            return '>=' . $major . '.' . $minor . '.0 <' . $major . '.' . ($minor + 1) . '.0--';
-        //if($build==='') return '>='.$major.'.'.$minor.'.'.$patch.' <'.$major.'.'.$minor.'.'.($patch+1);
-        //if($prtag==='') return '>='.$major.'.'.$minor.'.'.$patch.$build.' <'.$major.'.'.$minor.'.'.$patch.'-'.(substr($build, 1)+1);
+            return '>=' . $major . '.' . $minor . '.0 <' . $major . '.' . ($minor + 1) . '.0';
         return $major . '.' . $minor . '.' . $patch . $build . $prtag;
     }
 
@@ -290,10 +286,10 @@ class expression {
         if ($major === 'x')
             return '>=0.0.0';
         if ($minor === 'x')
-            return '>=' . $major . '.0.0 <' . ($major + 1) . '.0.0--';
+            return '>=' . $major . '.0.0 <' . ($major + 1) . '.0.0';
         if ($patch === 'x')
-            return '>=' . $major . '.' . $minor . '.0 <' . $major . '.' . ($minor + 1) . '.0--';
-        return '>=' . $major . '.' . $minor . '.' . $patch . $build . $prtag . ' <' . $major . '.' . ($minor + 1) . '.0--';
+            return '>=' . $major . '.' . $minor . '.0 <' . $major . '.' . ($minor + 1) . '.0';
+        return '>=' . $major . '.' . $minor . '.' . $patch . $build . $prtag . ' <' . $major . '.' . ($minor + 1) . '.0';
     }
 
     /**
