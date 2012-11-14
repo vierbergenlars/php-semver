@@ -153,11 +153,7 @@ class version extends expression {
     static function gt($v1, $v2) {
         $v1 = new version($v1);
         $v2 = new version($v2);
-        $t = array('' => true, '-' => true, '--' => true);
-        if (isset($t[$v1->getTag()]) && !isset($t[$v2->getTag()]))
-            return true; //v1 has no tag, v2 has tag
-        if (!isset($t[$v1->getTag()]) && isset($t[$v2->getTag()]))
-            return false; //v1 has tag, v2 has no tag
+
         if ($v1->getMajor() > $v2->getMajor())
             return true;
         if ($v1->getMajor() < $v2->getMajor())
@@ -174,6 +170,11 @@ class version extends expression {
             return true;
         if ($v1->getBuild() < $v2->getBuild())
             return false;
+        $t = array('' => true, '-' => true, '--' => true);
+        if (isset($t[$v1->getTag()]) && !isset($t[$v2->getTag()]))
+            return true; //v1 has no tag, v2 has tag
+        if (!isset($t[$v1->getTag()]) && isset($t[$v2->getTag()]))
+            return false; //v1 has tag, v2 has no tag
         if ($v1->getTag() > $v2->getTag())
             return true;
         if ($v1->getTag() < $v2->getTag())
