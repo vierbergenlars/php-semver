@@ -26,7 +26,7 @@ class SemVerTest extends \UnitTestCase {
 		, array("2.0.0","v1.2.3")
 		, array("1.2.3","1.2.3-asdf")
 		, array("1.2.3-4","1.2.3")
-		, array("1.2.3","1.2.3-4-foo")
+		, array("1.2.3-4-foo","1.2.3")
 		, array("1.2.3-5","1.2.3-5-foo")
 		, array("1.2.3-5","1.2.3-4")
 		, array("1.2.3-5-foo","1.2.3-5-Foo")
