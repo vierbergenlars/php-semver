@@ -156,8 +156,7 @@ class SemVerTest extends \UnitTestCase {
 		, array(">= 1","1.0.0")
 		, array("<1.2","1.1.1")
 		, array("< 1.2","1.1.1")
-		, array("<1","1.0.0beta")
-		, array("< 1","1.0.0beta")
+		, array("1","1.0.0beta")
 		, array("~v0.5.4-pre","0.5.5")
 		, array("~v0.5.4-pre","0.5.4")
 		);
@@ -174,7 +173,6 @@ class SemVerTest extends \UnitTestCase {
 		, array(">=1.0.0","0.0.0")
 		, array(">=1.0.0","0.0.1")
 		, array(">=1.0.0","0.1.0")
-		, array("*","v1.2.3-foo")
 		, array(">1.0.0","0.0.1")
 		, array(">1.0.0","0.1.0")
 		, array("<=2.0.0","3.0.0")
@@ -208,8 +206,10 @@ class SemVerTest extends \UnitTestCase {
 		, array("~1.0","1.1.0") // >=1.0.0 <1.1.0
 		, array("<1","1.0.0")
 		, array(">=1.2","1.1.1")
-		, array("1","1.0.0beta")
+		, array("<1","1.0.0beta")
+		, array("< 1","1.0.0beta")
 		, array("1","2.0.0beta")
+		, array(">1.0.0", "1.0.0beta")
 		, array("~v0.5.4-beta","0.5.4-alpha")
 		);
 		foreach($compare as $set) {
