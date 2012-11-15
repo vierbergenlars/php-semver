@@ -231,7 +231,7 @@ class version extends expression {
      * @return boolean 
      */
     static function gte($v1, $v2) {
-        return !self::lt($v1, $v2);
+        return self::gt($v1, $v2)||self::eq($v1, $v2);
     }
 
     /**
@@ -251,7 +251,7 @@ class version extends expression {
      * @return boolean 
      */
     static function lte($v1, $v2) {
-        return !self::gt($v1, $v2);
+        return self::lt($v1, $v2)||self::eq($v1, $v2);
     }
 
     /**
@@ -261,8 +261,8 @@ class version extends expression {
      * @return boolean 
      */
     static function eq($v1, $v2) {
-        $v1 = new version($v1);
-        $v2 = new version($v2);
+        $v1 = new version($v1, true);
+        $v2 = new version($v2, true);
         return $v1->getVersion() == $v2->getVersion();
     }
 
