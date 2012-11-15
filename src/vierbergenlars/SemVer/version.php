@@ -158,28 +158,58 @@ class version extends expression {
         $v1 = new version($v1);
         $v2 = new version($v2);
 
-        if ($v1->getMajor() > $v2->getMajor())
-            return true;
-        if ($v1->getMajor() < $v2->getMajor())
+        $ma1 = $v1->getMajor();
+        $ma2 = $v2->getMajor();
+
+        if($ma1 < 0 &&$ma2 >= 0)
             return false;
-        if ($v1->getMinor() > $v2->getMinor())
+        if($ma1 >=0 && $ma2 <0)
+            return true; 
+        if ($ma1 > $ma2)
             return true;
-        if ($v1->getMinor() < $v2->getMinor())
+        if ($ma1 < $ma2)
             return false;
-        if ($v1->getPatch() > $v2->getPatch())
-            return true;
-        if ($v1->getPatch() < $v2->getPatch())
+
+        $mi1 = $v1->getMinor();
+        $mi2 = $v2->getMinor();
+        
+        if($mi1 < 0 &&$mi2 >= 0)
             return false;
-        if ($v1->getBuild() > $v2->getBuild())
+        if($mi1 >=0 && $mi2 <0)
+            return true; 
+        if ($mi1 > $mi2)
             return true;
-        if ($v1->getBuild() < $v2->getBuild())
+        if ($mi1 < $mi2)
+            return false;
+
+        $p1 = $v1->getPatch();
+        $p2 = $v2->getPatch();
+        
+        if($p1 < 0 &&$p2 >= 0)
+            return false;
+        if($p1 >=0 && $p2 <0)
+            return true; 
+        if ($p1 > $p2)
+            return true;
+        if ($p1 < $p2)
+            return false;
+            
+        $b1 = $v1->getBuild();
+        $b2 = $v2->getBuild();
+
+        if($b1 < 0 &&$b2 >= 0)
+            return false;
+        if($b1 >=0 && $b2 <0)
+            return true; 
+        if ($b1 > $b2)
+            return true;
+        if ($b1 < $b2)
             return false;
 
         if ($v1->getTag() === '' && $v2->getTag() !== '')
             return true; //v1 has no tag, v2 has tag
         if ($v1->getTag() !== '' && $v2->getTag() === '')
             return false; //v1 has tag, v2 has no tag
-
         if ($v1->getTag() > $v2->getTag())
             return true;
         if ($v1->getTag() < $v2->getTag())
