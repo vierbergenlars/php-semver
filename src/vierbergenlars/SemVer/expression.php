@@ -344,22 +344,22 @@ class expression {
      */
     static protected function constructVersionFromParts($padZero = true, $ma=null, $mi=null, $p=null, $b=null, $t=null) {
         if($padZero) {
-            if(!$ma) return '0.0.0';
-            if(!$mi) return $ma.'.0.0';
-            if(!$p) return $ma.'.'.$mi.'.0';
-            if(!$b&&!$t) return $ma.'.'.$mi.'.'.$p;
-	        if($b&&!$t) return $ma.'.'.$mi.'.'.$p.'-'.$b;
-            if(!$b&&$t) return $ma.'.'.$mi.'.'.$p.'-'.$t;
-            if($b&&$t) return $ma.'.'.$mi.'.'.$p.'-'.$b.'-'.$t;
+            if($ma === null) return '0.0.0';
+            if($mi===null) return $ma.'.0.0';
+            if($p===null) return $ma.'.'.$mi.'.0';
+            if($b===null&&$t===null) return $ma.'.'.$mi.'.'.$p;
+	        if($b!==null&&$t===null) return $ma.'.'.$mi.'.'.$p.'-'.$b;
+            if($b===null&&$t!==null) return $ma.'.'.$mi.'.'.$p.$t;
+            if($b!==null&&$t!==null) return $ma.'.'.$mi.'.'.$p.'-'.$b.$t;
         }
         else {
-            if(!$ma) return '';
-            if(!$mi) return $ma;
-            if(!$p) return $ma.'.'.$mi;
-            if(!$b&&!$t) return $ma.'.'.$mi.'.'.$p;
-	        if($b&&!$t) return $ma.'.'.$mi.'.'.$p.'-'.$b;
-            if(!$b&&$t) return $ma.'.'.$mi.'.'.$p.'-'.$t;
-            if($b&&$t) return $ma.'.'.$mi.'.'.$p.'-'.$b.'-'.$t;
+            if($ma === null) return '';
+            if($mi===null) return $ma.'';
+            if($p===null) return $ma.'.'.$mi.'';
+            if($b===null&&$t===null) return $ma.'.'.$mi.'.'.$p;
+	        if($b!==null&&$t===null) return $ma.'.'.$mi.'.'.$p.'-'.$b;
+            if($b===null&&$t!==null) return $ma.'.'.$mi.'.'.$p.$t;
+            if($b!==null&&$t!==null) return $ma.'.'.$mi.'.'.$p.'-'.$b.$t;
         }
     }
 
