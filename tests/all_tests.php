@@ -7,5 +7,6 @@ class RemoteCPVersioningTests extends \TestSuite {
 		parent::__construct('RemoteCP Versioning System Tests');
 		$this->addFile(__DIR__.'/base_test.php');
 		$this->addFile(__DIR__.'/semver_test.php');
+		$this->addFile(__DIR__.'/regression_test.php');
 	}
 }
