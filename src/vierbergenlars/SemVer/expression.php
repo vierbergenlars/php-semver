@@ -4,8 +4,8 @@ namespace vierbergenlars\SemVer;
 
 class expression {
 
-    static protected $global_single_version = '(([0-9]+)(\\.([0-9]+)(\\.([0-9]+)(-([0-9]+)?)?(-?([a-zA-Z-][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
-    static protected $global_single_xrange = '(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+)?)?(-?([a-zA-Z-][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
+    static protected $global_single_version = '(([0-9]+)(\\.([0-9]+)(\\.([0-9]+)(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
+    static protected $global_single_xrange = '(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
     static protected $global_single_comparator = '([<>]=?)?\\s*';
     static protected $global_single_spermy = '(~?)>?\\s*';
     static protected $range_mask = '%1$s\\s+-\\s+%1$s';
@@ -305,8 +305,7 @@ class expression {
         $prtag = '';
         switch (count($matches)) {
             default:
-            case $offset + 9: $prtag = $matches[$offset + 8];
-            case $offset + 8:
+            case $offset + 8: $prtag = $matches[$offset + 7];
             case $offset + 7: $build = $matches[$offset + 6];
             case $offset + 6:
             case $offset + 5: $patch = $matches[$offset + 4];
