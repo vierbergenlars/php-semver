@@ -246,8 +246,6 @@ class expression {
         self::matchesToVersionParts($matches, $major, $minor, $patch, $build, $prtag, 'x');
         if ($build !== '')
             $build = '-' . $build;
-        if ($prtag !== '')
-            $prtag = '-' . $prtag;
         if ($major === 'x')
             return '>=0';
         if ($minor === 'x')
@@ -277,8 +275,6 @@ class expression {
         self::matchesToVersionParts($matches, $major, $minor, $patch, $build, $prtag, 'x', 3);
         if ($build !== '')
             $build = '-' . $build;
-        if ($prtag !== '')
-            $prtag = '-' . $prtag;
         if ($major === 'x')
             return '>=0';
         if ($minor === 'x')
