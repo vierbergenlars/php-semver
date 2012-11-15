@@ -94,9 +94,9 @@ class versioningTest extends \UnitTestCase {
 	}
 	function testSimpleversionRange() {
 		$t=array(
-				'1.0.0 - 2.0.0'=>'>=1.0.0 <=2.0.0-',
-				'1.2.3 - 1.3.0'=>'>=1.2.3 <=1.3.0-',
-				'4.3.0 - 4.3.1'=> '>=4.3.0 <=4.3.1-'
+				'1.0.0 - 2.0.0'=>'>=1.0.0 <=2.0.0',
+				'1.2.3 - 1.3.0'=>'>=1.2.3 <=1.3.0',
+				'4.3.0 - 4.3.1'=> '>=4.3.0 <=4.3.1'
 		);
 		foreach($t as $original=>$result) {
 			$v=new SemVer\expression($original);

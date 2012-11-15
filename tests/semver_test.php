@@ -242,7 +242,7 @@ class SemVerTest extends \UnitTestCase {
 	}
 	function testValidRange() {
 		$compare=array(
-		  array("1.0.0 - 2.0.0",">=1.0.0 <=2.0.0-")
+		  array("1.0.0 - 2.0.0",">=1.0.0 <=2.0.0")
 		, array("1.0.0","1.0.0")
 		, array(">=*",">=0")
 	//	, array("","")
