@@ -6,26 +6,26 @@ require_once __DIR__.'/../vendor/vierbergenlars/simpletest/autorun.php';
 class versioningTest extends \UnitTestCase {
 	function testKeepSimpleversion() {
 		$t=array(
-				'1.0.0--',
-				'2.0.0--',
-				'1.0.1--',
-				'1.3.2--',
-				'1.02.0'=>'1.2.0--',
-				'0.2.5--',
-				'01.2.6'=>'1.2.6--',
-				'2.0.03'=>'2.0.3--',
-				'0.0.0--'
+				'1',
+				'2.0',
+				'1.0.1-',
+				'1.3.2-',
+				'1.02.0'=>'1.2.0',
+				'0.2.5',
+				'01.2.6'=>'1.2.6',
+				'2.0.03'=>'2.0.3',
+				'0.0.0'
 		);
 		foreach($t as $original=>$result) {
 			if(!is_string($original)) $original=$result;
-			$v=new SemVer\expression($original);
-			$this->assertEqual($v->getString(),$result,'['.$original.'] %s');
+			$v=new SemVer\version($original);
+			$this->assertEqual($v->__toString(),$result,'['.$original.'] %s');
 		}
 	}
 	function testKeepSimpleversionComparator() {
 		$t=array(
-				'>1.0.0',
-				'>1.1.0',
+				'>1',
+				'>1.1',
 				'>1.2.3',
 				'>0.5.6',
 				'>0.025.6'=>'>0.25.6',
@@ -34,16 +34,16 @@ class versioningTest extends \UnitTestCase {
 				'>=1.4.5',
 				'>=0.9.3',
 				'>=05.3.6'=>'>=5.3.6',
-				'<2.0.0'=>'<2.0.0--',
-				'<5.6.0'=>'<5.6.0--',
-				'<2.3.5'=>'<2.3.5--',
-				'<0.2.3'=>'<0.2.3--',
-				'<0.2.05'=>'<0.2.5--',
-				'<=7.0.0'=>'<=7.0.0--',
-				'<=1.3.0'=>'<=1.3.0--',
-				'<=1.4.3'=>'<=1.4.3--',
-				'<=0.2.6'=>'<=0.2.6--',
-				'<=00.05.6'=>'<=0.5.6--'
+				'<2.0.0',
+				'<5.6.0',
+				'<2.3.5',
+				'<0.2.3',
+				'<0.2.05'=>'<0.2.5',
+				'<=7.0.0',
+				'<=1.3',
+				'<=1.4.3',
+				'<=0.2.6',
+				'<=00.05.6'=>'<=0.5.6'
 		);
 		foreach($t as $original=>$result) {
 			if(!is_string($original)) $original=$result;
@@ -53,10 +53,10 @@ class versioningTest extends \UnitTestCase {
 	}
 	function testShortSimpleversion() {
 		$t=array(
-				'1'=>'>=1.0.0 <2.0.0--',
-				'1.2'=>'>=1.2.0 <1.3.0--',
-				'1.0'=>'>=1.0.0 <1.1.0--',
-				'501'=>'>=501.0.0 <502.0.0--'
+				'1'=>'>=1 <2.0.0-',
+				'1.2'=>'>=1.2 <1.3.0-',
+				'1.0'=>'>=1.0 <1.1.0-',
+				'501'=>'>=501 <502.0.0-'
 		);
 		foreach($t as $original=>$result) {
 			$v=new SemVer\expression($original);
@@ -65,10 +65,10 @@ class versioningTest extends \UnitTestCase {
 	}
 	function testShortSimpleversionComparator() {
 		$t=array(
-				'>1'=>'>1.0.0',
-				'<2.0'=>'<2.0.0--',
-				'<=5.2'=>'<=5.2.0--',
-				'>=3'=>'>=3.0.0'
+				'>1'=>'>1',
+				'<2.0'=>'<2.0',
+				'<=5.2'=>'<=5.2',
+				'>=3'=>'>=3'
 		);
 		foreach($t as $original=>$result) {
 			$v=new SemVer\expression($original);
@@ -77,15 +77,15 @@ class versioningTest extends \UnitTestCase {
 	}
 	function testSimpleversionWildcard() {
 		$t=array(
-				'1.x.x'=>'>=1.0.0 <2.0.0--',
-				'1.x'=>'>=1.0.0 <2.0.0--',
-				'1.x.5'=>'>=1.0.0 <2.0.0--',
-				'3.x'=>'>=3.0.0 <4.0.0--',
-				'1.X.X'=>'>=1.0.0 <2.0.0--',
-				'1.*.*'=>'>=1.0.0 <2.0.0--',
-				'2.X.x'=>'>=2.0.0 <3.0.0--',
-				'5.*.x'=>'>=5.0.0 <6.0.0--',
-				'x'=>'>=0.0.0'
+				'1.x.x'=>'>=1 <2.0.0-',
+				'1.x'=>'>=1 <2.0.0-',
+				'1.x.5'=>'>=1 <2.0.0-',
+				'3.x'=>'>=3 <4.0.0-',
+				'1.X.X'=>'>=1 <2.0.0-',
+				'1.*.*'=>'>=1 <2.0.0-',
+				'2.X.x'=>'>=2 <3.0.0-',
+				'5.*.x'=>'>=5 <6.0.0-',
+				'x'=>'>=0'
 		);
 		foreach($t as $original=>$result) {
 			$v=new SemVer\expression($original);
@@ -94,9 +94,9 @@ class versioningTest extends \UnitTestCase {
 	}
 	function testSimpleversionRange() {
 		$t=array(
-				'1.0.0 - 2.0.0'=>'>=1.0.0 <=2.0.0--',
-				'1.2.3 - 1.3.0'=>'>=1.2.3 <=1.3.0--',
-				'4.3.0 - 4.3.1'=> '>=4.3.0 <=4.3.1--'
+				'1.0.0 - 2.0.0'=>'>=1.0.0 <=2.0.0',
+				'1.2.3 - 1.3.0'=>'>=1.2.3 <=1.3.0',
+				'4.3.0 - 4.3.1'=> '>=4.3.0 <=4.3.1'
 		);
 		foreach($t as $original=>$result) {
 			$v=new SemVer\expression($original);
@@ -105,8 +105,8 @@ class versioningTest extends \UnitTestCase {
 	}
 	function testShortversionRange() {
 		$t=array(
-				'1 - 2'=>'>=1.0.0 <=2.0.0--',
-				'1.2 - 2.1'=>'>=1.2.0 <=2.1.0--'
+				'1 - 2'=>'>=1 <=2',
+				'1.2 - 2.1'=>'>=1.2 <=2.1'
 		);
 		foreach($t as $original=>$result) {
 			$v=new SemVer\expression($original);
@@ -115,11 +115,11 @@ class versioningTest extends \UnitTestCase {
 	}
 	function testSpermies() {
 		$t=array(
-			'~1'=>'>=1.0.0 <2.0.0--',
-			'~2.3'=>'>=2.3.0 <2.4.0--',
-			'~3.7.2'=>'>=3.7.2 <3.8.0--',
-			'~1.x'=>'>=1.0.0 <2.0.0--',
-			'~1.2.x'=>'>=1.2.0 <1.3.0--',
+			'~1'=>'>=1 <2.0.0-',
+			'~2.3'=>'>=2.3 <2.4.0-',
+			'~3.7.2'=>'>=3.7.2 <3.8.0-',
+			'~1.x'=>'>=1 <2.0.0-',
+			'~1.2.x'=>'>=1.2 <1.3.0-',
 		);
 		foreach($t as $original=>$result) {
 			$v=new SemVer\expression($original);
@@ -146,9 +146,9 @@ class versioningTest extends \UnitTestCase {
 	}
 	function testAndOperator() {
 		$t=array(
-				'<1.2.0   >=1.3.2'=>array(array('<1.2.0--','>=1.3.2')),
-				'>2.3.4 <5.0'=>array(array('>2.3.4','<5.0.0--')),
-				'>1.0.0 <=1.2.0 '=>array(array('>1.0.0','<=1.2.0--')),
+				'<1.2.0   >=1.3.2'=>array(array('<1.2.0','>=1.3.2')),
+				'>2.3.4 <5.0'=>array(array('>2.3.4','<5.0')),
+				'>1.0.0 <=1.2.0 '=>array(array('>1.0.0','<=1.2.0')),
 				'>=1.2.4'=>array(array('>=1.2.4'))
 		);
 		foreach($t as $original=>$result) {
@@ -158,8 +158,8 @@ class versioningTest extends \UnitTestCase {
 	}
 	function testOrOperator() {
 		$t=array(
-				'<1.2.0 || >2.1'=>array(array('<1.2.0--'),array('>2.1.0')),
-				'<1.3 || >3.0 <3.5 || >4'=>array(array('<1.3.0--'),array('>3.0.0','<3.5.0--'),array('>4.0.0'))
+				'<1.2.0 || >2.1'=>array(array('<1.2.0'),array('>2.1')),
+				'<1.3 || >3.0 <3.5 || >4'=>array(array('<1.3'),array('>3.0','<3.5'),array('>4'))
 		);
 		foreach($t as $original=>$result) {
 			$v=new SemVer\expression($original);
@@ -168,8 +168,8 @@ class versioningTest extends \UnitTestCase {
 	}
 	function testComplexExpessions() {
 		$t=array(
-				'1.x || 2.0 - 2.3 || >4.x.x'=>'>=1.0.0 <2.0.0--||>=2.0.0 <=2.3.0--||>4.0.0',
-				'2.0.x || 2.1 - 4 || 4 - 4.5' => '>=2.0.0 <2.1.0--||>=2.1.0 <=4.0.0--||>=4.0.0 <=4.5.0--'
+				'1.x || 2.0 - 2.3 || >4.x.x'=>'>=1 <2.0.0-||>=2.0 <=2.3||>4',
+				'2.0.x || 2.1 - 4 || 4 - 4.5' => '>=2.0 <2.1.0-||>=2.1 <=4||>=4 <=4.5'
 		);
 		foreach($t as $original=>$result) {
 			$v=new SemVer\expression($original);

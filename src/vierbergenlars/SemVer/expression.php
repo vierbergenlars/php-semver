@@ -4,8 +4,8 @@ namespace vierbergenlars\SemVer;
 
 class expression {
 
-    static protected $global_single_version = '(([0-9]+)(\\.([0-9]+)(\\.([0-9]+)(-([0-9]+)?)?(-?([a-zA-Z-][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
-    static protected $global_single_xrange = '(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+)?)?(-?([a-zA-Z-][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
+    static protected $global_single_version = '(([0-9]+)(\\.([0-9]+)(\\.([0-9]+)(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
+    static protected $global_single_xrange = '(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+))?(-?([a-zA-Z-][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
     static protected $global_single_comparator = '([<>]=?)?\\s*';
     static protected $global_single_spermy = '(~?)>?\\s*';
     static protected $range_mask = '%1$s\\s+-\\s+%1$s';
@@ -154,21 +154,17 @@ class expression {
         $expression = sprintf(self::$dirty_regexp_mask, self::$global_single_version);
         if (!preg_match($expression, $version, $matches))
             throw new SemVerException('Invalid version string given', $version);
-        if ($padZero) { //If there is a comparator set undefined parts to 0
-            self::matchesToVersionParts($matches, $major, $minor, $patch, $build, $prtag);
-            if ($build !== '')
-                $build = '-' . $build;
-            if ($prtag !== '')
-                $prtag = '-' . $prtag;
-            return $major . '.' . $minor . '.' . $patch . $build . $prtag;
+        if ($padZero) { //If there is a comparator drop undefined parts
+            self::matchesToVersionParts($matches, $major, $minor, $patch, $build, $prtag, null);
+            if($build === '') $build = null;
+            if($prtag === '') $prtag = null;
+            return self::constructVersionFromParts(false, $major, $minor, $patch, $build, $prtag);
         }
         else { //If it is just a number, convert to a range
             self::matchesToVersionParts($matches, $major, $minor, $patch, $build, $prtag, 'x');
-            if ($build !== '')
-                $build = '-' . $build;
-            if ($prtag !== '')
-                $prtag = '-' . $prtag;
-            $version = $major . '.' . $minor . '.' . $patch . $build . $prtag;
+            if($build === '') $build = null;
+            if($prtag === '') $prtag = null;
+            $version = self::constructVersionFromParts(false, $major, $minor, $patch, $build, $prtag);
             return self::xRangesToComparators($version);
         }
     }
@@ -190,8 +186,6 @@ class expression {
         if ($comparators === '')
             $hasComparators = false;
         $version = self::standarize($version, $hasComparators);
-        if ((isset($comparators[0]) && $comparators[0] == '<' || !isset($comparators[0])) && substr($version, -2) != '--')
-            return $comparators . $version . '--';
         return $comparators . $version;
     }
 
@@ -227,7 +221,7 @@ class expression {
         $expression = sprintf(self::$regexp_mask, $range_expression);
         if (!preg_match($expression, $range, $matches))
             throw new SemVerException('Invalid range given', $version);
-        $versions = preg_replace($expression, '>=$1 <=$11--', $range);
+        $versions = preg_replace($expression, '>=$1 <=$11', $range);
         $versions = self::standarizeMultipleComparators($versions);
         return $versions;
     }
@@ -252,16 +246,12 @@ class expression {
         self::matchesToVersionParts($matches, $major, $minor, $patch, $build, $prtag, 'x');
         if ($build !== '')
             $build = '-' . $build;
-        if ($prtag !== '')
-            $prtag = '-' . $prtag;
         if ($major === 'x')
-            return '>=0.0.0';
+            return '>=0';
         if ($minor === 'x')
-            return '>=' . $major . '.0.0 <' . ($major + 1) . '.0.0--';
+            return '>=' . $major . ' <' . ($major + 1) . '.0.0-';
         if ($patch === 'x')
-            return '>=' . $major . '.' . $minor . '.0 <' . $major . '.' . ($minor + 1) . '.0--';
-        //if($build==='') return '>='.$major.'.'.$minor.'.'.$patch.' <'.$major.'.'.$minor.'.'.($patch+1);
-        //if($prtag==='') return '>='.$major.'.'.$minor.'.'.$patch.$build.' <'.$major.'.'.$minor.'.'.$patch.'-'.(substr($build, 1)+1);
+            return '>=' . $major . '.' . $minor . ' <' . $major . '.' . ($minor + 1) . '.0-';
         return $major . '.' . $minor . '.' . $patch . $build . $prtag;
     }
 
@@ -285,15 +275,13 @@ class expression {
         self::matchesToVersionParts($matches, $major, $minor, $patch, $build, $prtag, 'x', 3);
         if ($build !== '')
             $build = '-' . $build;
-        if ($prtag !== '')
-            $prtag = '-' . $prtag;
         if ($major === 'x')
-            return '>=0.0.0';
+            return '>=0';
         if ($minor === 'x')
-            return '>=' . $major . '.0.0 <' . ($major + 1) . '.0.0--';
+            return '>=' . $major . ' <' . ($major + 1) . '.0.0-';
         if ($patch === 'x')
-            return '>=' . $major . '.' . $minor . '.0 <' . $major . '.' . ($minor + 1) . '.0--';
-        return '>=' . $major . '.' . $minor . '.' . $patch . $build . $prtag . ' <' . $major . '.' . ($minor + 1) . '.0--';
+            return '>=' . $major . '.' . $minor . ' <' . $major . '.' . ($minor + 1) . '.0-';
+        return '>=' . $major . '.' . $minor . '.' . $patch . $build . $prtag . ' <' . $major . '.' . ($minor + 1) . '.0-';
     }
 
     /**
@@ -313,8 +301,7 @@ class expression {
         $prtag = '';
         switch (count($matches)) {
             default:
-            case $offset + 9: $prtag = $matches[$offset + 8];
-            case $offset + 8:
+            case $offset + 8: $prtag = $matches[$offset + 7];
             case $offset + 7: $build = $matches[$offset + 6];
             case $offset + 6:
             case $offset + 5: $patch = $matches[$offset + 4];
@@ -339,6 +326,36 @@ class expression {
             $minor = 'x';
         if (in_array($patch, self::$wildcards, true))
             $patch = 'x';
+    }
+    
+    /**
+     * Converts all parameters to a version string 
+     * @param bool $padZero Pad the missing version parts with zeroes or not?
+     * @param int $ma The major version number
+     * @param int $mi The minor version number
+     * @param int $p The patch number
+     * @param int $b The build number
+     * @param int $t The version tag
+     */
+    static protected function constructVersionFromParts($padZero = true, $ma=null, $mi=null, $p=null, $b=null, $t=null) {
+        if($padZero) {
+            if($ma === null) return '0.0.0';
+            if($mi===null) return $ma.'.0.0';
+            if($p===null) return $ma.'.'.$mi.'.0';
+            if($b===null&&$t===null) return $ma.'.'.$mi.'.'.$p;
+	        if($b!==null&&$t===null) return $ma.'.'.$mi.'.'.$p.'-'.$b;
+            if($b===null&&$t!==null) return $ma.'.'.$mi.'.'.$p.$t;
+            if($b!==null&&$t!==null) return $ma.'.'.$mi.'.'.$p.'-'.$b.$t;
+        }
+        else {
+            if($ma === null) return '';
+            if($mi===null) return $ma.'';
+            if($p===null) return $ma.'.'.$mi.'';
+            if($b===null&&$t===null) return $ma.'.'.$mi.'.'.$p;
+	        if($b!==null&&$t===null) return $ma.'.'.$mi.'.'.$p.'-'.$b;
+            if($b===null&&$t!==null) return $ma.'.'.$mi.'.'.$p.$t;
+            if($b!==null&&$t!==null) return $ma.'.'.$mi.'.'.$p.'-'.$b.$t;
+        }
     }
 
 }

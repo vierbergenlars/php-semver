@@ -14,33 +14,41 @@ class version extends expression {
     /**
      * Initializes the version object with a simple version
      * @param string $version A simple, single version string
+     * @param bool $padZero Set empty version pieces to zero?
      * @throws SemVerException 
      */
-    function __construct($version) {
+    function __construct($version, $padZero=false) {
         $version = (string) $version;
         $expression = sprintf(parent::$dirty_regexp_mask, parent::$global_single_version);
-        if (!preg_match($expression, $version))
-            throw new SemVerException('This is not a simple, singular version! No comparators nor ranges allowed!', $version);
-        parent::__construct($version);
-        $this->version = $this->getChunk(0, 0);
-        preg_match($expression, $this->version, $matches);
-        parent::matchesToVersionParts($matches, $this->major, $this->minor, $this->patch, $this->build, $this->prtag, NULL);
+      	if(!preg_match($expression, $version, $matches)) {
+            throw new SemVerException('This is not a valid version');
+	}
+
+        parent::matchesToVersionParts($matches, $this->major, $this->minor, $this->patch, $this->build, $this->prtag, $padZero?0:null);
+
+        if($this->build === '') 
+        $this->build = null;
+	$this->version = parent::constructVersionFromParts($padZero, $this->major, $this->minor, $this->patch, $this->build, $this->prtag);
+
         if ($this->major === null)
             $this->major = -1;
         if ($this->minor === null)
             $this->minor = -1;
         if ($this->patch === null)
             $this->patch = -1;
-        if ($this->build === '')
+        if ($this->build === null)
             $this->build = -1;
+
     }
+
+
 
     /**
      * Get the full version
      * @return string 
      */
     function getVersion() {
-        return $this->version;
+        return (string)$this->version;
     }
 
     /**
@@ -121,6 +129,10 @@ class version extends expression {
     function satisfies(expression $versions) {
         return $versions->satisfiedBy($this) !== false;
     }
+    
+    function __toString() {
+        return $this->version;
+    }
 
     /**
      * Compare two versions
@@ -153,27 +165,59 @@ class version extends expression {
     static function gt($v1, $v2) {
         $v1 = new version($v1);
         $v2 = new version($v2);
-        $t = array('' => true, '-' => true, '--' => true);
-        if (isset($t[$v1->getTag()]) && !isset($t[$v2->getTag()]))
+
+        $ma1 = $v1->getMajor();
+        $ma2 = $v2->getMajor();
+
+        if($ma1 < 0 &&$ma2 >= 0)
+            return false;
+        if($ma1 >=0 && $ma2 <0)
+            return true; 
+        if ($ma1 > $ma2)
+            return true;
+        if ($ma1 < $ma2)
+            return false;
+
+        $mi1 = $v1->getMinor();
+        $mi2 = $v2->getMinor();
+        
+        if($mi1 < 0 &&$mi2 >= 0)
+            return false;
+        if($mi1 >=0 && $mi2 <0)
+            return true; 
+        if ($mi1 > $mi2)
+            return true;
+        if ($mi1 < $mi2)
+            return false;
+
+        $p1 = $v1->getPatch();
+        $p2 = $v2->getPatch();
+        
+        if($p1 < 0 &&$p2 >= 0)
+            return false;
+        if($p1 >=0 && $p2 <0)
+            return true; 
+        if ($p1 > $p2)
+            return true;
+        if ($p1 < $p2)
+            return false;
+            
+        $b1 = $v1->getBuild();
+        $b2 = $v2->getBuild();
+
+        if($b1 < 0 &&$b2 >= 0)
+            return false;
+        if($b1 >=0 && $b2 <0)
+            return true; 
+        if ($b1 > $b2)
+            return true;
+        if ($b1 < $b2)
+            return false;
+
+        if ($v1->getTag() === '' && $v2->getTag() !== '')
             return true; //v1 has no tag, v2 has tag
-        if (!isset($t[$v1->getTag()]) && isset($t[$v2->getTag()]))
+        if ($v1->getTag() !== '' && $v2->getTag() === '')
             return false; //v1 has tag, v2 has no tag
-        if ($v1->getMajor() > $v2->getMajor())
-            return true;
-        if ($v1->getMajor() < $v2->getMajor())
-            return false;
-        if ($v1->getMinor() > $v2->getMinor())
-            return true;
-        if ($v1->getMinor() < $v2->getMinor())
-            return false;
-        if ($v1->getPatch() > $v2->getPatch())
-            return true;
-        if ($v1->getPatch() < $v2->getPatch())
-            return false;
-        if ($v1->getBuild() > $v2->getBuild())
-            return true;
-        if ($v1->getBuild() < $v2->getBuild())
-            return false;
         if ($v1->getTag() > $v2->getTag())
             return true;
         if ($v1->getTag() < $v2->getTag())
@@ -187,7 +231,7 @@ class version extends expression {
      * @return boolean 
      */
     static function gte($v1, $v2) {
-        return !self::lt($v1, $v2);
+        return self::gt($v1, $v2)||self::eq($v1, $v2);
     }
 
     /**
@@ -207,7 +251,7 @@ class version extends expression {
      * @return boolean 
      */
     static function lte($v1, $v2) {
-        return !self::gt($v1, $v2);
+        return self::lt($v1, $v2)||self::eq($v1, $v2);
     }
 
     /**
@@ -217,8 +261,8 @@ class version extends expression {
      * @return boolean 
      */
     static function eq($v1, $v2) {
-        $v1 = new version($v1);
-        $v2 = new version($v2);
+        $v1 = new version($v1, true);
+        $v2 = new version($v2, true);
         return $v1->getVersion() == $v2->getVersion();
     }
 
