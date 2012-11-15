@@ -24,6 +24,9 @@ class version extends expression {
 	}
 
         parent::matchesToVersionParts($matches, $this->major, $this->minor, $this->patch, $this->build, $this->prtag, NULL);
+
+        if($this->build === '') 
+        $this->build = null;
 	$this->version = parent::constructVersionFromParts(true, $this->major, $this->minor, $this->patch, $this->build, $this->prtag);
 
         if ($this->major === null)
@@ -32,7 +35,7 @@ class version extends expression {
             $this->minor = -1;
         if ($this->patch === null)
             $this->patch = -1;
-        if ($this->build === '')
+        if ($this->build === null)
             $this->build = -1;
 
     }
