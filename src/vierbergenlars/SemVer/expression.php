@@ -154,17 +154,17 @@ class expression {
         $expression = sprintf(self::$dirty_regexp_mask, self::$global_single_version);
         if (!preg_match($expression, $version, $matches))
             throw new SemVerException('Invalid version string given', $version);
-        if ($padZero) { //If there is a comparator set undefined parts to 0
+        if ($padZero) { //If there is a comparator drop undefined parts
             self::matchesToVersionParts($matches, $major, $minor, $patch, $build, $prtag, null);
+            if($build === '') $build = null;
+            if($prtag === '') $prtag = null;
             return self::constructVersionFromParts(false, $major, $minor, $patch, $build, $prtag);
         }
         else { //If it is just a number, convert to a range
             self::matchesToVersionParts($matches, $major, $minor, $patch, $build, $prtag, 'x');
-            if ($build !== '')
-                $build = '-' . $build;
-            if ($prtag !== '')
-                $prtag = '-' . $prtag;
-            $version = $major . '.' . $minor . '.' . $patch . $build . $prtag;
+            if($build === '') $build = null;
+            if($prtag === '') $prtag = null;
+            $version = self::constructVersionFromParts(false, $major, $minor, $patch, $build, $prtag);
             return self::xRangesToComparators($version);
         }
     }
@@ -221,7 +221,7 @@ class expression {
         $expression = sprintf(self::$regexp_mask, $range_expression);
         if (!preg_match($expression, $range, $matches))
             throw new SemVerException('Invalid range given', $version);
-        $versions = preg_replace($expression, '>=$1 <=$11', $range);
+        $versions = preg_replace($expression, '>=$1 <=$11-', $range);
         $versions = self::standarizeMultipleComparators($versions);
         return $versions;
     }
@@ -251,9 +251,9 @@ class expression {
         if ($major === 'x')
             return '>=0';
         if ($minor === 'x')
-            return '>=' . $major . ' <' . ($major + 1) . '.0.0';
+            return '>=' . $major . ' <' . ($major + 1) . '.0.0-';
         if ($patch === 'x')
-            return '>=' . $major . '.' . $minor . ' <' . $major . '.' . ($minor + 1) . '.0';
+            return '>=' . $major . '.' . $minor . ' <' . $major . '.' . ($minor + 1) . '.0-';
         return $major . '.' . $minor . '.' . $patch . $build . $prtag;
     }
 
@@ -282,10 +282,10 @@ class expression {
         if ($major === 'x')
             return '>=0';
         if ($minor === 'x')
-            return '>=' . $major . ' <' . ($major + 1) . '.0.0';
+            return '>=' . $major . ' <' . ($major + 1) . '.0.0-';
         if ($patch === 'x')
-            return '>=' . $major . '.' . $minor . ' <' . $major . '.' . ($minor + 1) . '.0';
-        return '>=' . $major . '.' . $minor . '.' . $patch . $build . $prtag . ' <' . $major . '.' . ($minor + 1) . '.0';
+            return '>=' . $major . '.' . $minor . ' <' . $major . '.' . ($minor + 1) . '.0-';
+        return '>=' . $major . '.' . $minor . '.' . $patch . $build . $prtag . ' <' . $major . '.' . ($minor + 1) . '.0-';
     }
 
     /**
