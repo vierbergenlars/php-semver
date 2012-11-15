@@ -27,7 +27,7 @@ class version extends expression {
 
         if($this->build === '') 
         $this->build = null;
-	$this->version = parent::constructVersionFromParts(true, $this->major, $this->minor, $this->patch, $this->build, $this->prtag);
+	$this->version = parent::constructVersionFromParts(false, $this->major, $this->minor, $this->patch, $this->build, $this->prtag);
 
         if ($this->major === null)
             $this->major = -1;
@@ -127,6 +127,10 @@ class version extends expression {
      */
     function satisfies(expression $versions) {
         return $versions->satisfiedBy($this) !== false;
+    }
+    
+    function __toString() {
+        return $this->version;
     }
 
     /**
