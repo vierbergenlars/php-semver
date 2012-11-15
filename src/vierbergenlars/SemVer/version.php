@@ -24,7 +24,7 @@ class version extends expression {
 	}
 
         parent::matchesToVersionParts($matches, $this->major, $this->minor, $this->patch, $this->build, $this->prtag, NULL);
-	$this->version = self::constructVersionFromParts($this->major, $this->minor, $this->patch, $this->build, $this->prtag);
+	$this->version = parent::constructVersionFromParts(true, $this->major, $this->minor, $this->patch, $this->build, $this->prtag);
 
         if ($this->major === null)
             $this->major = -1;
@@ -37,15 +37,7 @@ class version extends expression {
 
     }
 
-    static protected function constructVersionFromParts($ma=null, $mi=null, $p=null, $b=null, $t=null) {
-        if(!$ma) return '0.0.0';
-        if(!$mi) return $ma.'.0.0';
-        if(!$p) return $ma.'.'.$mi.'.0';
-        if(!$b&&!$t) return $ma.'.'.$mi.'.'.$p;
-	if($b&&!$t) return $ma.'.'.$mi.'.'.$p.'-'.$b;
-        if(!$b&&$t) return $ma.'.'.$mi.'.'.$p.'-'.$t;
-        if($b&&$t) return $ma.'.'.$mi.'.'.$p.'-'.$b.'-'.$t;
-    }
+
 
     /**
      * Get the full version
