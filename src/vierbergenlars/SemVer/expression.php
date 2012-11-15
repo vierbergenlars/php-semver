@@ -221,7 +221,7 @@ class expression {
         $expression = sprintf(self::$regexp_mask, $range_expression);
         if (!preg_match($expression, $range, $matches))
             throw new SemVerException('Invalid range given', $version);
-        $versions = preg_replace($expression, '>=$1 <=$11-', $range);
+        $versions = preg_replace($expression, '>=$1 <=$11', $range);
         $versions = self::standarizeMultipleComparators($versions);
         return $versions;
     }
