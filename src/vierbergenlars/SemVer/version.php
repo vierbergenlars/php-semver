@@ -14,20 +14,21 @@ class version extends expression {
     /**
      * Initializes the version object with a simple version
      * @param string $version A simple, single version string
+     * @param bool $padZero Set empty version pieces to zero?
      * @throws SemVerException 
      */
-    function __construct($version) {
+    function __construct($version, $padZero=false) {
         $version = (string) $version;
         $expression = sprintf(parent::$dirty_regexp_mask, parent::$global_single_version);
       	if(!preg_match($expression, $version, $matches)) {
             throw new SemVerException('This is not a valid version');
 	}
 
-        parent::matchesToVersionParts($matches, $this->major, $this->minor, $this->patch, $this->build, $this->prtag, NULL);
+        parent::matchesToVersionParts($matches, $this->major, $this->minor, $this->patch, $this->build, $this->prtag, $padZero?0:null);
 
         if($this->build === '') 
         $this->build = null;
-	$this->version = parent::constructVersionFromParts(false, $this->major, $this->minor, $this->patch, $this->build, $this->prtag);
+	$this->version = parent::constructVersionFromParts($padZero, $this->major, $this->minor, $this->patch, $this->build, $this->prtag);
 
         if ($this->major === null)
             $this->major = -1;
