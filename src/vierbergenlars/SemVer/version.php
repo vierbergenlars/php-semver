@@ -219,7 +219,7 @@ class version extends expression {
         if ($v1->getTag() !== '' && $v2->getTag() === '')
             return false; //v1 has tag, v2 has no tag
         
-        if (!isset($t[$v1->getTag()]) && !isset($t[$v2->getTag()])) {
+        if ($v1->getTag() !== '' && $v2->getTag() !== '') {
             // both have tags, sort them naturally to see which one is greater.
             $array = array($v1->getTag(), $v2->getTag());
             natsort($array);
