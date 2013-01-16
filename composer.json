@@ -10,12 +10,6 @@
         "email":"vierbergenlars@gmail.com"
     }
     ],
-    "repositories": [
-    {
-        "type":"vcs",
-        "url":"http://github.com/vierbergenlars/php-semver"
-    }
-    ],
     "require": {
         "php": ">=5.3.0"
     },
