@@ -10,7 +10,6 @@ class expression {
     static protected $range_mask = '%1$s\\s+-\\s+%1$s';
     static protected $regexp_mask = '/%s/';
     static protected $dirty_regexp_mask = '/^[v= ]*%s$/';
-    static protected $wildcards = array('x', 'X', '*');
     private $chunks = array();
 
     /**
@@ -20,16 +19,18 @@ class expression {
     function __construct($versions) {
         $versions = preg_replace(sprintf(self::$dirty_regexp_mask, self::$global_single_comparator . '(\\s+-\\s+)?' . self::$global_single_xrange), '$1$2$3', $versions); //Paste comparator and version together
         $versions = preg_replace('/\\s+/', ' ', $versions); //Condense multiple spaces to one
+        $versions = str_replace(array('*', 'X'), 'x', $versions); // All the same wildcards, plz
         if (strstr($versions, ' - '))
             $versions = self::rangesToComparators($versions); //Replace all ranges with comparators
         if (strstr($versions, '~'))
             $versions = self::spermiesToComparators($versions); //Replace all spermies with comparators
-        if (strstr($versions, 'x') || strstr($versions, 'X') || strstr($versions, '*'))
+        if(strstr($versions, 'x') && (strstr($versions, '<')|| strstr($versions, '>')))
+            $versions = self::compAndxRangesToComparators($versions);
+        if (strstr($versions, 'x'))
             $versions = self::xRangesToComparators($versions); //Replace all x-ranges with comparators
         $or = explode('||', $versions);
         foreach ($or as &$orchunk) {
-            $orchunk = trim($orchunk); //Remove spaces
-            $and = explode(' ', $orchunk);
+            $and = explode(' ', trim($orchunk));
             foreach ($and as $order => &$achunk) {
                 $achunk = self::standarizeSingleComparator($achunk);
                 if (strstr($achunk, ' ')) {
@@ -284,7 +285,42 @@ class expression {
     }
 
     /**
-     * Converts matches to named version parts, replaces all wildcards by lowercase x
+     * Standarizes a bunch of x-ranges with comparators in front of them to comparators
+     *
+     * @param string $versions
+     * @return string
+     */
+    static private function compAndxRangesToComparators($versions) {
+        $regex = sprintf(self::$regexp_mask, self::$global_single_comparator.self::$global_single_xrange);
+        return preg_replace_callback($regex, array('self', 'compAndxRangesToComparatorsCallback'), $versions);
+    }
+
+    /**
+     * Callback for compAndxRangesToComparators()
+     *
+     * @internal
+     * @param array $matches
+     * @return string
+     */
+    static private function compAndxRangesToComparatorsCallback($matches) {
+        $comparators = $matches[1];
+        self::matchesToVersionParts($matches, $major, $minor, $patch, $build, $prtag, 'x', 3);
+        if($comparators[0] === '<') {
+            if($major === 'x')
+                return $comparators.'0';
+            if($minor === 'x')
+                return $comparators.$major.'.0';
+            if($patch === 'x')
+                return $comparators.$major.'.'.$minor.'.0';
+            return $comparators.self::constructVersionFromParts(false, $major, $minor, $patch, $build, $prtag);
+        }
+        elseif($comparators[0] === '>') {
+            return $comparators.self::constructVersionFromParts(false, ($major==='x'?0:$major), ($minor==='x'?0:$minor), ($patch==='x'?0:$patch), $build, $prtag);
+        }
+    }
+
+    /**
+     * Converts matches to named version parts
      * @param array $matches Matches array from preg_match
      * @param int|string $major Reference to major version
      * @param int|string $minor Reference to minor version
@@ -319,12 +355,6 @@ class expression {
             $minor = intval($minor);
         if (is_numeric($major))
             $major = intval($major);
-        if (in_array($major, self::$wildcards, true))
-            $major = 'x';
-        if (in_array($minor, self::$wildcards, true))
-            $minor = 'x';
-        if (in_array($patch, self::$wildcards, true))
-            $patch = 'x';
     }
 
     /**
