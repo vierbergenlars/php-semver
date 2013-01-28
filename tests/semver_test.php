@@ -31,6 +31,7 @@ class SemVerTest extends \UnitTestCase {
 		, array("1.2.3-5","1.2.3-4")
 		, array("1.2.3-5-foo","1.2.3-5-Foo")
 		, array('1.2.3-0','1.2.3')
+		, array('3.0.0', '2.7.2+')
 		);
 		foreach($compare as $set) {
 			$a=$set[0];
@@ -159,6 +160,11 @@ class SemVerTest extends \UnitTestCase {
 		, array("1","1.0.0beta")
 		, array("~v0.5.4-pre","0.5.5")
 		, array("~v0.5.4-pre","0.5.4")
+		, array('=0.7.x', '0.7.2')
+		, array('>=0.7.x', '0.7.2')
+		, array('=0.7.x', '0.7.0-asdf')
+		, array('>=0.7.x', '0.7.0-asdf')
+		, array('<=0.7.x', '0.6.2')
 		);
 		foreach($compare as $set) {
 			$v=new SemVer\version($set[1]);
@@ -211,6 +217,9 @@ class SemVerTest extends \UnitTestCase {
 		, array("1","2.0.0beta")
 		, array(">1.0.0", "1.0.0beta")
 		, array("~v0.5.4-beta","0.5.4-alpha")
+		, array('=0.7.x', '0.8.2')
+		, array('>=0.7.x', '0.6.2')
+		, array('<=0.7.x', '0.7.2')
 		);
 		foreach($compare as $set) {
 			$v=new SemVer\version($set[1]);
@@ -244,7 +253,7 @@ class SemVerTest extends \UnitTestCase {
 		$compare=array(
 		  array("1.0.0 - 2.0.0",">=1.0.0 <=2.0.0")
 		, array("1.0.0","1.0.0")
-		, array(">=*",">=0")
+		, array(">=*",">=0.0.0-")
 	//	, array("","")
 		, array("*",">=0")
 		, array(">=1.0.0",">=1.0.0")
@@ -299,6 +308,4 @@ class SemVerTest extends \UnitTestCase {
 			$this->assertEqual($v->getString(), $set[1], "%s > validRange($set[0]) === $set[1]");
 		}
 	}
-
-
 }
