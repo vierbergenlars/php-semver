@@ -1,32 +1,34 @@
 # php-semver -- The semantic versioner for npm ported to PHP
 
-Ported from node-semver [1.1.2](https://github.com/isaacs/node-semver/tree/v1.1.2) to PHP
+Ported from [node-semver 1.1.2](https://github.com/isaacs/node-semver/tree/v1.1.2) to PHP
 
 [![Build Status](https://secure.travis-ci.org/vierbergenlars/php-semver.png?branch=master)](http://travis-ci.org/vierbergenlars/php-semver)
 
 ## Usage
 
-    <?php
-    require('version.php');
+```php
+<?php
+require('version.php');
 
-    // Check if a version is valid
-    $semver=new version('1.2.3');
-    $semver=new version('a.b.c'); //versionException thrown
+// Check if a version is valid
+$semver=new version('1.2.3');
+$semver=new version('a.b.c'); //versionException thrown
 
-    //Get a clean version string
-    $semver=new version('=v1.2.3');
-    $semver->getVersion(); //'1.2.3'
+//Get a clean version string
+$semver=new version('=v1.2.3');
+$semver->getVersion(); //'1.2.3'
 
-    //Check if a version satisfies a range
-    $semver=new version('1.2.3');
-    $semver->satisfies(new versionExpression('1.x || >=2.5.0 || 5.0.0 - 7.2.3')); //true
-    # OR
-    $range=new versionExpression('1.x || >=2.5.0 || 5.0.0 - 7.2.3');
-    $range->satisfiedBy(new version('1.2.3')); //true
+//Check if a version satisfies a range
+$semver=new version('1.2.3');
+$semver->satisfies(new versionExpression('1.x || >=2.5.0 || 5.0.0 - 7.2.3')); //true
+# OR
+$range=new versionExpression('1.x || >=2.5.0 || 5.0.0 - 7.2.3');
+$range->satisfiedBy(new version('1.2.3')); //true
 
-    //Compare two versions
-    version::gt('1.2.3', '9.8.7'); //false
-    version::lt('1.2.3', '9.8.7'); //true
+//Compare two versions
+version::gt('1.2.3', '9.8.7'); //false
+version::lt('1.2.3', '9.8.7'); //true
+```
 
 ## Versions
 
@@ -83,38 +85,38 @@ Ranges can be joined with either a space (which implies "and") or a
 
 ## Functions
 
-* $version->valid(): Return the parsed version, or null if it's not valid.
-* $version->inc(v): Return the version incremented by the release type
-  (major, minor, patch, or build), or null if it's not valid.
+* `$version->valid()`: Return the parsed version, or null if it's not valid.
+* `$version->inc($type)`: Return the version incremented by the release type
+  (major, minor, patch, or build), or null if an invalid release type is provided.
 
 ### Comparison
 
-* version::gt($v1, $v2): `v1 > v2`
-* version::gte($v1, $v2): `v1 >= v2`
-* version::lt($v1, $v2): `v1 < v2`
-* version::lte($v1, $v2): `v1 <= v2`
-* version::eq($v1, $v2): `v1 == v2` This is true if they're logically equivalent,
+* `version::gt($v1, $v2)`: `v1 > v2`
+* `version::gte($v1, $v2)`: `v1 >= v2`
+* `version::lt($v1, $v2)`: `v1 < v2`
+* `version::lte($v1, $v2)`: `v1 <= v2`
+* `version::eq($v1, $v2)`: `v1 == v2` This is true if they're logically equivalent,
   even if they're not the exact same string.  You already know how to
   compare strings.
-* version::neq($v1, $v2): `v1 != v2` The opposite of eq.
-* version::cmp($v1, $comparator, $v2): Pass in a comparison string, and it'll call
+* `version::neq($v1, $v2)`: `v1 != v2` The opposite of eq.
+* `version::cmp($v1, $comparator, $v2)`: Pass in a comparison string, and it'll call
   the corresponding function above.  `"==="` and `"!=="` do simple
   string comparison, but are included for completeness.  Throws if an
   invalid comparison string is provided.
-* version::compare(v1, v2): Return 0 if v1 == v2, or 1 if v1 is greater, or -1 if
-  v2 is greater.  Sorts in ascending order if passed to Array.sort().
-* version::rcompare(v1, v2): The reverse of compare.  Sorts an array of versions
-  in descending order when passed to Array.sort().
+* `version::compare($v1, $v2)`: Return 0 if `v1 == v2`, 1 if `v1 > v2`, or -1 if
+  `v1 < v2`.  Sorts in ascending order if passed to [`usort()`](http://php.net/manual/en/function.usort.php)
+* `version::rcompare($v1, $v2)`: The reverse of compare.  Sorts an array of versions
+  in descending order when passed to [`usort()`](http://php.net/manual/en/function.usort.php).
 
 
 ### Ranges
 
-* $versionExpression->validRange(): Return the valid range or null if it's not valid
-* $version->satisfies($range): Return true if the version satisfies the
-  range.
-* $versionExpression->maxSatisfying(versions): Return the highest version in the list
-  that satisfies the range, or null if none of them do.
+* `$versionExpression->validRange()`: Return the valid range or `null` if it's not valid
+* `$version->satisfies($range)`: Return `true` if the version satisfies the range.
+* `$versionExpression->maxSatisfying($versions)`: Return the highest version in the array
+  that satisfies the range, or `null` if none of them do.
 
 ## Thanks to
 
-Everyone who worked on [node-semver](https://github.com/isaacs/node-semver)
+All contributors (https://github.com/vierbergenlars/php-semver/graphs/contributors)
+@isaacs, and everyone who worked on [node-semver](https://github.com/isaacs/node-semver)
