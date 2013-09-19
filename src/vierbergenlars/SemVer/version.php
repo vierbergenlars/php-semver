@@ -122,7 +122,7 @@ class version extends expression {
     }
 
     /**
-     * Checks wether this version satisfies an expression
+     * Checks whether this version satisfies an expression
      * @param expression $versions The expression to check against
      * @return bool 
      */
