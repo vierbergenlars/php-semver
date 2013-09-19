@@ -119,4 +119,5 @@ Ranges can be joined with either a space (which implies "and") or a
 ## Thanks to
 
 All contributors (https://github.com/vierbergenlars/php-semver/graphs/contributors)
-@isaacs, and everyone who worked on [node-semver](https://github.com/isaacs/node-semver)
+
+@isaacs and other contributors to [node-semver](https://github.com/isaacs/node-semver)
