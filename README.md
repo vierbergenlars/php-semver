@@ -8,21 +8,24 @@ Ported from [node-semver 1.1.2](https://github.com/isaacs/node-semver/tree/v1.1.
 
 ```php
 <?php
-require('version.php');
+
+use vierbergenlars\SemVer\version;
+use vierbergenlars\SemVer\expression;
+use vierbergenlars\SemVer\SemVerException;
 
 // Check if a version is valid
-$semver=new version('1.2.3');
-$semver=new version('a.b.c'); //versionException thrown
+$semver = new version('1.2.3');
+$semver = new version('a.b.c'); //SemVerException thrown
 
 //Get a clean version string
-$semver=new version('=v1.2.3');
+$semver = new version('=v1.2.3');
 $semver->getVersion(); //'1.2.3'
 
 //Check if a version satisfies a range
-$semver=new version('1.2.3');
-$semver->satisfies(new versionExpression('1.x || >=2.5.0 || 5.0.0 - 7.2.3')); //true
+$semver = new version('1.2.3');
+$semver->satisfies(new expression('1.x || >=2.5.0 || 5.0.0 - 7.2.3')); //true
 # OR
-$range=new versionExpression('1.x || >=2.5.0 || 5.0.0 - 7.2.3');
+$range = new expression('1.x || >=2.5.0 || 5.0.0 - 7.2.3');
 $range->satisfiedBy(new version('1.2.3')); //true
 
 //Compare two versions
@@ -111,13 +114,13 @@ Ranges can be joined with either a space (which implies "and") or a
 
 ### Ranges
 
-* `$versionExpression->validRange()`: Return the valid range or `null` if it's not valid
+* `$expression->validRange()`: Return the valid range or `null` if it's not valid
 * `$version->satisfies($range)`: Return `true` if the version satisfies the range.
-* `$versionExpression->maxSatisfying($versions)`: Return the highest version in the array
+* `$expression->maxSatisfying($versions)`: Return the highest version in the array
   that satisfies the range, or `null` if none of them do.
 
 ## Thanks to
 
 All contributors (https://github.com/vierbergenlars/php-semver/graphs/contributors)
 
-@isaacs and other contributors to [node-semver](https://github.com/isaacs/node-semver)
+[@isaacs](https://github.com/isaacs) and other contributors to [node-semver](https://github.com/isaacs/node-semver)
