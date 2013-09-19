@@ -45,7 +45,7 @@ class expression {
     }
 
     /**
-     * Checks if this range is statisfied by the given version
+     * Checks if this range is satisfied by the given version
      * @param version $version
      * @return boolean
      */
@@ -220,7 +220,7 @@ class expression {
         $range_expression = sprintf(self::$range_mask, self::$global_single_version);
         $expression = sprintf(self::$regexp_mask, $range_expression);
         if (!preg_match($expression, $range, $matches))
-            throw new SemVerException('Invalid range given', $version);
+            throw new SemVerException('Invalid range given', $range);
         $versions = preg_replace($expression, '>=$1 <=$11', $range);
         $versions = self::standarizeMultipleComparators($versions);
         return $versions;
@@ -328,7 +328,7 @@ class expression {
      * @param int|string $build Reference to build number
      * @param int|string $prtag Reference to pre-release tags
      * @param int|string $default Default value for a version if not found in matches array
-     * @param int $offset The position of the raw occurence of the major version number
+     * @param int $offset The position of the raw occurrence of the major version number
      */
     static protected function matchesToVersionParts($matches, &$major, &$minor, &$patch, &$build, &$prtag, $default = 0, $offset = 2) {
         $major = $minor = $patch = $default;
