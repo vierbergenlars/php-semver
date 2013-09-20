@@ -13,7 +13,7 @@ class expression {
     private $chunks = array();
 
     /**
-     * standarizes the comparator/range/whatever-string to chunks
+     * standardizes the comparator/range/whatever-string to chunks
      * @param string $versions
      */
     function __construct($versions) {
@@ -32,7 +32,7 @@ class expression {
         foreach ($or as &$orchunk) {
             $and = explode(' ', trim($orchunk));
             foreach ($and as $order => &$achunk) {
-                $achunk = self::standarizeSingleComparator($achunk);
+                $achunk = self::standardizeSingleComparator($achunk);
                 if (strstr($achunk, ' ')) {
                     $pieces = explode(' ', $achunk);
                     unset($and[$order]);
@@ -143,13 +143,13 @@ class expression {
     }
 
     /**
-     * standarizes a single version
+     * standardizes a single version
      * @param string $version
      * @param bool $padZero Set to true if the version string should be padded with zeros instead of x-es
      * @throws SemVerException
      * @return string
      */
-    static function standarize($version, $padZero = false) {
+    static function standardize($version, $padZero = false) {
         $matches = array();
         $expression = sprintf(self::$dirty_regexp_mask, self::$global_single_version);
         if (!preg_match($expression, $version, $matches))
@@ -168,14 +168,26 @@ class expression {
             return self::xRangesToComparators($version);
         }
     }
+    
+    /**
+     * standardizes a single version (typeo'd version for BC)
+     * @deprecated 2.1.0
+     * @param string $version
+     * @param bool $padZero Set to true if the version string should be padded with zeros instead of x-es
+     * @throws SemVerException
+     * @return string
+     */
+    static function standarize($version, $padZero = false) {
+        return self::standardize($version, $padZero);
+    }
 
     /**
-     * standarizes a single version with comparators
+     * standardizes a single version with comparators
      * @param string $version
      * @throws SemVerException
      * @return string
      */
-    static protected function standarizeSingleComparator($version) {
+    static protected function standardizeSingleComparator($version) {
         $expression = sprintf(self::$regexp_mask, self::$global_single_comparator . self::$global_single_version);
         $matches = array();
         if (!preg_match($expression, $version, $matches))
@@ -185,16 +197,16 @@ class expression {
         $hasComparators = true;
         if ($comparators === '')
             $hasComparators = false;
-        $version = self::standarize($version, $hasComparators);
+        $version = self::standardize($version, $hasComparators);
         return $comparators . $version;
     }
 
     /**
-     * standarizes a bunch of versions with comparators
+     * standardizes a bunch of versions with comparators
      * @param string $versions
      * @return string
      */
-    static protected function standarizeMultipleComparators($versions) {
+    static protected function standardizeMultipleComparators($versions) {
         $versions = preg_replace('/' . self::$global_single_comparator . self::$global_single_xrange . '/', '$1$2', $versions); //Paste comparator and version together
         $versions = preg_replace('/\\s+/', ' ', $versions); //Condense multiple spaces to one
         $or = explode('||', $versions);
@@ -202,7 +214,7 @@ class expression {
             $orchunk = trim($orchunk); //Remove spaces
             $and = explode(' ', $orchunk);
             foreach ($and as &$achunk) {
-                $achunk = self::standarizeSingleComparator($achunk);
+                $achunk = self::standardizeSingleComparator($achunk);
             }
             $orchunk = implode(' ', $and);
         }
@@ -211,7 +223,7 @@ class expression {
     }
 
     /**
-     * standarizes a bunch of version ranges to comparators
+     * standardizes a bunch of version ranges to comparators
      * @param string $range
      * @throws SemVerException
      * @return string
@@ -222,12 +234,12 @@ class expression {
         if (!preg_match($expression, $range, $matches))
             throw new SemVerException('Invalid range given', $range);
         $versions = preg_replace($expression, '>=$1 <=$11', $range);
-        $versions = self::standarizeMultipleComparators($versions);
+        $versions = self::standardizeMultipleComparators($versions);
         return $versions;
     }
 
     /**
-     * standarizes a bunch of x-ranges to comparators
+     * standardizes a bunch of x-ranges to comparators
      * @param string $ranges
      * @return string
      */
@@ -256,7 +268,7 @@ class expression {
     }
 
     /**
-     * standarizes a bunch of ~-ranges to comparators
+     * standardizes a bunch of ~-ranges to comparators
      * @param string $spermies
      * @return string
      */
