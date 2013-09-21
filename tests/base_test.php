@@ -144,28 +144,6 @@ class versioningTest extends \UnitTestCase {
 			$v=new SemVer\expression($original);
 		}
 	}
-	function testAndOperator() {
-		$t=array(
-				'<1.2.0   >=1.3.2'=>array(array('<1.2.0','>=1.3.2')),
-				'>2.3.4 <5.0'=>array(array('>2.3.4','<5.0')),
-				'>1.0.0 <=1.2.0 '=>array(array('>1.0.0','<=1.2.0')),
-				'>=1.2.4'=>array(array('>=1.2.4'))
-		);
-		foreach($t as $original=>$result) {
-			$v=new SemVer\expression($original);
-			$this->assertEqual($v->getChunks(),$result,'['.$original.'] %s');
-		}
-	}
-	function testOrOperator() {
-		$t=array(
-				'<1.2.0 || >2.1'=>array(array('<1.2.0'),array('>2.1')),
-				'<1.3 || >3.0 <3.5 || >4'=>array(array('<1.3'),array('>3.0','<3.5'),array('>4'))
-		);
-		foreach($t as $original=>$result) {
-			$v=new SemVer\expression($original);
-			$this->assertEqual($v->getChunks(),$result,'['.$original.'] %s');
-		}
-	}
 	function testComplexExpessions() {
 		$t=array(
 				'1.x || 2.0 - 2.3 || >4.x.x'=>'>=1 <2.0.0-||>=2.0 <=2.3||>4',
