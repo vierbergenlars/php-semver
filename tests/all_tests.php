@@ -1,7 +1,7 @@
 <?php
 namespace vierbergenlars\SemVer\Tests;
 require_once __DIR__.'/../vendor/autoload.php';
-require_once __DIR__.'/../vendor/vierbergenlars/simpletest/autorun.php';
+require_once __DIR__.'/../vendor/simpletest/simpletest/autorun.php';
 class RemoteCPVersioningTests extends \TestSuite
 {
     public function __construct()
