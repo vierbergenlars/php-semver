@@ -387,5 +387,4 @@ class version extends expression
     {
         return self::compare($v2, $v1);
     }
-
 }

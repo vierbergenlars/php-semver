@@ -449,7 +449,7 @@ class expression
      * @param int  $b       The build number
      * @param int  $t       The version tag
      */
-    protected static function constructVersionFromParts($padZero = true, $ma=null, $mi=null, $p=null, $b=null, $t=null)
+    protected static function constructVersionFromParts($padZero = true, $ma = null, $mi = null, $p = null, $b = null, $t = null)
     {
         if ($padZero) {
             if ($ma === null) {
@@ -497,5 +497,4 @@ class expression
             }
         }
     }
-
 }
