@@ -30,7 +30,7 @@ class version extends expression
         $version = (string) $version;
         $expression = sprintf(parent::$dirty_regexp_mask, parent::$global_single_version);
         if (!preg_match($expression, $version, $matches)) {
-            throw new SemVerException('This is not a valid version');
+            throw new SemVerException('This is not a valid version', $version);
         }
 
         parent::matchesToVersionParts($matches, $this->major, $this->minor, $this->patch, $this->build, $this->prtag, $padZero ? 0 : null);
