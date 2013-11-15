@@ -18,7 +18,8 @@
     },
     "autoload": {
         "psr-0": {
-            "vierbergenlars\\SemVer\\":"src/"
+            "vierbergenlars\\SemVer\\":"src/",
+            "vierbergenlars\\LibJs\\": "src/"
         }
     },
     "bin": [
