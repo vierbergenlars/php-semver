@@ -18,8 +18,12 @@
     },
     "autoload": {
         "psr-0": {
-            "vierbergenlars\\SemVer\\":"src/"
-        }
+            "vierbergenlars\\SemVer\\":"src/",
+            "vierbergenlars\\LibJs\\": "src/"
+        },
+        "classmap": [
+            "src/vierbergenlars/SemVer/internal.php"
+        ]
     },
     "bin": [
         "bin/semver",
