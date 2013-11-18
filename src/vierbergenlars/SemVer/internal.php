@@ -315,8 +315,6 @@ class SemVer extends Object
      */
     public function __construct($version, $loose = false)
     {
-        if($version == null)
-            debug_print_backtrace();
         $this->loose = $loose;
         if($version instanceof SemVer) {
             $this->version = $version->version;
@@ -984,9 +982,9 @@ function hyphenReplace(String $_,
   if (isX($tM))
     $to = '';
   else if (isX($tm))
-    $to = '<' . ($tM + 1) . '.0.0-0';
+    $to = '<' . ((int)(string)$tM + 1) . '.0.0-0';
   else if (isX($tp))
-    $to = '<' . $tM . '.' . ($tm + 1) . '.0-0';
+    $to = '<' . $tM . '.' . ((int)(string)$tm + 1) . '.0-0';
   else if ($tpr)
     $to = '<=' . $tM . '.' . $tm . '.' . $tp . '-' . $tpr;
   else
