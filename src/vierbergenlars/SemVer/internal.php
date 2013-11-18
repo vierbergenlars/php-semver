@@ -687,10 +687,11 @@ class Range extends Object
 
         $this->raw = $range;
 
+        $that = $this;
         // First, split based on boolean or ||
-        $this->set = $range->split(new RegExp('\\s*\\|\\|\\s*'))->map(function($range) {
-            return $this->parseRange($range->trim());
-        }, $this)->filter(function($c) {
+        $this->set = $range->split(new RegExp('\\s*\\|\\|\\s*'))->map(function($range)use($that) {
+            return $that->parseRange($range->trim());
+        })->filter(function($c) {
             return $c->length;
         });
 

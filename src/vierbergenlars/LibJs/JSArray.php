@@ -53,13 +53,10 @@ class JSArray extends Object implements \ArrayAccess, \Iterator
     /**
      *
      * @param \Closure $func
-     * @param Object $bind
      * @return JSArray
      */
-    public function filter(\Closure $func, Object $bind = null)
+    public function filter(\Closure $func)
     {
-        if($bind)
-            $func->bindTo($bind);
         $finalArray = new JSArray();
         foreach($this->array as $key => $value) {
             $key = $this->_convert($key);
@@ -118,18 +115,15 @@ class JSArray extends Object implements \ArrayAccess, \Iterator
     /**
      *
      * @param \Closure $func
-     * @param Object $bind
      * @return JSArray
      */
-    public function map(\Closure $func, Object $bind = null)
+    public function map(\Closure $func)
     {
-        if($bind)
-            $func->bindTo($bind);
-        $wrap = function($str) use($func, $bind) {
-            $str = $this->_convert($str);
+        $that = $this;
+        $wrap = function($str) use($func, $that) {
+            $str = $that->_convert($str);
             return $func($str);
         };
-        $wrap->bindTo($this);
         return new self(array_map($wrap, $this->array));
     }
 
