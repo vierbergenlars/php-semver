@@ -33,7 +33,7 @@ class Object
         if(is_string($something)) {
             return new String($something);
         } elseif(is_array($something)) {
-            return new self($something);
+            return new JSArray($something);
         } else {
             return $something;
         }

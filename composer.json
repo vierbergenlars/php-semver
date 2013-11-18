@@ -20,7 +20,10 @@
         "psr-0": {
             "vierbergenlars\\SemVer\\":"src/",
             "vierbergenlars\\LibJs\\": "src/"
-        }
+        },
+        "classmap": [
+            "src/vierbergenlars/SemVer/literal_port.php"
+        ]
     },
     "bin": [
         "bin/semver",

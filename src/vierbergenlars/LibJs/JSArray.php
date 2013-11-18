@@ -39,7 +39,7 @@ class JSArray extends Object implements \ArrayAccess, \Iterator
      * @var int
      * @public
      */
-    public $length = null;
+    private $length = null;
 
     /**
      *
@@ -127,7 +127,7 @@ class JSArray extends Object implements \ArrayAccess, \Iterator
             $func->bindTo($bind);
         $wrap = function($str) use($func, $bind) {
             $str = $this->_convert($str);
-            $func($str);
+            return $func($str);
         };
         $wrap->bindTo($this);
         return new self(array_map($wrap, $this->array));
@@ -173,7 +173,7 @@ class JSArray extends Object implements \ArrayAccess, \Iterator
 
     public function offsetExists($offset)
     {
-        return isset($this->arr[$offset]);
+        return isset($this->array[$offset]);
     }
 
     public function offsetGet($offset)

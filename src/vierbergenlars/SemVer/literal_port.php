@@ -40,25 +40,25 @@ Exports::$src[NONNUMERICIDENTIFIER] = '\\d*[a-zA-Z-][a-zA-Z0-9-]*';
 // Three dot-separated numeric identifiers.
 
 define(__NAMESPACE__.'\\MAINVERSION', $R++);
-Exports::$src[MAINVERSION] = '(' + Exports::$src[NUMERICIDENTIFIER] + ')\\.' +
-                   '(' + Exports::$src[NUMERICIDENTIFIER] + ')\\.' +
-                   '(' + Exports::$src[NUMERICIDENTIFIER] + ')';
+Exports::$src[MAINVERSION] = '(' . Exports::$src[NUMERICIDENTIFIER] . ')\\.' .
+                   '(' . Exports::$src[NUMERICIDENTIFIER] . ')\\.' .
+                   '(' . Exports::$src[NUMERICIDENTIFIER] . ')';
 
 define(__NAMESPACE__.'\\MAINVERSIONLOOSE', $R++);
-Exports::$src[MAINVERSIONLOOSE] = '(' + Exports::$src[NUMERICIDENTIFIERLOOSE] + ')\\.' +
-                        '(' + Exports::$src[NUMERICIDENTIFIERLOOSE] + ')\\.' +
-                        '(' + Exports::$src[NUMERICIDENTIFIERLOOSE] + ')';
+Exports::$src[MAINVERSIONLOOSE] = '(' . Exports::$src[NUMERICIDENTIFIERLOOSE] . ')\\.' .
+                        '(' . Exports::$src[NUMERICIDENTIFIERLOOSE] . ')\\.' .
+                        '(' . Exports::$src[NUMERICIDENTIFIERLOOSE] . ')';
 
 // ## Pre-release Version Identifier
 // A numeric identifier, or a non-numeric identifier.
 
 define(__NAMESPACE__.'\\PRERELEASEIDENTIFIER', $R++);
-Exports::$src[PRERELEASEIDENTIFIER] = '(?:' + Exports::$src[NUMERICIDENTIFIER] +
-                            '|' + Exports::$src[NONNUMERICIDENTIFIER] + ')';
+Exports::$src[PRERELEASEIDENTIFIER] = '(?:' . Exports::$src[NUMERICIDENTIFIER] .
+                            '|' . Exports::$src[NONNUMERICIDENTIFIER] . ')';
 
 define(__NAMESPACE__.'\\PRERELEASEIDENTIFIERLOOSE', $R++);
-Exports::$src[PRERELEASEIDENTIFIERLOOSE] = '(?:' + Exports::$src[NUMERICIDENTIFIERLOOSE] +
-                                 '|' + Exports::$src[NONNUMERICIDENTIFIER] + ')';
+Exports::$src[PRERELEASEIDENTIFIERLOOSE] = '(?:' . Exports::$src[NUMERICIDENTIFIERLOOSE] .
+                                 '|' . Exports::$src[NONNUMERICIDENTIFIER] . ')';
 
 
 // ## Pre-release Version
@@ -66,12 +66,12 @@ Exports::$src[PRERELEASEIDENTIFIERLOOSE] = '(?:' + Exports::$src[NUMERICIDENTIFI
 // identifiers.
 
 define(__NAMESPACE__.'\\PRERELEASE', $R++);
-Exports::$src[PRERELEASE] = '(?:-(' + Exports::$src[PRERELEASEIDENTIFIER] +
-                  '(?:\\.' + Exports::$src[PRERELEASEIDENTIFIER] + ')*))';
+Exports::$src[PRERELEASE] = '(?:-(' . Exports::$src[PRERELEASEIDENTIFIER] .
+                  '(?:\\.' . Exports::$src[PRERELEASEIDENTIFIER] . ')*))';
 
 define(__NAMESPACE__.'\\PRERELEASELOOSE', $R++);
-Exports::$src[PRERELEASELOOSE] = '(?:-?(' + Exports::$src[PRERELEASEIDENTIFIERLOOSE] +
-                       '(?:\\.' + Exports::$src[PRERELEASEIDENTIFIERLOOSE] + ')*))';
+Exports::$src[PRERELEASELOOSE] = '(?:-?(' . Exports::$src[PRERELEASEIDENTIFIERLOOSE] .
+                       '(?:\\.' . Exports::$src[PRERELEASEIDENTIFIERLOOSE] . ')*))';
 
 // ## Build Metadata Identifier
 // Any combination of digits, letters, or hyphens.
@@ -84,8 +84,8 @@ Exports::$src[BUILDIDENTIFIER] = '[0-9A-Za-z-]+';
 // identifiers.
 
 define(__NAMESPACE__.'\\BUILD', $R++);
-Exports::$src[BUILD] = '(?:\\+(' + Exports::$src[BUILDIDENTIFIER] +
-             '(?:\\.' + Exports::$src[BUILDIDENTIFIER] + ')*))';
+Exports::$src[BUILD] = '(?:\\+(' . Exports::$src[BUILDIDENTIFIER] .
+             '(?:\\.' . Exports::$src[BUILDIDENTIFIER] . ')*))';
 
 
 // ## Full Version String
@@ -98,21 +98,21 @@ Exports::$src[BUILD] = '(?:\\+(' + Exports::$src[BUILDIDENTIFIER] +
 // comparison.
 
 define(__NAMESPACE__.'\\FULL', $R++);
-define(__NAMESPACE__.'\\FULLPLAIN','v?' + Exports::$src[MAINVERSION] +
-                Exports::$src[PRERELEASE] + '?' +
-                Exports::$src[BUILD] + '?');
+define(__NAMESPACE__.'\\FULLPLAIN','v?' . Exports::$src[MAINVERSION] .
+                Exports::$src[PRERELEASE] . '?' .
+                Exports::$src[BUILD] . '?');
 
-Exports::$src[FULL] = '^' + FULLPLAIN + '$';
+Exports::$src[FULL] = '^' . FULLPLAIN . '$';
 
 // like full, but allows v1.2.3 and =1.2.3, which people do sometimes.
 // also, 1.0.0alpha1 (prerelease without the hyphen) which is pretty
 // common in the npm registry.
-define(__NAMESPACE__.'\\LOOSEPLAIN', '[v=\\s]*' + Exports::$src[MAINVERSIONLOOSE] +
-                 Exports::$src[PRERELEASELOOSE] + '?' +
-                 Exports::$src[BUILD] + '?');
+define(__NAMESPACE__.'\\LOOSEPLAIN', '[v=\\s]*' . Exports::$src[MAINVERSIONLOOSE] .
+                 Exports::$src[PRERELEASELOOSE] . '?' .
+                 Exports::$src[BUILD] . '?');
 
 define(__NAMESPACE__.'\\LOOSE', $R++);
-Exports::$src[LOOSE] = '^' + LOOSEPLAIN + '$';
+Exports::$src[LOOSE] = '^' . LOOSEPLAIN . '$';
 
 define(__NAMESPACE__.'\\GTLT', $R++);
 Exports::$src[GTLT] = '((?:<|>)?=?)';
@@ -121,30 +121,30 @@ Exports::$src[GTLT] = '((?:<|>)?=?)';
 // Note that "x.x" is a valid xRange identifer, meaning "any version"
 // Only the first item is strictly required.
 define(__NAMESPACE__.'\\XRANGEIDENTIFIERLOOSE', $R++);
-Exports::$src[XRANGEIDENTIFIERLOOSE] = Exports::$src[NUMERICIDENTIFIERLOOSE] + '|x|X|\\*';
+Exports::$src[XRANGEIDENTIFIERLOOSE] = Exports::$src[NUMERICIDENTIFIERLOOSE] . '|x|X|\\*';
 define(__NAMESPACE__.'\\XRANGEIDENTIFIER', $R++);
-Exports::$src[XRANGEIDENTIFIER] = Exports::$src[NUMERICIDENTIFIER] + '|x|X|\\*';
+Exports::$src[XRANGEIDENTIFIER] = Exports::$src[NUMERICIDENTIFIER] . '|x|X|\\*';
 
 define(__NAMESPACE__.'\\XRANGEPLAIN', $R++);
-Exports::$src[XRANGEPLAIN] = '[v=\\s]*(' + Exports::$src[XRANGEIDENTIFIER] + ')' +
-                   '(?:\\.(' + Exports::$src[XRANGEIDENTIFIER] + ')' +
-                   '(?:\\.(' + Exports::$src[XRANGEIDENTIFIER] + ')' +
-                   '(?:(' + Exports::$src[PRERELEASE] + ')' +
+Exports::$src[XRANGEPLAIN] = '[v=\\s]*(' . Exports::$src[XRANGEIDENTIFIER] . ')' .
+                   '(?:\\.(' . Exports::$src[XRANGEIDENTIFIER] . ')' .
+                   '(?:\\.(' . Exports::$src[XRANGEIDENTIFIER] . ')' .
+                   '(?:(' . Exports::$src[PRERELEASE] . ')' .
                    ')?)?)?';
 
 define(__NAMESPACE__.'\\XRANGEPLAINLOOSE', $R++);
-Exports::$src[XRANGEPLAINLOOSE] = '[v=\\s]*(' + Exports::$src[XRANGEIDENTIFIERLOOSE] + ')' +
-                        '(?:\\.(' + Exports::$src[XRANGEIDENTIFIERLOOSE] + ')' +
-                        '(?:\\.(' + Exports::$src[XRANGEIDENTIFIERLOOSE] + ')' +
-                        '(?:(' + Exports::$src[PRERELEASELOOSE] + ')' +
+Exports::$src[XRANGEPLAINLOOSE] = '[v=\\s]*(' . Exports::$src[XRANGEIDENTIFIERLOOSE] . ')' .
+                        '(?:\\.(' . Exports::$src[XRANGEIDENTIFIERLOOSE] . ')' .
+                        '(?:\\.(' . Exports::$src[XRANGEIDENTIFIERLOOSE] . ')' .
+                        '(?:(' . Exports::$src[PRERELEASELOOSE] . ')' .
                         ')?)?)?';
 
 // >=2.x, for example, means >=2.0.0-0
 // <1.x would be the same as "<1.0.0-0", though.
 define(__NAMESPACE__.'\\XRANGE', $R++);
-Exports::$src[XRANGE] = '^' + Exports::$src[GTLT] + '\\s*' + Exports::$src[XRANGEPLAIN] + '$';
+Exports::$src[XRANGE] = '^' . Exports::$src[GTLT] . '\\s*' . Exports::$src[XRANGEPLAIN] . '$';
 define(__NAMESPACE__.'\\XRANGELOOSE', $R++);
-Exports::$src[XRANGELOOSE] = '^' + Exports::$src[GTLT] + '\\s*' + Exports::$src[XRANGEPLAINLOOSE] + '$';
+Exports::$src[XRANGELOOSE] = '^' . Exports::$src[GTLT] . '\\s*' . Exports::$src[XRANGEPLAINLOOSE] . '$';
 
 // Tilde ranges.
 // Meaning is "reasonably at or greater than"
@@ -152,14 +152,14 @@ define(__NAMESPACE__.'\\LONETILDE', $R++);
 Exports::$src[LONETILDE] = '(?:~>?)';
 
 define(__NAMESPACE__.'\\TILDETRIM', $R++);
-Exports::$src[TILDETRIM] = '(\\s*)' + Exports::$src[LONETILDE] + '\\s+';
+Exports::$src[TILDETRIM] = '(\\s*)' . Exports::$src[LONETILDE] . '\\s+';
 Exports::$re[TILDETRIM] = new RegExp(Exports::$src[TILDETRIM], 'g');
 define(__NAMESPACE__.'\\tildeTrimReplace', '$1~');
 
 define(__NAMESPACE__.'\\TILDE', $R++);
-Exports::$src[TILDE] = '^' + Exports::$src[LONETILDE] + Exports::$src[XRANGEPLAIN] + '$';
+Exports::$src[TILDE] = '^' . Exports::$src[LONETILDE] . Exports::$src[XRANGEPLAIN] . '$';
 define(__NAMESPACE__.'\\TILDELOOSE', $R++);
-Exports::$src[TILDELOOSE] = '^' + Exports::$src[LONETILDE] + Exports::$src[XRANGEPLAINLOOSE] + '$';
+Exports::$src[TILDELOOSE] = '^' . Exports::$src[LONETILDE] . Exports::$src[XRANGEPLAINLOOSE] . '$';
 
 // Caret ranges.
 // Meaning is "at least and backwards compatible with"
@@ -167,27 +167,27 @@ define(__NAMESPACE__.'\\LONECARET', $R++);
 Exports::$src[LONECARET] = '(?:\\^)';
 
 define(__NAMESPACE__.'\\CARETTRIM', $R++);
-Exports::$src[CARETTRIM] = '(\\s*)' + Exports::$src[LONECARET] + '\\s+';
+Exports::$src[CARETTRIM] = '(\\s*)' . Exports::$src[LONECARET] . '\\s+';
 Exports::$re[CARETTRIM] = new RegExp(Exports::$src[CARETTRIM], 'g');
 define(__NAMESPACE__.'\\caretTrimReplace', '$1^');
 
 define(__NAMESPACE__.'\\CARET', $R++);
-Exports::$src[CARET] = '^' + Exports::$src[LONECARET] + Exports::$src[XRANGEPLAIN] + '$';
+Exports::$src[CARET] = '^' . Exports::$src[LONECARET] . Exports::$src[XRANGEPLAIN] . '$';
 define(__NAMESPACE__.'\\CARETLOOSE', $R++);
-Exports::$src[CARETLOOSE] = '^' + Exports::$src[LONECARET] + Exports::$src[XRANGEPLAINLOOSE] + '$';
+Exports::$src[CARETLOOSE] = '^' . Exports::$src[LONECARET] . Exports::$src[XRANGEPLAINLOOSE] . '$';
 
 // A simple gt/lt/eq thing, or just "" to indicate "any version"
 define(__NAMESPACE__.'\\COMPARATORLOOSE', $R++);
-Exports::$src[COMPARATORLOOSE] = '^' + Exports::$src[GTLT] + '\\s*(' + LOOSEPLAIN + ')$|^$';
+Exports::$src[COMPARATORLOOSE] = '^' . Exports::$src[GTLT] . '\\s*(' . LOOSEPLAIN . ')$|^$';
 define(__NAMESPACE__.'\\COMPARATOR', $R++);
-Exports::$src[COMPARATOR] = '^' + Exports::$src[GTLT] + '\\s*(' + FULLPLAIN + ')$|^$';
+Exports::$src[COMPARATOR] = '^' . Exports::$src[GTLT] . '\\s*(' . FULLPLAIN . ')$|^$';
 
 
 // An expression to strip any whitespace between the gtlt and the thing
 // it modifies, so that `> 1.2.3` ==> `>1.2.3`
 define(__NAMESPACE__.'\\COMPARATORTRIM', $R++);
-Exports::$src[COMPARATORTRIM] = '(\\s*)' + Exports::$src[GTLT] +
-                      '\\s*(' + LOOSEPLAIN + '|' + Exports::$src[XRANGEPLAIN] + ')';
+Exports::$src[COMPARATORTRIM] = '(\\s*)' . Exports::$src[GTLT] .
+                      '\\s*(' . LOOSEPLAIN . '|' . Exports::$src[XRANGEPLAIN] . ')';
 
 // this one has to use the /g flag
 Exports::$re[COMPARATORTRIM] = new RegExp(Exports::$src[COMPARATORTRIM], 'g');
@@ -199,15 +199,15 @@ define(__NAMESPACE__.'\\comparatorTrimReplace', '$1$2$3');
 // checked against either the strict or loose comparator form
 // later.
 define(__NAMESPACE__.'\\HYPHENRANGE', $R++);
-Exports::$src[HYPHENRANGE] = '^\\s*(' + Exports::$src[XRANGEPLAIN] + ')' +
-                   '\\s+-\\s+' +
-                   '(' + Exports::$src[XRANGEPLAIN] + ')' +
+Exports::$src[HYPHENRANGE] = '^\\s*(' . Exports::$src[XRANGEPLAIN] . ')' .
+                   '\\s+-\\s+' .
+                   '(' . Exports::$src[XRANGEPLAIN] . ')' .
                    '\\s*$';
 
 define(__NAMESPACE__.'\\HYPHENRANGELOOSE', $R++);
-Exports::$src[HYPHENRANGELOOSE] = '^\\s*(' + Exports::$src[XRANGEPLAINLOOSE] + ')' +
-                        '\\s+-\\s+' +
-                        '(' + Exports::$src[XRANGEPLAINLOOSE] + ')' +
+Exports::$src[HYPHENRANGELOOSE] = '^\\s*(' . Exports::$src[XRANGEPLAINLOOSE] . ')' .
+                        '\\s+-\\s+' .
+                        '(' . Exports::$src[XRANGEPLAINLOOSE] . ')' .
                         '\\s*$';
 
 // Star ranges basically just allow anything at all.
@@ -307,6 +307,8 @@ class SemVer extends Object
      */
     public function __construct($version, $loose = false)
     {
+        if($version == null)
+            debug_print_backtrace();
         $this->loose = $loose;
         if($version instanceof SemVer) {
             $this->version = $version->version;
@@ -323,17 +325,16 @@ class SemVer extends Object
         $this->raw = $version;
 
         // these are actually numbers
-        $this->major = (int)$m[1];
-        $this->minor = (int)$m[2];
-        $this->patch = (int)$m[3];
+        $this->major = (int)$m[1]->valueOf();
+        $this->minor = (int)$m[2]->valueOf();
+        $this->patch = (int)$m[3]->valueOf();
 
         // numberify any prerelease numeric ids
         if (!$m[4])
             $this->prerelease = new JSArray();
         else
             $this->prerelease = $m[4]->split('.')->map(function($id) {
-                $id = $id->valueOf();
-                return (is_numeric($id)) ? (int)$id : $id;
+                return (is_numeric($id->valueOf())) ? (int)$id->valueOf() : $id;
             });
 
         $this->build = $m[5]?$m[5]->split('.') : new JSArray();
@@ -391,7 +392,10 @@ class SemVer extends Object
         $i = 0;
         do {
             $a = $this->prerelease[$i];
+            if($a instanceof String) $a = $a->valueOf();
             $b = $other->prerelease[$i];
+            if($b instanceof String) $b = $b->valueOf();
+
             if ($a === null && $b === null)
               return 0;
             else if ($b === null)
@@ -420,16 +424,16 @@ class SemVer extends Object
                 $this->patch = -1;
             case 'patch':
                 $this->patch++;
-                $this->prerelease = [];
+                $this->prerelease = new JSArray();
                 break;
             case 'prerelease':
                 if ($this->prerelease->length === 0)
-                      $this->prerelease = [0];
+                      $this->prerelease = new JSArray(array(0));
                 else {
                     $i = $this->prerelease->length;
                     while (--$i >= 0) {
                         if (is_numeric($this->prerelease[$i])) {
-                            $this->prerelease[$i]++;
+                            $this->prerelease[$i] = $this->prerelease[$i] + 1;
                             $i = -2;
                         }
                     }
@@ -450,7 +454,7 @@ function inc($version, $release, $loose = false)
 {
     try {
         $s = new SemVer($version, $loose);
-        return $s->inc($release)->version;
+        return (string)$s->inc($release)->version;
     } catch(\Exception $e) {
         return null;
     }
@@ -466,11 +470,16 @@ function compareIdentifiers($a, $b)
         $b = (int)$b;
     }
 
-    return ($anum && !$bnum) ? -1 :
-         ($bnum && !$anum) ? 1 :
-         $a < $b ? -1 :
-         $a > $b ? 1 :
-         0;
+    if($anum && !$bnum)
+        return -1;
+    elseif($bnum && !$anum)
+        return 1;
+    elseif($a < $b)
+        return -1;
+    elseif($a > $b)
+        return 1;
+    else
+        return 0;
 }
 
 function rcompareIdentifiers($a, $b)
@@ -538,9 +547,10 @@ function lte($a, $b, $loose = false)
     return compare($a, $b, $loose) <= 0;
 }
 
-function cmp($a, String $op, $b, $loose = false)
+function cmp($a, $op, $b, $loose = false)
 {
-    $op = $op->valueOf();
+    if($op instanceof String)
+        $op = $op->valueOf();
     switch ($op) {
         case '===': $ret = $a === $b; break;
         case '!==': $ret = $a !== $b; break;
@@ -633,7 +643,7 @@ class Comparator extends Object
 
     public function test($version)
     {
-        return ($this->semver = null) ? true:
+        return ($this->semver == null) ? true:
                 cmp($version, $this->operator, $this->semver, $this->loose);
     }
 }
@@ -672,7 +682,7 @@ class Range extends Object
         $this->raw = $range;
 
         // First, split based on boolean or ||
-        $this->set = $range->split(new RegExp('\\s*||\\s*'))->map(function($range) {
+        $this->set = $range->split(new RegExp('\\s*\\|\\|\\s*'))->map(function($range) {
             return $this->parseRange($range->trim());
         }, $this)->filter(function($c) {
             return $c->length;
@@ -708,7 +718,7 @@ class Range extends Object
         $loose = $this->loose;
         $range = $range->trim();
         // `1.2.3 - 1.2.4` => `>=1.2.3 <=1.2.4`
-        $hr = $loose?Exports::$re[HYPHENRANGELOOSE]:Exports::$re[HYPENRANGE];
+        $hr = $loose?Exports::$re[HYPHENRANGELOOSE]:Exports::$re[HYPHENRANGE];
         $range = $range->replace($hr, function() {
             return call_user_func_array(__NAMESPACE__.'\\hyphenReplace', func_get_args());
         });
@@ -720,7 +730,7 @@ class Range extends Object
         $range = $range->replace(Exports::$re[TILDETRIM], tildeTrimReplace);
 
         // `^ 1.2.3` => `^1.2.3`
-        $range = $range->replace(Exports::$re[CARETTRIL], caretTrimReplace);
+        $range = $range->replace(Exports::$re[CARETTRIM], caretTrimReplace);
 
         // normalize spaces
         $range = $range->split(new RegExp('\\s+'))->join(' ');
@@ -732,6 +742,7 @@ class Range extends Object
         $set = $range->split(' ')->map(function($comp) use($loose) {
             return parseComparator($comp, $loose);
         })->join(' ')->split(new RegExp('\\s+'));
+
         if ($loose) {
             // in loose mode, throw out any that are not valid comparators
             $set = $set->filter(function($comp)use($compRe) {
@@ -741,6 +752,7 @@ class Range extends Object
         $set = $set->map(function($comp) use($loose) {
             return new Comparator($comp, $loose);
         });
+
 
         return $set;
     }
@@ -780,9 +792,9 @@ function parseComparator(String $comp, $loose = false)
     return $comp;
 }
 
-function isX(String $id)
+function isX(String $id = null)
 {
-    return !$id->valueOf() || $id->toLowerCase()->valueOf() === 'x' || $id->valueOf() === '*';
+    return !$id || $id->toLowerCase()->valueOf() === 'x' || $id->valueOf() === '*';
 }
 
 // ~, ~> --> * (any, kinda silly)
@@ -799,23 +811,23 @@ function replaceTildes(String $comp, $loose = false) {
 
 function replaceTilde(String $comp, $loose = false) {
   $r = $loose ? Exports::$re[TILDELOOSE] : Exports::$re[TILDE];
-  return $comp->replace($r, function(String $_, String $M, String $m, String $p, String $pr) {
+  return $comp->replace($r, function(String $_, String $M = null, String $m = null, String $p = null, String $pr = null) {
     if (isX($M))
       $ret = '';
     else if (isX($m))
-      $ret = '>=' . $M . '.0.0-0 <' . ($M + 1) . '.0.0-0';
+      $ret = '>=' . $M . '.0.0-0 <' . ((int)(string)$M + 1) . '.0.0-0';
     else if (isX($p))
       // ~1.2 == >=1.2.0- <1.3.0-
-      $ret = '>=' . $M . '.' . $m . '.0-0 <' . $M . '.' . ($m + 1) . '.0-0';
-    else if ($pr->valueOf()) {
+      $ret = '>=' . $M . '.' . $m . '.0-0 <' . $M . '.' . ((int)(string)$m + 1) . '.0-0';
+    else if ($pr) {
       if ($pr->charAt(0) !== '-')
         $pr = '-' . $pr;
       $ret = '>=' . $M . '.' . $m . '.' . $p . $pr .
-            ' <' . $M . '.' . ($m + 1) . '.0-0';
+            ' <' . $M . '.' . ((int)(string)$m + 1) . '.0-0';
     } else
       // ~1.2.3 == >=1.2.3-0 <1.3.0-0
       $ret = '>=' . $M . '.' . $m . '.' . $p . '-0' .
-            ' <' . $M . '.' . ($m + 1) . '.0-0';
+            ' <' . $M . '.' . ((int)(string)$m + 1) . '.0-0';
 
     return $ret;
   });
@@ -835,17 +847,17 @@ function replaceCarets(String $comp, $loose = false) {
 
 function replaceCaret(String $comp, $loose = false) {
   $r = $loose ? Exports::$re[CARETLOOSE] : Exports::$re[CARET];
-  return $comp->replace($r, function(String $_, String $M, String $m, String $p, String $pr) {
+  return $comp->replace($r, function(String $_, String $M = null, String $m = null, String $p = null, String $pr = null) {
     if (isX($M))
       $ret = '';
     else if (isX($m))
-      $ret = '>=' . $M . '.0.0-0 <' . ($M + 1) . '.0.0-0';
+      $ret = '>=' . $M . '.0.0-0 <' . ((int)(string)$M + 1) . '.0.0-0';
     else if (isX($p)) {
       if ($M->valueOf() === '0')
-        $ret = '>=' . $M . '.' . $m . '.0-0 <' . $M . '.' . ($m + 1) . '.0-0';
+        $ret = '>=' . $M . '.' . $m . '.0-0 <' . $M . '.' . ((int)(string)$m + 1) . '.0-0';
       else
-        $ret = '>=' . $M . '.' . $m . '.0-0 <' . ($M + 1) . '.0.0-0';
-    } else if ($pr->valueOf()) {
+        $ret = '>=' . $M . '.' . $m . '.0-0 <' . ((int)(string)$M + 1) . '.0.0-0';
+    } else if ($pr) {
       if ($pr->charAt(0) !== '-')
         $pr = '-' . $pr;
       if ($M->valueOf() === '0') {
@@ -853,20 +865,20 @@ function replaceCaret(String $comp, $loose = false) {
           $ret = '=' . $M . '.' . $m . '.' . $p . $pr;
         else
           $ret = '>=' . $M . '.' . $m . '.' . $p . $pr .
-                ' <' . $M . '.' . ($m + 1) . '.0-0';
+                ' <' . $M . '.' . ((int)(string)$m + 1) . '.0-0';
       } else
         $ret = '>=' . $M . '.' . $m . '.' . $p . $pr .
-              ' <' . ($M + 1) . '.0.0-0';
+              ' <' . ((int)(string)$M + 1) . '.0.0-0';
     } else {
       if ($M->valueOf() === '0') {
         if ($m->valueOf() === '0')
           $ret = '=' . $M . '.' . $m . '.' . $p;
         else
           $ret = '>=' . $M . '.' . $m . '.' . $p . '-0' .
-                ' <' . $M . '.' . ($m + 1) . '.0-0';
+                ' <' . $M . '.' . ((int)(string)$m + 1) . '.0-0';
       } else
         $ret = '>=' . $M . '.' . $m . '.' . $p . '-0' .
-              ' <' . ($M + 1) . '.0.0-0';
+              ' <' . ((int)(string)$M + 1) . '.0.0-0';
     }
 
     return $ret;
@@ -882,11 +894,12 @@ function replaceXRanges(String $comp, $loose = false) {
 function replaceXRange(String $comp, $loose = false) {
   $comp = $comp->trim();
   $r = $loose ? Exports::$re[XRANGELOOSE] : Exports::$re[XRANGE];
-  return $comp->replace($r, function(String $ret, String $gtlt, String $M, String $m, String $p, String $pr) {
+  return $comp->replace($r, function(String $ret, String $gtlt, String $M = null, String $m = null, String $p = null, String $pr=null) {
     $xM = isX($M);
     $xm = $xM || isX($m);
     $xp = $xm || isX($p);
     $anyX = $xp;
+    $gtlt = (string)$gtlt;
 
     if ($gtlt === '=' && $anyX)
       $gtlt = '';
@@ -908,11 +921,11 @@ function replaceXRange(String $comp, $loose = false) {
         if ($xM) {
           // no change
         } else if ($xm) {
-          $M = $M + 1;
+          $M = (int)(string)$M + 1;
           $m = 0;
           $p = 0;
         } else if ($xp) {
-          $m = $m + 1;
+          $m = (int)(string)$m + 1;
           $p = 0;
         }
       }
@@ -926,9 +939,9 @@ function replaceXRange(String $comp, $loose = false) {
       // append '-0' onto the version, otherwise
       // '1.x.x' matches '2.0.0-beta', since the tag
       // *lowers* the version value
-      $ret = '>=' . $M . '.0.0-0 <' . ($M + 1) . '.0.0-0';
+      $ret = '>=' . $M . '.0.0-0 <' . ((int)(string)$M + 1) . '.0.0-0';
     } else if ($xp) {
-      $ret = '>=' . $M . '.' . $m . '.0-0 <' . $M . '.' . ($m + 1) . '.0-0';
+      $ret = '>=' . $M . '.' . $m . '.0-0 <' . $M . '.' . ((int)(string)$m + 1) . '.0-0';
     }
 
     return $ret;
@@ -948,8 +961,8 @@ function replaceStars(String $comp, $loose = false) {
 // 1.2.3 - 3.4 => >=1.2.0-0 <3.5.0-0 Any 3.4.x will do
 // 1.2 - 3.4 => >=1.2.0-0 <3.5.0-0
 function hyphenReplace(String $_,
-                       String $from, String $fM, String $fm, String $fp, String $fpr, String $fb,
-                       String $to, String $tM, String $tm, String $tp, String $tpr, String $tb) {
+                       String $from = null, String $fM = null, String $fm = null, String $fp = null, String $fpr = null, String $fb = null,
+                       String $to = null, String $tM = null, String $tm = null, String $tp = null, String $tpr = null, String $tb = null) {
 
   if (isX($fM))
     $from = '';

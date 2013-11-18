@@ -43,13 +43,21 @@ class RegExp extends Object
 
     /**
      *
+     * @var boolean
+     */
+    public $global = false;
+
+    /**
+     *
      * @param string $regex
      * @param string $flags
      */
     public function __construct($regex, $flags = '')
     {
         $this->regex = '/'.$regex.'/'.$flags;
-        $this->_pregSource = $this->regex;
+        $this->_pregSource = '/'.$regex.'/';
+        if(strpos($flags, 's') !== false)
+            $this->global = true;
     }
 
     /**
@@ -58,8 +66,13 @@ class RegExp extends Object
      */
     public function exec($str)
     {
-        if(!preg_match($this->_pregSource, (string)$str, $matches))
-            return null;
+        if($this->global) {
+            if(!preg_match_all($this->_pregSource, (string)$src, $matches))
+                return null;
+        } else {
+            if(!preg_match($this->_pregSource, (string)$str, $matches))
+                return null;
+        }
         return new JSArray($matches);
     }
 
@@ -69,7 +82,11 @@ class RegExp extends Object
      */
     public function test($str)
     {
-        return preg_match($this->_pregSource, (string)$str);
+        if($this->global) {
+            return preg_match_all($this->_pregSource, (string)$str);
+        } else {
+            return preg_match($this->_pregSource, (string)$str);
+        }
     }
 
     public function valueOf()

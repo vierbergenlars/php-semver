@@ -91,7 +91,7 @@ class String extends Object implements \ArrayAccess
         if(!$regex instanceof RegExp)
             $regex = new RegExp((string)$regex);
         $ret = $regex->exec($this);
-        if(!$regex->global) {
+        if($ret&&!$regex->global) {
             $ret->input = $this;
         }
         return $ret;
@@ -107,11 +107,11 @@ class String extends Object implements \ArrayAccess
     {
         if($regexOrSubstr instanceof RegExp) {
             if($newSubstrOrFunction instanceof \Closure) {
-                $wrap = function($matches)use($newSubstrOfFunction) {
+                $wrap = function($matches)use($newSubstrOrFunction) {
                     $matches = array_map(function($s) {
                         return new String($s);
                     }, $matches);
-                    return call_user_func_array($newSubstrOfFunction, $matches);
+                    return call_user_func_array($newSubstrOrFunction, $matches);
                 };
                 return new self(preg_replace_callback(
                     $regexOrSubstr->_pregSource,
