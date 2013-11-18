@@ -19,7 +19,11 @@ class expression
      */
     public function __construct($versions, $loose = false)
     {
-        $this->range = new Range($versions, $loose);
+        try {
+            $this->range = new Range($versions, $loose);
+        } catch(\Exception $e) {
+            throw new SemVerException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
