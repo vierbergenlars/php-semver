@@ -393,7 +393,7 @@ class SemVerTest extends \UnitTestCase
         }
     }
 
- /*   public function testStrictVsLoose()
+    public function testStrictVsLoose()
     {
         $compare=array(
               array('=1.2.3', '1.2.3')
@@ -406,20 +406,20 @@ class SemVerTest extends \UnitTestCase
         foreach($compare as $set) {
             $ex = false;
             try {
-                new SemVer\version($set[0]);
+                new SemVer\SemVer($set[0]);
             } catch(\Exception $e) {
                 $ex = true;
             }
             $this->assertTrue($ex,"%s > Creating version with loose version $set[0], without loose flag set should throw exception.");
 
-            $vers = new SemVer\version($set[0], true);
+            $vers = new SemVer\SemVer($set[0], true);
 
-            $this->assertEqual($vers->getVersion(), $set[1], "%s > (new version($set[0], true))->getVersion() == $set[1]");
-            $this->assertTrue(SemVer\eq($set[0], $set[1], true), "%s > eq($set[0], $set[1], true)");
+            $this->assertEqual($vers->version->valueOf(), $set[1], "%s > (new version($set[0], true))->getVersion() == $set[1]");
+            $this->assertTrue(SemVer\G::eq($set[0], $set[1], true), "%s > eq($set[0], $set[1], true)");
 
             $ex = false;
             try {
-                SemVer\eq($set[0], $set[1]);
+                SemVer\G::eq($set[0], $set[1]);
             } catch(\Exception $e) {
                 $ex = true;
             }
@@ -427,5 +427,5 @@ class SemVerTest extends \UnitTestCase
 
         }
 
-    }*/
+    }
 }
