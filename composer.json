@@ -22,7 +22,7 @@
             "vierbergenlars\\LibJs\\": "src/"
         },
         "classmap": [
-            "src/vierbergenlars/SemVer/literal_port.php"
+            "src/vierbergenlars/SemVer/internal.php"
         ]
     },
     "bin": [
