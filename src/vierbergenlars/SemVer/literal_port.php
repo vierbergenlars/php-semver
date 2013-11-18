@@ -1,11 +1,19 @@
 <?php
 
-namespace vierbergenlars\SemVer;
+namespace vierbergenlars\SemVer\Internal;
 use vierbergenlars\LibJs\JSArray;
 use vierbergenlars\LibJs\String;
 use vierbergenlars\LibJs\RegExp;
 use vierbergenlars\LibJs\Object;
 use vierbergenlars\LibJs\Util;
+
+class G
+{
+    public static function __callStatic($name, $arguments)
+    {
+        return call_user_func_array(__NAMESPACE__.'\\'.$name, $arguments);
+    }
+}
 
 class Exports
 {
@@ -346,7 +354,7 @@ class SemVer extends Object
     {
        $this->version = new String($this->major . '.' . $this->minor . '.' . $this->patch);
         if ($this->prerelease->length)
-            $this->version->concat('-', $this->prerelease->join('.'));
+            $this->version = $this->version->concat('-', $this->prerelease->join('.'));
         return $this->version;
     }
 
@@ -624,8 +632,8 @@ class Comparator extends Object
             // even though `1.2.3-beta < 1.2.3`
             // The assumption is that the 1.2.3 version has something you
             // *don't* want, so we push the prerelease down to the minimum.
-            if ($this->operator->valueOf() === '<' && $this->semver->prerelease->length) {
-                $this->semver->prerelease = new JSArray(array('0'));
+            if ($this->operator->valueOf() === '<' && !$this->semver->prerelease->length) {
+                $this->semver->prerelease = new JSArray(array(0));
                 $this->semver->format();
             }
         }
@@ -1022,7 +1030,7 @@ function validRange($range, $loose = false) {
     // Return '*' instead of '' so that truthiness works.
     // This will throw if it's invalid anyway
     $r = new Range($range, $loose);
-    Util::JSor($r->range, new String('*'));
+    return (string)Util::JSor($r->range, new String('*'));
   } catch (\Exception $e) {
     return null;
   }

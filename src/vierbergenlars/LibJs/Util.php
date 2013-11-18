@@ -36,6 +36,8 @@ class Util
     public static function JSor()
     {
         foreach(func_get_args() as $arg) {
+            if($arg instanceof String)
+                $arg = $arg->valueOf();
             if($arg)
                 return $arg;
         }

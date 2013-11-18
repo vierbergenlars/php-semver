@@ -1,9 +1,8 @@
 <?php
-namespace vierbergenlars\SemVer\Tests;
-use vierbergenlars\SemVer;
+namespace vierbergenlars\SemVer\Tests\Internal;
+use vierbergenlars\SemVer\Internal as SemVer;
 require_once __DIR__.'/../vendor/autoload.php';
 require_once __DIR__.'/../vendor/simpletest/simpletest/autorun.php';
-require_once __DIR__.'/../src/vierbergenlars/SemVer/literal_port.php';
 
 class SemVerTest extends \UnitTestCase
 {
@@ -45,17 +44,17 @@ class SemVerTest extends \UnitTestCase
             $a=$set[0];
             $b=$set[1];
             $loose = isset($set[2])&&$set[2];
-            $this->assertTrue(SemVer\gt($a, $b, $loose), "%s > gt('".$a."', '".$b."')");
-            $this->assertTrue(SemVer\lt($b, $a, $loose), "%s > lt('".$b."', '".$a."')");
-            $this->assertFalse(SemVer\gt($b, $a, $loose), "%s > !gt('".$b."', '".$a."')");
-            $this->assertFalse(SemVer\lt($a, $b, $loose), "%s > !lt('".$a."', '".$b."')");
-            $this->assertTrue(SemVer\eq($a, $a, $loose), "%s > eq('".$a."', '".$a."')");
-            $this->assertTrue(SemVer\eq($b, $b, $loose), "%s > eq('".$b."', '".$b."')");
-            $this->assertTrue(SemVer\neq($a, $b, $loose), "%s > neq('".$a."', '".$b."')");
-            $this->assertTrue(SemVer\cmp($b, "==", $b, $loose), "%s > cmp('".$b."' == '".$b."')");
-            $this->assertTrue(SemVer\cmp($a, ">=", $b, $loose), "%s > cmp('".$a."' >= '".$b."')");
-            $this->assertTrue(SemVer\cmp($b, "<=", $a, $loose), "%s > cmp('".$b."' <= '".$a."')");
-            $this->assertTrue(SemVer\cmp($a, "!=", $b, $loose), "%s > cmp('".$a."' != '".$b."')");
+            $this->assertTrue(SemVer\G::gt($a, $b, $loose), "%s > gt('".$a."', '".$b."')");
+            $this->assertTrue(SemVer\G::lt($b, $a, $loose), "%s > lt('".$b."', '".$a."')");
+            $this->assertFalse(SemVer\G::gt($b, $a, $loose), "%s > !gt('".$b."', '".$a."')");
+            $this->assertFalse(SemVer\G::lt($a, $b, $loose), "%s > !lt('".$a."', '".$b."')");
+            $this->assertTrue(SemVer\G::eq($a, $a, $loose), "%s > eq('".$a."', '".$a."')");
+            $this->assertTrue(SemVer\G::eq($b, $b, $loose), "%s > eq('".$b."', '".$b."')");
+            $this->assertTrue(SemVer\G::neq($a, $b, $loose), "%s > neq('".$a."', '".$b."')");
+            $this->assertTrue(SemVer\G::cmp($b, "==", $b, $loose), "%s > cmp('".$b."' == '".$b."')");
+            $this->assertTrue(SemVer\G::cmp($a, ">=", $b, $loose), "%s > cmp('".$a."' >= '".$b."')");
+            $this->assertTrue(SemVer\G::cmp($b, "<=", $a, $loose), "%s > cmp('".$b."' <= '".$a."')");
+            $this->assertTrue(SemVer\G::cmp($a, "!=", $b, $loose), "%s > cmp('".$a."' != '".$b."')");
         }
     }
     public function testEquality()
@@ -106,16 +105,16 @@ class SemVerTest extends \UnitTestCase
             $b=$set[1];
             $loose = isset($set[2])&&$set[2];
             try {
-            $this->assertTrue(SemVer\eq($a, $b, $loose), "%s > eq('".$a."', '".$b."')");
-            $this->assertFalse(SemVer\neq($a, $b, $loose), "%s > !neq('".$a."', '".$b."')");
-            $this->assertTrue(SemVer\cmp($a, "==", $b, $loose), "%s > cmp(".$a."==".$b.")");
-            $this->assertFalse(SemVer\cmp($a, "!=", $b, $loose), "%s > !cmp(".$a."!=".$b.")");
-            $this->assertFalse(SemVer\cmp($a, "===", $b, $loose), "%s > !cmp(".$a."===".$b.")");
-            $this->assertTrue(SemVer\cmp($a, "!==", $b, $loose), "%s > cmp(".$a."!==".$b.")");
-            $this->assertFalse(SemVer\gt($a, $b, $loose), "%s > !gt('".$a."', '".$b."')");
-            $this->assertTrue(SemVer\gte($a, $b, $loose), "%s > gte('".$a."', '".$b."')");
-            $this->assertFalse(SemVer\lt($a, $b, $loose), "%s > !lt('".$a."', '".$b."')");
-            $this->assertTrue(SemVer\lte($a, $b, $loose), "%s > lte('".$a."', '".$b."')");
+            $this->assertTrue(SemVer\G::eq($a, $b, $loose), "%s > eq('".$a."', '".$b."')");
+            $this->assertFalse(SemVer\G::neq($a, $b, $loose), "%s > !neq('".$a."', '".$b."')");
+            $this->assertTrue(SemVer\G::cmp($a, "==", $b, $loose), "%s > cmp(".$a."==".$b.")");
+            $this->assertFalse(SemVer\G::cmp($a, "!=", $b, $loose), "%s > !cmp(".$a."!=".$b.")");
+            $this->assertFalse(SemVer\G::cmp($a, "===", $b, $loose), "%s > !cmp(".$a."===".$b.")");
+            $this->assertTrue(SemVer\G::cmp($a, "!==", $b, $loose), "%s > cmp(".$a."!==".$b.")");
+            $this->assertFalse(SemVer\G::gt($a, $b, $loose), "%s > !gt('".$a."', '".$b."')");
+            $this->assertTrue(SemVer\G::gte($a, $b, $loose), "%s > gte('".$a."', '".$b."')");
+            $this->assertFalse(SemVer\G::lt($a, $b, $loose), "%s > !lt('".$a."', '".$b."')");
+            $this->assertTrue(SemVer\G::lte($a, $b, $loose), "%s > lte('".$a."', '".$b."')");
             } catch(\Exception $e) {
                 $this->fail("Exception while comparing $set[0] and $set[1]");
             }
@@ -215,7 +214,7 @@ class SemVerTest extends \UnitTestCase
         foreach ($compare as $set) {
             $loose = isset($set[2])&&$set[2];
 
-            $this->assertTrue(SemVer\satisfies($set[1], $set[0], $loose), "%s > $set[0] should be satisfied by $set[1]");
+            $this->assertTrue(SemVer\G::satisfies($set[1], $set[0], $loose), "%s > $set[0] should be satisfied by $set[1]");
         }
 
     }
@@ -280,7 +279,7 @@ class SemVerTest extends \UnitTestCase
         );
         foreach ($compare as $set) {
             $loose = isset($set[2])&&$set[2];
-            $this->assertFalse(SemVer\satisfies($set[1], $set[0], $loose), "%s > $set[0] should not be satisfied by $set[1]");
+            $this->assertFalse(SemVer\G::satisfies($set[1], $set[0], $loose), "%s > $set[0] should not be satisfied by $set[1]");
         }
     }
     public function testIncrementVersions()
@@ -312,7 +311,7 @@ class SemVerTest extends \UnitTestCase
             $s=$set[0];
             $loose = isset($set[3])&&$set[3];
 
-            $found = SemVer\inc($set[0],$set[1], $loose);
+            $found = SemVer\G::inc($set[0],$set[1], $loose);
             $this->assertEqual($found, $set[2]);
         }
     }
@@ -368,7 +367,7 @@ class SemVerTest extends \UnitTestCase
         , array("^ 1", ">=1.0.0-0 <2.0.0-0")
         , array("^0.1", ">=0.1.0-0 <0.2.0-0")
         , array("^1.0", ">=1.0.0-0 <2.0.0-0")
-        , array("^1.2", ">=1.2.0-0, <2.0.0-0")
+        , array("^1.2", ">=1.2.0-0 <2.0.0-0")
         , array("^0.0.1", "=0.0.1")
         , array("^0.0.1-beta", "=0.0.1-beta")
         , array("^0.1.2", ">=0.1.2-0 <0.2.0-0")
@@ -390,7 +389,7 @@ class SemVerTest extends \UnitTestCase
         foreach ($compare as $set) {
             $loose = isset($set[2])&&$set[2];
 
-            $this->assertEqual(SemVer\validRange($set[0], $loose), $set[1]);
+            $this->assertEqual(SemVer\G::validRange($set[0], $loose), $set[1]);
         }
     }
 
