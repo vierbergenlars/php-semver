@@ -28,7 +28,13 @@ namespace vierbergenlars\LibJs;
 
 class Object
 {
-    protected function _convert($something)
+    /**
+     *
+     * @param type $something
+     * @return \vierbergenlars\LibJs\String|\vierbergenlars\LibJs\JSArray
+     * @private
+     */
+    public function _convert($something)
     {
         if(is_string($something)) {
             return new String($something);
