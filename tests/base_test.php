@@ -234,4 +234,18 @@ class versioningTest extends \UnitTestCase
                 new SemVer\version($version);
             }
         }
+    function testPrerelease()
+    {
+        $t = array(
+            '1.0.0-alpha'=>array('alpha'),
+            '1.0.0-alpha.1'=>array('alpha', '1'),
+            '1.0.0-0.3.7'=>array('0', '3', '7'),
+            '1.0.0-x.7.z.92'=>array('x', '7', 'z', '92'),
+        );
+        foreach($t as $version => $prerelease) {
+            $v=new SemVer\version($version);
+            $this->assertEqual($v->getPrerelease(), $prerelease);
+        }
+    }
+
 }

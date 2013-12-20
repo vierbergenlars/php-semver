@@ -75,7 +75,7 @@ class version
      */
     public function getPrerelease()
     {
-        return (string) $this->version->prerelease->valueOf();
+        return (array) $this->version->prerelease->valueOf();
     }
 
     /**
