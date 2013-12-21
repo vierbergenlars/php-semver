@@ -234,18 +234,26 @@ class versioningTest extends \UnitTestCase
                 new SemVer\version($version);
             }
         }
-    function testPrerelease()
+
+    function testVersionFunctions()
     {
         $t = array(
-            '1.0.0-alpha'=>array('alpha'),
-            '1.0.0-alpha.1'=>array('alpha', '1'),
-            '1.0.0-0.3.7'=>array('0', '3', '7'),
-            '1.0.0-x.7.z.92'=>array('x', '7', 'z', '92'),
+            '1.0.0-alpha'      => array('M'=>1, 'm'=>0, 'p'=>0, 'pr'=>array('alpha'), 'b'=>array()),
+            '1.0.0-alpha.1'    => array('M'=>1, 'm'=>0, 'p'=>0, 'pr'=>array('alpha', 1), 'b'=>array()),
+            '1.0.0-0.3.7'      => array('M'=>1, 'm'=>0, 'p'=>0, 'pr'=>array(0, 3, 7), 'b'=>array()),
+            '1.0.0-x.7.z.92'   => array('M'=>1, 'm'=>0, 'p'=>0, 'pr'=>array('x', 7, 'z', 92), 'b'=>array()),
+            '1.0.0-alpha+001'  => array('M'=>1, 'm'=>0, 'p'=>0, 'pr'=>array('alpha'), 'b'=>array('001')),
+            '1.2.3-alpha.2+02' => array('M'=>1, 'm'=>2, 'p'=>3, 'pr'=>array('alpha', 2), 'b'=>array('02')),
+            '1.2.3-a.3+02.5.a' => array('M'=>1, 'm'=>2, 'p'=>3, 'pr'=>array('a', 3), 'b'=>array('02', 5, 'a')),
+
         );
-        foreach($t as $version => $prerelease) {
+        foreach($t as $version => $parts) {
             $v=new SemVer\version($version);
-            $this->assertEqual($v->getPrerelease(), $prerelease);
+            $this->assertEqual($v->getMajor(), $parts['M']);
+            $this->assertEqual($v->getMinor(), $parts['m']);
+            $this->assertEqual($v->getPatch(), $parts['p']);
+            $this->assertEqual($v->getPrerelease(), $parts['pr']);
+            $this->assertEqual($v->getBuild(), $parts['b']);
         }
     }
-
 }
