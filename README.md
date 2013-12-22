@@ -7,6 +7,8 @@ Ported from [node-semver 1.1.2](https://github.com/isaacs/node-semver/tree/v1.1.
 [![Latest Stable Version](https://poser.pugx.org/vierbergenlars/php-semver/v/stable.png)](https://packagist.org/packages/vierbergenlars/php-semver)
 [![Total Downloads](https://poser.pugx.org/vierbergenlars/php-semver/downloads.png)](https://packagist.org/packages/vierbergenlars/php-semver)
 
+php-semver 2.x is compatible with semver 1.0.0, and **NOT** with semver 2.0.0, have a look at [php-semver 3.x](https://github.com/vierbergenlars/php-semver/tree/master) if you require semver 2.0.0 compatibility
+
 ## Usage
 
 ```php
