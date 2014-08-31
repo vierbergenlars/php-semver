@@ -19,6 +19,8 @@ grammar SemVerParser
         GtLtVersion
         / vl:Version __ "-" __ vr:Version {
             return new Expr\RangeExpression($vl, $vr);
+        } / "(" ^ _ expr:OrExpr _ ")" {
+            return $expr;
         } / Version;
 
     GtLtVersion =

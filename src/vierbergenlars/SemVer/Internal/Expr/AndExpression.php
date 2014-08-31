@@ -29,6 +29,12 @@ class AndExpression implements ExpressionInterface
 
     public function __toString()
     {
-        return implode(' ', $this->expressions);
+        return implode(' ', array_map(function(ExpressionInterface $expression) {
+            if($expression instanceof OrExpression) {
+                return '('.$expression.')';
+            }
+
+            return $expression;
+        }, $this->expressions));
     }
 }

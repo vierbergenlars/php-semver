@@ -249,14 +249,14 @@ class SemVerParser
             return $_success;
         }
     
-        $_position12 = $this->position;
-        $_cut13 = $this->cut;
+        $_position13 = $this->position;
+        $_cut14 = $this->cut;
         
         $this->cut = false;
         $_success = $this->parseGtLtVersion();
         
         if (!$_success && !$this->cut) {
-            $this->position = $_position12;
+            $this->position = $_position13;
         
             $_value11 = array();
             
@@ -316,12 +316,85 @@ class SemVerParser
         }
         
         if (!$_success && !$this->cut) {
-            $this->position = $_position12;
+            $this->position = $_position13;
+        
+            $_value12 = array();
+            
+            if (substr($this->string, $this->position, strlen("(")) === "(") {
+                $_success = true;
+                $this->value = substr($this->string, $this->position, strlen("("));
+                $this->position += strlen("(");
+            } else {
+                $_success = false;
+            
+                $this->report($this->position, '"("');
+            }
+            
+            if ($_success) {
+                $_value12[] = $this->value;
+            
+                $_success = true;
+                $this->value = null;
+                
+                $this->cut = true;
+            }
+            
+            if ($_success) {
+                $_value12[] = $this->value;
+            
+                $_success = $this->parse_();
+            }
+            
+            if ($_success) {
+                $_value12[] = $this->value;
+            
+                $_success = $this->parseOrExpr();
+                
+                if ($_success) {
+                    $expr = $this->value;
+                }
+            }
+            
+            if ($_success) {
+                $_value12[] = $this->value;
+            
+                $_success = $this->parse_();
+            }
+            
+            if ($_success) {
+                $_value12[] = $this->value;
+            
+                if (substr($this->string, $this->position, strlen(")")) === ")") {
+                    $_success = true;
+                    $this->value = substr($this->string, $this->position, strlen(")"));
+                    $this->position += strlen(")");
+                } else {
+                    $_success = false;
+                
+                    $this->report($this->position, '")"');
+                }
+            }
+            
+            if ($_success) {
+                $_value12[] = $this->value;
+            
+                $this->value = $_value12;
+            }
+            
+            if ($_success) {
+                $this->value = call_user_func(function () use (&$vl, &$vr, &$expr) {
+                    return $expr;
+                });
+            }
+        }
+        
+        if (!$_success && !$this->cut) {
+            $this->position = $_position13;
         
             $_success = $this->parseVersion();
         }
         
-        $this->cut = $_cut13;
+        $this->cut = $_cut14;
     
         $this->cache['Range'][$_position] = array(
             'success' => $_success,
@@ -348,11 +421,11 @@ class SemVerParser
             return $_success;
         }
     
-        $_position20 = $this->position;
-        $_cut21 = $this->cut;
+        $_position21 = $this->position;
+        $_cut22 = $this->cut;
         
         $this->cut = false;
-        $_value14 = array();
+        $_value15 = array();
         
         if (substr($this->string, $this->position, strlen(">")) === ">") {
             $_success = true;
@@ -365,13 +438,13 @@ class SemVerParser
         }
         
         if ($_success) {
-            $_value14[] = $this->value;
+            $_value15[] = $this->value;
         
             $_success = $this->parse_();
         }
         
         if ($_success) {
-            $_value14[] = $this->value;
+            $_value15[] = $this->value;
         
             $_success = $this->parseVersion();
             
@@ -381,9 +454,9 @@ class SemVerParser
         }
         
         if ($_success) {
-            $_value14[] = $this->value;
+            $_value15[] = $this->value;
         
-            $this->value = $_value14;
+            $this->value = $_value15;
         }
         
         if ($_success) {
@@ -393,9 +466,9 @@ class SemVerParser
         }
         
         if (!$_success && !$this->cut) {
-            $this->position = $_position20;
+            $this->position = $_position21;
         
-            $_value15 = array();
+            $_value16 = array();
             
             if (substr($this->string, $this->position, strlen(">=")) === ">=") {
                 $_success = true;
@@ -405,50 +478,6 @@ class SemVerParser
                 $_success = false;
             
                 $this->report($this->position, '">="');
-            }
-            
-            if ($_success) {
-                $_value15[] = $this->value;
-            
-                $_success = $this->parse_();
-            }
-            
-            if ($_success) {
-                $_value15[] = $this->value;
-            
-                $_success = $this->parseVersion();
-                
-                if ($_success) {
-                    $v = $this->value;
-                }
-            }
-            
-            if ($_success) {
-                $_value15[] = $this->value;
-            
-                $this->value = $_value15;
-            }
-            
-            if ($_success) {
-                $this->value = call_user_func(function () use (&$v, &$v) {
-                    return new Expr\GreaterThanOrEqualExpression($v);
-                });
-            }
-        }
-        
-        if (!$_success && !$this->cut) {
-            $this->position = $_position20;
-        
-            $_value16 = array();
-            
-            if (substr($this->string, $this->position, strlen("<=")) === "<=") {
-                $_success = true;
-                $this->value = substr($this->string, $this->position, strlen("<="));
-                $this->position += strlen("<=");
-            } else {
-                $_success = false;
-            
-                $this->report($this->position, '"<="');
             }
             
             if ($_success) {
@@ -474,25 +503,25 @@ class SemVerParser
             }
             
             if ($_success) {
-                $this->value = call_user_func(function () use (&$v, &$v, &$v) {
-                    return new Expr\LessThanOrEqualExpression($v);
+                $this->value = call_user_func(function () use (&$v, &$v) {
+                    return new Expr\GreaterThanOrEqualExpression($v);
                 });
             }
         }
         
         if (!$_success && !$this->cut) {
-            $this->position = $_position20;
+            $this->position = $_position21;
         
             $_value17 = array();
             
-            if (substr($this->string, $this->position, strlen("<")) === "<") {
+            if (substr($this->string, $this->position, strlen("<=")) === "<=") {
                 $_success = true;
-                $this->value = substr($this->string, $this->position, strlen("<"));
-                $this->position += strlen("<");
+                $this->value = substr($this->string, $this->position, strlen("<="));
+                $this->position += strlen("<=");
             } else {
                 $_success = false;
             
-                $this->report($this->position, '"<"');
+                $this->report($this->position, '"<="');
             }
             
             if ($_success) {
@@ -518,25 +547,25 @@ class SemVerParser
             }
             
             if ($_success) {
-                $this->value = call_user_func(function () use (&$v, &$v, &$v, &$v) {
-                    return new Expr\LessThanExpression($v);
+                $this->value = call_user_func(function () use (&$v, &$v, &$v) {
+                    return new Expr\LessThanOrEqualExpression($v);
                 });
             }
         }
         
         if (!$_success && !$this->cut) {
-            $this->position = $_position20;
+            $this->position = $_position21;
         
             $_value18 = array();
             
-            if (substr($this->string, $this->position, strlen("~")) === "~") {
+            if (substr($this->string, $this->position, strlen("<")) === "<") {
                 $_success = true;
-                $this->value = substr($this->string, $this->position, strlen("~"));
-                $this->position += strlen("~");
+                $this->value = substr($this->string, $this->position, strlen("<"));
+                $this->position += strlen("<");
             } else {
                 $_success = false;
             
-                $this->report($this->position, '"~"');
+                $this->report($this->position, '"<"');
             }
             
             if ($_success) {
@@ -562,25 +591,25 @@ class SemVerParser
             }
             
             if ($_success) {
-                $this->value = call_user_func(function () use (&$v, &$v, &$v, &$v, &$v) {
-                    return new Expr\SquiggleExpression($v);
+                $this->value = call_user_func(function () use (&$v, &$v, &$v, &$v) {
+                    return new Expr\LessThanExpression($v);
                 });
             }
         }
         
         if (!$_success && !$this->cut) {
-            $this->position = $_position20;
+            $this->position = $_position21;
         
             $_value19 = array();
             
-            if (substr($this->string, $this->position, strlen("^")) === "^") {
+            if (substr($this->string, $this->position, strlen("~")) === "~") {
                 $_success = true;
-                $this->value = substr($this->string, $this->position, strlen("^"));
-                $this->position += strlen("^");
+                $this->value = substr($this->string, $this->position, strlen("~"));
+                $this->position += strlen("~");
             } else {
                 $_success = false;
             
-                $this->report($this->position, '"^"');
+                $this->report($this->position, '"~"');
             }
             
             if ($_success) {
@@ -606,13 +635,57 @@ class SemVerParser
             }
             
             if ($_success) {
+                $this->value = call_user_func(function () use (&$v, &$v, &$v, &$v, &$v) {
+                    return new Expr\SquiggleExpression($v);
+                });
+            }
+        }
+        
+        if (!$_success && !$this->cut) {
+            $this->position = $_position21;
+        
+            $_value20 = array();
+            
+            if (substr($this->string, $this->position, strlen("^")) === "^") {
+                $_success = true;
+                $this->value = substr($this->string, $this->position, strlen("^"));
+                $this->position += strlen("^");
+            } else {
+                $_success = false;
+            
+                $this->report($this->position, '"^"');
+            }
+            
+            if ($_success) {
+                $_value20[] = $this->value;
+            
+                $_success = $this->parse_();
+            }
+            
+            if ($_success) {
+                $_value20[] = $this->value;
+            
+                $_success = $this->parseVersion();
+                
+                if ($_success) {
+                    $v = $this->value;
+                }
+            }
+            
+            if ($_success) {
+                $_value20[] = $this->value;
+            
+                $this->value = $_value20;
+            }
+            
+            if ($_success) {
                 $this->value = call_user_func(function () use (&$v, &$v, &$v, &$v, &$v, &$v) {
                     return new Expr\CaretExpression($v);
                 });
             }
         }
         
-        $this->cut = $_cut21;
+        $this->cut = $_cut22;
     
         $this->cache['GtLtVersion'][$_position] = array(
             'success' => $_success,
@@ -639,7 +712,7 @@ class SemVerParser
             return $_success;
         }
     
-        $_value32 = array();
+        $_value33 = array();
         
         $_success = $this->parseVersionNum();
         
@@ -648,13 +721,13 @@ class SemVerParser
         }
         
         if ($_success) {
-            $_value32[] = $this->value;
+            $_value33[] = $this->value;
         
-            $_position30 = $this->position;
-            $_cut31 = $this->cut;
+            $_position31 = $this->position;
+            $_cut32 = $this->cut;
             
             $this->cut = false;
-            $_value29 = array();
+            $_value30 = array();
             
             if (substr($this->string, $this->position, strlen(".")) === ".") {
                 $_success = true;
@@ -667,7 +740,7 @@ class SemVerParser
             }
             
             if ($_success) {
-                $_value29[] = $this->value;
+                $_value30[] = $this->value;
             
                 $_success = $this->parseVersionNum();
                 
@@ -677,13 +750,13 @@ class SemVerParser
             }
             
             if ($_success) {
-                $_value29[] = $this->value;
+                $_value30[] = $this->value;
             
-                $_position27 = $this->position;
-                $_cut28 = $this->cut;
+                $_position28 = $this->position;
+                $_cut29 = $this->cut;
                 
                 $this->cut = false;
-                $_value26 = array();
+                $_value27 = array();
                 
                 if (substr($this->string, $this->position, strlen(".")) === ".") {
                     $_success = true;
@@ -696,7 +769,7 @@ class SemVerParser
                 }
                 
                 if ($_success) {
-                    $_value26[] = $this->value;
+                    $_value27[] = $this->value;
                 
                     $_success = $this->parseVersionNum();
                     
@@ -706,21 +779,21 @@ class SemVerParser
                 }
                 
                 if ($_success) {
-                    $_value26[] = $this->value;
+                    $_value27[] = $this->value;
                 
-                    $_position22 = $this->position;
-                    $_cut23 = $this->cut;
+                    $_position23 = $this->position;
+                    $_cut24 = $this->cut;
                     
                     $this->cut = false;
                     $_success = $this->parsePreRel();
                     
                     if (!$_success && !$this->cut) {
                         $_success = true;
-                        $this->position = $_position22;
+                        $this->position = $_position23;
                         $this->value = null;
                     }
                     
-                    $this->cut = $_cut23;
+                    $this->cut = $_cut24;
                     
                     if ($_success) {
                         $pr = $this->value;
@@ -728,21 +801,21 @@ class SemVerParser
                 }
                 
                 if ($_success) {
-                    $_value26[] = $this->value;
+                    $_value27[] = $this->value;
                 
-                    $_position24 = $this->position;
-                    $_cut25 = $this->cut;
+                    $_position25 = $this->position;
+                    $_cut26 = $this->cut;
                     
                     $this->cut = false;
                     $_success = $this->parseBuild();
                     
                     if (!$_success && !$this->cut) {
                         $_success = true;
-                        $this->position = $_position24;
+                        $this->position = $_position25;
                         $this->value = null;
                     }
                     
-                    $this->cut = $_cut25;
+                    $this->cut = $_cut26;
                     
                     if ($_success) {
                         $b = $this->value;
@@ -750,39 +823,39 @@ class SemVerParser
                 }
                 
                 if ($_success) {
-                    $_value26[] = $this->value;
+                    $_value27[] = $this->value;
                 
-                    $this->value = $_value26;
+                    $this->value = $_value27;
                 }
                 
                 if (!$_success && !$this->cut) {
                     $_success = true;
-                    $this->position = $_position27;
+                    $this->position = $_position28;
                     $this->value = null;
                 }
                 
-                $this->cut = $_cut28;
+                $this->cut = $_cut29;
             }
             
             if ($_success) {
-                $_value29[] = $this->value;
+                $_value30[] = $this->value;
             
-                $this->value = $_value29;
+                $this->value = $_value30;
             }
             
             if (!$_success && !$this->cut) {
                 $_success = true;
-                $this->position = $_position30;
+                $this->position = $_position31;
                 $this->value = null;
             }
             
-            $this->cut = $_cut31;
+            $this->cut = $_cut32;
         }
         
         if ($_success) {
-            $_value32[] = $this->value;
+            $_value33[] = $this->value;
         
-            $this->value = $_value32;
+            $this->value = $_value33;
         }
         
         if ($_success) {
@@ -818,14 +891,14 @@ class SemVerParser
             return $_success;
         }
     
-        $_position33 = $this->position;
-        $_cut34 = $this->cut;
+        $_position34 = $this->position;
+        $_cut35 = $this->cut;
         
         $this->cut = false;
         $_success = $this->parseNum();
         
         if (!$_success && !$this->cut) {
-            $this->position = $_position33;
+            $this->position = $_position34;
         
             if (preg_match('/^[xX*]$/', substr($this->string, $this->position, 1))) {
                 $_success = true;
@@ -842,7 +915,7 @@ class SemVerParser
             }
         }
         
-        $this->cut = $_cut34;
+        $this->cut = $_cut35;
     
         $this->cache['VersionNum'][$_position] = array(
             'success' => $_success,
@@ -869,8 +942,8 @@ class SemVerParser
             return $_success;
         }
     
-        $_position38 = $this->position;
-        $_cut39 = $this->cut;
+        $_position39 = $this->position;
+        $_cut40 = $this->cut;
         
         $this->cut = false;
         if (substr($this->string, $this->position, strlen("0")) === "0") {
@@ -884,7 +957,7 @@ class SemVerParser
         }
         
         if (!$_success && !$this->cut) {
-            $this->position = $_position38;
+            $this->position = $_position39;
         
             if (preg_match('/^[1-9]$/', substr($this->string, $this->position, 1))) {
                 $_success = true;
@@ -895,11 +968,11 @@ class SemVerParser
             }
             
             if ($_success) {
-                $_value36 = array($this->value);
-                $_cut37 = $this->cut;
+                $_value37 = array($this->value);
+                $_cut38 = $this->cut;
             
                 while (true) {
-                    $_position35 = $this->position;
+                    $_position36 = $this->position;
             
                     $this->cut = false;
                     if (preg_match('/^[1-9]$/', substr($this->string, $this->position, 1))) {
@@ -914,16 +987,16 @@ class SemVerParser
                         break;
                     }
             
-                    $_value36[] = $this->value;
+                    $_value37[] = $this->value;
                 }
             
                 if (!$this->cut) {
                     $_success = true;
-                    $this->position = $_position35;
-                    $this->value = $_value36;
+                    $this->position = $_position36;
+                    $this->value = $_value37;
                 }
             
-                $this->cut = $_cut37;
+                $this->cut = $_cut38;
             }
             
             if ($_success) {
@@ -937,7 +1010,7 @@ class SemVerParser
             }
         }
         
-        $this->cut = $_cut39;
+        $this->cut = $_cut40;
     
         $this->cache['Num'][$_position] = array(
             'success' => $_success,
@@ -964,7 +1037,7 @@ class SemVerParser
             return $_success;
         }
     
-        $_value44 = array();
+        $_value45 = array();
         
         if (substr($this->string, $this->position, strlen("-")) === "-") {
             $_success = true;
@@ -977,7 +1050,7 @@ class SemVerParser
         }
         
         if ($_success) {
-            $_value44[] = $this->value;
+            $_value45[] = $this->value;
         
             $_success = $this->parsePreRelId();
             
@@ -987,16 +1060,16 @@ class SemVerParser
         }
         
         if ($_success) {
-            $_value44[] = $this->value;
+            $_value45[] = $this->value;
         
-            $_value42 = array();
-            $_cut43 = $this->cut;
+            $_value43 = array();
+            $_cut44 = $this->cut;
             
             while (true) {
-                $_position41 = $this->position;
+                $_position42 = $this->position;
             
                 $this->cut = false;
-                $_value40 = array();
+                $_value41 = array();
                 
                 if (substr($this->string, $this->position, strlen(".")) === ".") {
                     $_success = true;
@@ -1009,7 +1082,7 @@ class SemVerParser
                 }
                 
                 if ($_success) {
-                    $_value40[] = $this->value;
+                    $_value41[] = $this->value;
                 
                     $_success = $this->parsePreRelId();
                     
@@ -1019,9 +1092,9 @@ class SemVerParser
                 }
                 
                 if ($_success) {
-                    $_value40[] = $this->value;
+                    $_value41[] = $this->value;
                 
-                    $this->value = $_value40;
+                    $this->value = $_value41;
                 }
                 
                 if ($_success) {
@@ -1034,16 +1107,16 @@ class SemVerParser
                     break;
                 }
             
-                $_value42[] = $this->value;
+                $_value43[] = $this->value;
             }
             
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position41;
-                $this->value = $_value42;
+                $this->position = $_position42;
+                $this->value = $_value43;
             }
             
-            $this->cut = $_cut43;
+            $this->cut = $_cut44;
             
             if ($_success) {
                 $tail = $this->value;
@@ -1051,9 +1124,9 @@ class SemVerParser
         }
         
         if ($_success) {
-            $_value44[] = $this->value;
+            $_value45[] = $this->value;
         
-            $this->value = $_value44;
+            $this->value = $_value45;
         }
         
         if ($_success) {
@@ -1087,8 +1160,8 @@ class SemVerParser
             return $_success;
         }
     
-        $_position49 = $this->position;
-        $_cut50 = $this->cut;
+        $_position50 = $this->position;
+        $_cut51 = $this->cut;
         
         $this->cut = false;
         $_success = $this->parseNum();
@@ -1104,9 +1177,9 @@ class SemVerParser
         }
         
         if (!$_success && !$this->cut) {
-            $this->position = $_position49;
+            $this->position = $_position50;
         
-            $_value48 = array();
+            $_value49 = array();
             
             if (preg_match('/^[a-zA-Z-]$/', substr($this->string, $this->position, 1))) {
                 $_success = true;
@@ -1121,13 +1194,13 @@ class SemVerParser
             }
             
             if ($_success) {
-                $_value48[] = $this->value;
+                $_value49[] = $this->value;
             
-                $_value46 = array();
-                $_cut47 = $this->cut;
+                $_value47 = array();
+                $_cut48 = $this->cut;
                 
                 while (true) {
-                    $_position45 = $this->position;
+                    $_position46 = $this->position;
                 
                     $this->cut = false;
                     if (preg_match('/^[a-zA-Z0-9-]$/', substr($this->string, $this->position, 1))) {
@@ -1142,16 +1215,16 @@ class SemVerParser
                         break;
                     }
                 
-                    $_value46[] = $this->value;
+                    $_value47[] = $this->value;
                 }
                 
                 if (!$this->cut) {
                     $_success = true;
-                    $this->position = $_position45;
-                    $this->value = $_value46;
+                    $this->position = $_position46;
+                    $this->value = $_value47;
                 }
                 
-                $this->cut = $_cut47;
+                $this->cut = $_cut48;
                 
                 if ($_success) {
                     $tail = $this->value;
@@ -1159,9 +1232,9 @@ class SemVerParser
             }
             
             if ($_success) {
-                $_value48[] = $this->value;
+                $_value49[] = $this->value;
             
-                $this->value = $_value48;
+                $this->value = $_value49;
             }
             
             if ($_success) {
@@ -1171,7 +1244,7 @@ class SemVerParser
             }
         }
         
-        $this->cut = $_cut50;
+        $this->cut = $_cut51;
     
         $this->cache['PreRelId'][$_position] = array(
             'success' => $_success,
@@ -1198,7 +1271,7 @@ class SemVerParser
             return $_success;
         }
     
-        $_value55 = array();
+        $_value56 = array();
         
         if (substr($this->string, $this->position, strlen("+")) === "+") {
             $_success = true;
@@ -1211,7 +1284,7 @@ class SemVerParser
         }
         
         if ($_success) {
-            $_value55[] = $this->value;
+            $_value56[] = $this->value;
         
             $_success = $this->parseBuildId();
             
@@ -1221,16 +1294,16 @@ class SemVerParser
         }
         
         if ($_success) {
-            $_value55[] = $this->value;
+            $_value56[] = $this->value;
         
-            $_value53 = array();
-            $_cut54 = $this->cut;
+            $_value54 = array();
+            $_cut55 = $this->cut;
             
             while (true) {
-                $_position52 = $this->position;
+                $_position53 = $this->position;
             
                 $this->cut = false;
-                $_value51 = array();
+                $_value52 = array();
                 
                 if (substr($this->string, $this->position, strlen(".")) === ".") {
                     $_success = true;
@@ -1243,7 +1316,7 @@ class SemVerParser
                 }
                 
                 if ($_success) {
-                    $_value51[] = $this->value;
+                    $_value52[] = $this->value;
                 
                     $_success = $this->parseBuildId();
                     
@@ -1253,9 +1326,9 @@ class SemVerParser
                 }
                 
                 if ($_success) {
-                    $_value51[] = $this->value;
+                    $_value52[] = $this->value;
                 
-                    $this->value = $_value51;
+                    $this->value = $_value52;
                 }
                 
                 if ($_success) {
@@ -1268,16 +1341,16 @@ class SemVerParser
                     break;
                 }
             
-                $_value53[] = $this->value;
+                $_value54[] = $this->value;
             }
             
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position52;
-                $this->value = $_value53;
+                $this->position = $_position53;
+                $this->value = $_value54;
             }
             
-            $this->cut = $_cut54;
+            $this->cut = $_cut55;
             
             if ($_success) {
                 $tail = $this->value;
@@ -1285,9 +1358,9 @@ class SemVerParser
         }
         
         if ($_success) {
-            $_value55[] = $this->value;
+            $_value56[] = $this->value;
         
-            $this->value = $_value55;
+            $this->value = $_value56;
         }
         
         if ($_success) {
@@ -1330,11 +1403,11 @@ class SemVerParser
         }
         
         if ($_success) {
-            $_value57 = array($this->value);
-            $_cut58 = $this->cut;
+            $_value58 = array($this->value);
+            $_cut59 = $this->cut;
         
             while (true) {
-                $_position56 = $this->position;
+                $_position57 = $this->position;
         
                 $this->cut = false;
                 if (preg_match('/^[0-9A-Za-z-]$/', substr($this->string, $this->position, 1))) {
@@ -1349,16 +1422,16 @@ class SemVerParser
                     break;
                 }
         
-                $_value57[] = $this->value;
+                $_value58[] = $this->value;
             }
         
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position56;
-                $this->value = $_value57;
+                $this->position = $_position57;
+                $this->value = $_value58;
             }
         
-            $this->cut = $_cut58;
+            $this->cut = $_cut59;
         }
         
         if ($_success) {
@@ -1396,11 +1469,11 @@ class SemVerParser
             return $_success;
         }
     
-        $_value60 = array();
-        $_cut61 = $this->cut;
+        $_value61 = array();
+        $_cut62 = $this->cut;
         
         while (true) {
-            $_position59 = $this->position;
+            $_position60 = $this->position;
         
             $this->cut = false;
             if (substr($this->string, $this->position, strlen(" ")) === " ") {
@@ -1417,16 +1490,16 @@ class SemVerParser
                 break;
             }
         
-            $_value60[] = $this->value;
+            $_value61[] = $this->value;
         }
         
         if (!$this->cut) {
             $_success = true;
-            $this->position = $_position59;
-            $this->value = $_value60;
+            $this->position = $_position60;
+            $this->value = $_value61;
         }
         
-        $this->cut = $_cut61;
+        $this->cut = $_cut62;
     
         $this->cache['_'][$_position] = array(
             'success' => $_success,
@@ -1464,11 +1537,11 @@ class SemVerParser
         }
         
         if ($_success) {
-            $_value63 = array($this->value);
-            $_cut64 = $this->cut;
+            $_value64 = array($this->value);
+            $_cut65 = $this->cut;
         
             while (true) {
-                $_position62 = $this->position;
+                $_position63 = $this->position;
         
                 $this->cut = false;
                 if (substr($this->string, $this->position, strlen(" ")) === " ") {
@@ -1485,16 +1558,16 @@ class SemVerParser
                     break;
                 }
         
-                $_value63[] = $this->value;
+                $_value64[] = $this->value;
             }
         
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position62;
-                $this->value = $_value63;
+                $this->position = $_position63;
+                $this->value = $_value64;
             }
         
-            $this->cut = $_cut64;
+            $this->cut = $_cut65;
         }
     
         $this->cache['__'][$_position] = array(
