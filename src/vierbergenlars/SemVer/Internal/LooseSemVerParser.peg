@@ -5,5 +5,8 @@ use vierbergenlars\SemVer\Internal\Expr;
 
 grammar LooseSemVerParser extends SemVerParser
 {
-    Num = n:[0-9]+ { return implode('', $n); };
+    Num =
+        n:[0-9]+ {
+            return implode('', $n);
+        };
 }

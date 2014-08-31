@@ -787,7 +787,9 @@ class SemVerParser
         
         if ($_success) {
             $this->value = call_user_func(function () use (&$maj, &$min, &$pat, &$pr, &$b) {
-                return ($maj==='*'||$min==='*'||$pat==='*')?new Expr\XRangeExpression($maj, $min, $pat):new PartialVersion($maj, $min, $pat, $pr?:array(), $b?:array());
+                return ($maj==='*'||$min==='*'||$pat==='*')
+                        ?new Expr\XRangeExpression($maj, $min, $pat)
+                        :new PartialVersion($maj, $min, $pat, $pr?:array(), $b?:array());
             });
         }
     
