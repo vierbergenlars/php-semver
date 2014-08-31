@@ -15,8 +15,8 @@ grammar SemVerParser
          / "~" _ v:Version { return new Expr\SquiggleExpression($v); }
          / "^" _ v:Version { return new Expr\CaretExpression($v); };
     Version = maj:VersionNum ("." min:VersionNum ("." pat:VersionNum pr:PreRel? b:Build?)?)? { return ($maj==='*'||$min==='*'||$pat==='*')?new Expr\XRangeExpression($maj, $min, $pat):new PartialVersion($maj, $min, $pat, $pr?:array(), $b?:array()); };
-    VersionNum = n:[0-9]+ { return implode('', $n); } / [xX*] { return '*'; };
-    Num = n:[0-9]+ { return implode('', $n); };
+    VersionNum = Num / [xX*] { return '*'; };
+    Num = "0" / n:[1-9]+ { return implode('', $n); };
     PreRel = "-" head:PreRelId tail:("." n:PreRelId { return $n; })* { return array_merge(array($head), $tail); };
     PreRelId = n:Num { return $n; } / head:[a-zA-Z-] tail:[a-zA-Z0-9-]* { return $head.implode('', $tail); };
     Build = "+" head:BuildId tail:("." n:BuildId { return $n; })* { return array_merge(array($head), $tail); };

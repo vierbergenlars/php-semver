@@ -1,0 +1,9 @@
+namespace vierbergenlars\SemVer\Internal;
+
+use vierbergenlars\SemVer\Internal\PartialVersion;
+use vierbergenlars\SemVer\Internal\Expr;
+
+grammar LooseSemVerParser extends SemVerParser
+{
+    Num = n:[0-9]+ { return implode('', $n); };
+}
