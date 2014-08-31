@@ -1,0 +1,26 @@
+namespace vierbergenlars\SemVer\Internal;
+
+use vierbergenlars\SemVer\Internal\PartialVersion;
+use vierbergenlars\SemVer\Internal\Expr;
+
+grammar SemVerParser
+{
+    start OrExpr = head:AndExpr tail:(_ "||" _ r:AndExpr { return $r; })* { return $tail?new Expr\OrExpression(array_merge(array($head), $tail)):$head; };
+    AndExpr = head:Range tail:(__ r:Range { return $r; })* { return $tail?new Expr\AndExpression(array_merge(array($head), $tail)):$head; };
+    Range = GtLtVersion / vl:Version __ "-" __ vr:Version { return new Expr\RangeExpression($vl, $vr); } / Version;
+    GtLtVersion = ">" _ v:Version { return new Expr\GreaterThanExpression($v); }
+         / ">=" _ v:Version { return new Expr\GreaterThanOrEqualExpression($v); }
+         / "<=" _ v:Version { return new Expr\LessThanOrEqualExpression($v); }
+         / "<" _ v:Version { return new Expr\LessThanExpression($v); }
+         / "~" _ v:Version { return new Expr\SquiggleExpression($v); }
+         / "^" _ v:Version { return new Expr\CaretExpression($v); };
+    Version = maj:VersionNum ("." min:VersionNum ("." pat:VersionNum pr:PreRel? b:Build?)?)? { return ($maj==='*'||$min==='*'||$pat==='*')?new Expr\XRangeExpression($maj, $min, $pat):new PartialVersion($maj, $min, $pat, $pr?:array(), $b?:array()); };
+    VersionNum = n:[0-9]+ { return implode('', $n); } / [xX*] { return '*'; };
+    Num = n:[0-9]+ { return implode('', $n); };
+    PreRel = "-" head:PreRelId tail:("." n:PreRelId { return $n; })* { return array_merge(array($head), $tail); };
+    PreRelId = n:Num { return $n; } / head:[a-zA-Z-] tail:[a-zA-Z0-9-]* { return $head.implode('', $tail); };
+    Build = "+" head:BuildId tail:("." n:BuildId { return $n; })* { return array_merge(array($head), $tail); };
+    BuildId = n:[0-9A-Za-z-]+ { return implode('', $n); };
+    _ = " "*;
+    __ = " "+;
+}

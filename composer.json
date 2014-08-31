@@ -14,7 +14,8 @@
         "php": ">=5.3.0"
     },
     "require-dev": {
-        "simpletest/simpletest":"1.1.*"
+        "simpletest/simpletest":"1.1.*",
+        "scato/phpeg": "@dev"
     },
     "autoload": {
         "psr-0": {
