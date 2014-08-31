@@ -1,17 +1,18 @@
 <?php
 
 namespace vierbergenlars\SemVer;
-use vierbergenlars\SemVer\Internal\Range;
-use vierbergenlars\SemVer\Internal\G;
-use vierbergenlars\LibJs\JSArray;
+
+use vierbergenlars\SemVer\Internal\LooseSemVerParser;
+use vierbergenlars\SemVer\Internal\SemVerParser;
+use vierbergenlars\SemVer\Internal\Expr\ExpressionInterface;
 
 class expression
 {
     /**
      *
-     * @var Range
+     * @var ExpressionInterface
      */
-    private $range;
+    private $expression;
 
     /**
      * standardizes the comparator/range/whatever-string to chunks
@@ -20,7 +21,8 @@ class expression
     public function __construct($versions, $loose = false)
     {
         try {
-            $this->range = new Range($versions, $loose);
+            $parser = $loose?new LooseSemVerParser:new SemVerParser;
+            $this->expression = $parser->parse($versions);
         } catch(\Exception $e) {
             throw new SemVerException($e->getMessage(), $e->getCode(), $e);
         }
@@ -33,7 +35,7 @@ class expression
      */
     public function satisfiedBy(version $version)
     {
-        return $this->range->test($version);
+        return $this->expression->matches($version->_getInternalVersion());
     }
 
     /**
@@ -42,7 +44,7 @@ class expression
      */
     public function getString()
     {
-        return (string)$this->range->toString();
+        return (string)$this->expression;
     }
 
     /**
@@ -72,6 +74,14 @@ class expression
     {
         if(!is_array($versions))
             $versions = array($versions);
-        return new version((string)G::maxSatisfying(new JSArray($versions), $this->range, $loose));
+        $versions = array_map(function($version)use($loose) {
+            return ($version instanceof version)?$version:new version($version, $loose);
+        });
+        $expr = $this->expression;
+        $matching = array_filter($versions, function(version $version) use($expr) {
+            return $expr->matches($version);
+        });
+        usort($matching, array('vierbergenlars\SemVer\version','rcompare'));
+        return current($matching);
     }
 }

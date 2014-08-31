@@ -2,14 +2,14 @@
 
 namespace vierbergenlars\SemVer;
 
-use vierbergenlars\SemVer\Internal\SemVer;
-use vierbergenlars\SemVer\Internal\G;
+use vierbergenlars\SemVer\Internal\Version as IVersion;
+use vierbergenlars\Semver\Internal\Expr;
 
 class version
 {
     /**
      *
-     * @var SemVer
+     * @var IVersion
      */
     private $version;
 
@@ -21,7 +21,7 @@ class version
      */
     public function __construct($version, $loose = false)
     {
-        $this->version = new SemVer($version, $loose);
+        $this->version = IVersion::fromVersion($version, $loose);
     }
 
     /**
@@ -39,7 +39,7 @@ class version
      */
     public function getMajor()
     {
-        return (int) $this->version->major;
+        return $this->version->getMajor();
     }
 
     /**
@@ -48,7 +48,7 @@ class version
      */
     public function getMinor()
     {
-        return (int) $this->version->minor;
+        return $this->version->getMinor();
     }
 
     /**
@@ -57,7 +57,7 @@ class version
      */
     public function getPatch()
     {
-        return (int) $this->version->patch;
+        return $this->version->getPatch();
     }
 
     /**
@@ -66,7 +66,7 @@ class version
      */
     public function getBuild()
     {
-        return (array) $this->version->build->valueOf();
+        return $this->version->getBuild();
     }
 
     /**
@@ -75,7 +75,7 @@ class version
      */
     public function getPrerelease()
     {
-        return (array) $this->version->prerelease->valueOf();
+        return $this->version->getPreRelease();
     }
 
     /**
@@ -96,7 +96,22 @@ class version
      */
     public function inc($what)
     {
-        $this->version->inc($what);
+        switch($what) {
+            case 'major':
+                $this->version = $this->version->increment(IVersion::MAJOR);
+                break;
+            case 'minor':
+                $this->version = $this->version->increment(IVersion::MINOR);
+                break;
+            case 'patch':
+                $this->version = $this->version->increment(IVersion::PATCH);
+                break;
+            case 'prerelease':
+                $this->version = $this->version->increment(IVersion::PRERELEASE);
+                break;
+            default:
+              throw new SemVerException(sprintf('Invalid increment value %s', $what));
+        }
         return $this;
     }
 
@@ -105,8 +120,10 @@ class version
      * @param  expression $versions The expression to check against
      * @return bool
      */
-    public function satisfies(expression $versions)
+    public function satisfies($versions)
     {
+        if(!$versions instanceof expression)
+            $versions = new expression($versions);
         return $versions->satisfiedBy($this);
     }
 
@@ -126,15 +143,37 @@ class version
      */
     public static function cmp($v1, $cmp, $v2, $loose = false)
     {
-        if($v1 instanceof self)
-            $v1 = $v1->getVersion();
-        if($v2 instanceof self)
-            $v2 = $v2->getVersion();
-        try {
-            return G::cmp($v1, $cmp, $v2, $loose);
-        } catch(\LogicException $e) {
-            throw new \UnexpectedValueException($e->getMessage(), $e->getCode(), $e);
+        if(!$v1 instanceof self)
+          $v1 = new static($v1, $loose);
+        if(!$v2 instanceof self)
+          $v2 = new static($v2, $loose);
+
+        $v1 = $v1->_getInternalVersion();
+        $v2 = $v2->_getInternalVersion();
+
+        switch($cmp) {
+            case '==':
+            case '===':
+                return (string)$v1 === (string)$v2;
+            case '!=':
+            case '!==':
+                return (string)$v1 !== (string)$v2;
+            case '>':
+                $expr = new Expr\GreaterThanExpression($v1);
+                break;
+            case '>=':
+                $expr = new Expr\GreaterThanOrEqualExpression($v1);
+                break;
+            case '<':
+                $expr = new Expr\LessThanExpression($v1);
+                break;
+            case '<=':
+                $expr = new Expr\LessThanOrEqualExpression($v1);
+                break;
+            default:
+                throw new \UnexpectedValueException(sprintf('Invalid comparator %s', $cmp));
         }
+        return $expr->matches($v2);
     }
 
     /**
@@ -146,11 +185,7 @@ class version
      */
     public static function gt($v1, $v2, $loose = false)
     {
-        if($v1 instanceof self)
-            $v1 = $v1->getVersion();
-        if($v2 instanceof self)
-            $v2 = $v2->getVersion();
-        return G::gt($v1, $v2, $loose);
+        return self::cmp($v1, '>', $v2, $loose);
     }
 
     /**
@@ -162,11 +197,7 @@ class version
      */
     public static function gte($v1, $v2, $loose = false)
     {
-        if($v1 instanceof self)
-            $v1 = $v1->getVersion();
-        if($v2 instanceof self)
-            $v2 = $v2->getVersion();
-        return G::gte($v1, $v2, $loose);
+        return self::cmp($v1, '>=', $v2, $loose);
     }
 
     /**
@@ -178,11 +209,7 @@ class version
      */
     public static function lt($v1, $v2, $loose = false)
     {
-        if($v1 instanceof self)
-            $v1 = $v1->getVersion();
-        if($v2 instanceof self)
-            $v2 = $v2->getVersion();
-        return G::lt($v1, $v2, $loose);
+        return self::cmp($v1, '<', $v2, $loose);
     }
 
     /**
@@ -194,11 +221,7 @@ class version
      */
     public static function lte($v1, $v2, $loose = false)
     {
-        if($v1 instanceof self)
-            $v1 = $v1->getVersion();
-        if($v2 instanceof self)
-            $v2 = $v2->getVersion();
-        return G::lte($v1, $v2, $loose);
+        return self::cmp($v1, '<=', $v2, $loose);
     }
 
     /**
@@ -210,11 +233,7 @@ class version
      */
     public static function eq($v1, $v2, $loose = false)
     {
-        if($v1 instanceof self)
-            $v1 = $v1->getVersion();
-        if($v2 instanceof self)
-            $v2 = $v2->getVersion();
-        return G::eq($v1, $v2, $loose);
+        return self::cmp($v1, '==', $v2, $loose);
     }
 
     /**
@@ -226,11 +245,7 @@ class version
      */
     public static function neq($v1, $v2, $loose = false)
     {
-        if($v1 instanceof self)
-            $v1 = $v1->getVersion();
-        if($v2 instanceof self)
-            $v2 = $v2->getVersion();
-        return G::neq($v1, $v2, $loose);
+        return self::cmp($v1, '!=', $v2, $loose);
     }
 
     /**
@@ -242,11 +257,7 @@ class version
      */
     public static function compare($v1, $v2, $loose = false)
     {
-        if($v1 instanceof self)
-            $v1 = $v1->getVersion();
-        if($v2 instanceof self)
-            $v2 = $v2->getVersion();
-        return G::compare($v1, $v2, $loose);
+        return self::eq($v1, $v2, $loose)?0:(self::gt($v1, $v2, $loose)?1:-1);
     }
 
     /**
@@ -259,5 +270,13 @@ class version
     public static function rcompare($v1, $v2, $loose = false)
     {
         return self::compare($v2, $v1, $loose);
+    }
+
+    /**
+     * @internal
+     */
+    public function _getInternalVersion()
+    {
+      return $this->version;
     }
 }
