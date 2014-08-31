@@ -21,7 +21,6 @@ class AndExpression implements ExpressionInterface
     {
         foreach($this->expressions as $expression) {
             if(!$expression->matches($v)) {
-                //var_dump($expression);
                 return false;
             }
         }

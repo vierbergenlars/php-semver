@@ -119,7 +119,7 @@ class SemVerParser
         
         if ($_success) {
             $this->value = call_user_func(function () use (&$head, &$r, &$tail) {
-                return $tail?new Expr\OrExpression(array_merge(array($head), $tail)):$head;
+                return new Expr\OrExpression(array_merge(array($head), $tail));
             });
         }
     
@@ -220,7 +220,7 @@ class SemVerParser
         
         if ($_success) {
             $this->value = call_user_func(function () use (&$head, &$r, &$tail) {
-                return $tail?new Expr\AndExpression(array_merge(array($head), $tail)):$head;
+                return new Expr\AndExpression(array_merge(array($head), $tail));
             });
         }
     

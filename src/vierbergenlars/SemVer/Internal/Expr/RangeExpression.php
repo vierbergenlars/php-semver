@@ -17,6 +17,7 @@ class RangeExpression implements ExpressionInterface
 
     public function matches(AbstractVersion $version)
     {
+        $endexpr = $this->end;
         if($this->end->getPatch() === null) {
             $endexpr = new LessThanExpression($this->end->increment(Version::MINOR));
         }

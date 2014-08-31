@@ -5,8 +5,8 @@ use vierbergenlars\SemVer\Internal\Expr;
 
 grammar SemVerParser
 {
-    start OrExpr = head:AndExpr tail:(_ "||" _ r:AndExpr { return $r; })* { return $tail?new Expr\OrExpression(array_merge(array($head), $tail)):$head; };
-    AndExpr = head:Range tail:(__ r:Range { return $r; })* { return $tail?new Expr\AndExpression(array_merge(array($head), $tail)):$head; };
+    start OrExpr = head:AndExpr tail:(_ "||" _ r:AndExpr { return $r; })* { return new Expr\OrExpression(array_merge(array($head), $tail)); };
+    AndExpr = head:Range tail:(__ r:Range { return $r; })* { return new Expr\AndExpression(array_merge(array($head), $tail)); };
     Range = GtLtVersion / vl:Version __ "-" __ vr:Version { return new Expr\RangeExpression($vl, $vr); } / Version;
     GtLtVersion = ">" _ v:Version { return new Expr\GreaterThanExpression($v); }
          / ">=" _ v:Version { return new Expr\GreaterThanOrEqualExpression($v); }
