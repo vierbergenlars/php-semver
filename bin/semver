@@ -107,7 +107,7 @@ function filter($versions, $ranges) {
         try {
             $v = new version($version);
             foreach ($ranges as $range) {
-                if ($v->satisfies(new versionExpression($range)))
+                if ($v->satisfies(new expression($range)))
                     continue;
                 $ok = false;
                 break;
