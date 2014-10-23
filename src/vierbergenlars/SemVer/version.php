@@ -21,7 +21,11 @@ class version
      */
     public function __construct($version, $loose = false)
     {
-        $this->version = new SemVer($version, $loose);
+        try {
+            $this->version = new SemVer($version, $loose);
+        } catch(\RuntimeException $ex) {
+            throw new SemVerException($ex->getMessage(), $version);
+        }
     }
 
     /**
@@ -92,7 +96,7 @@ class version
      * Increment the version number
      * @param  string                         $what One of 'major', 'minor', 'patch' or 'prerelease'
      * @return \vierbergenlars\SemVer\version
-     * @throws SemVerException                When an invalid increment value is given
+     * @throws LogicException                When an invalid increment value is given
      */
     public function inc($what)
     {
@@ -122,7 +126,7 @@ class version
      * @param  string                   $v2  The second version
      * @param  bool                     $loose
      * @return bool
-     * @throws UnexpectedValueException
+     * @throws LogicException
      */
     public static function cmp($v1, $cmp, $v2, $loose = false)
     {
