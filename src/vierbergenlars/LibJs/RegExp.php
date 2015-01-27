@@ -67,7 +67,7 @@ class RegExp extends Object
     public function exec($str)
     {
         if($this->global) {
-            if(!preg_match_all($this->_pregSource, (string)$src, $matches))
+            if(!preg_match_all($this->_pregSource, (string)$str, $matches))
                 return null;
         } else {
             if(!preg_match($this->_pregSource, (string)$str, $matches))
