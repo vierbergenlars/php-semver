@@ -2,7 +2,7 @@
 
 namespace vierbergenlars\SemVer\Internal;
 use vierbergenlars\LibJs\JSArray;
-use vierbergenlars\LibJs\String;
+use vierbergenlars\LibJs\JString;
 use vierbergenlars\LibJs\RegExp;
 use vierbergenlars\LibJs\Object;
 use vierbergenlars\LibJs\Util;
@@ -229,11 +229,11 @@ for($i = 0; $i < $R; $i++) {
 
 /**
  *
- * @param String $version
+ * @param JString $version
  * @param bool $loose
  * @return SemVer|null
  */
-function parse(String $version, $loose = false)
+function parse(JString $version, $loose = false)
 {
     $r = $loose?Exports::$re[LOOSE]:Exports::$re[FULL];
     /* @var $r \vierbergenlars\LibJs\RexExp */
@@ -241,22 +241,22 @@ function parse(String $version, $loose = false)
 }
 
 /**
- * @param String $version
+ * @param JString $version
  * @param bool $loose
- * @return String|null
+ * @return JString|null
  */
-function valid(String $version, $loose = false)
+function valid(JString $version, $loose = false)
 {
     $v = parse($version, $loose);
     return $v?$v->version:null;
 }
 
 /**
- * @param String $version
+ * @param JString $version
  * @param bool $loose
- * @return String|null
+ * @return JString|null
  */
-function clean(String $version, $loose = false)
+function clean(JString $version, $loose = false)
 {
     $s = parse($version, $loose);
     return $s?$s->version:null;
@@ -265,7 +265,7 @@ function clean(String $version, $loose = false)
 class SemVer extends Object
 {
     /**
-     * @var String
+     * @var JString
      */
     public $version;
 
@@ -275,7 +275,7 @@ class SemVer extends Object
     public $loose;
 
     /**
-     * @var String
+     * @var JString
      */
     public $raw;
 
@@ -310,7 +310,7 @@ class SemVer extends Object
     public $build;
 
     /**
-     * @param SemVer|String|string $version
+     * @param SemVer|JString|string $version
      * @param bool $loose
      */
     public function __construct($version, $loose = false)
@@ -321,7 +321,7 @@ class SemVer extends Object
             return;
         }
 
-        $version = new String($version);
+        $version = new JString($version);
 
         $m = $version->trim()->match($loose?Exports::$re[LOOSE]:Exports::$re[FULL]);
 
@@ -350,7 +350,7 @@ class SemVer extends Object
 
     public function format()
     {
-       $this->version = new String($this->major . '.' . $this->minor . '.' . $this->patch);
+       $this->version = new JString($this->major . '.' . $this->minor . '.' . $this->patch);
         if ($this->prerelease->length)
             $this->version = $this->version->concat('-', $this->prerelease->join('.'));
         return $this->version;
@@ -398,9 +398,9 @@ class SemVer extends Object
         $i = 0;
         do {
             $a = $this->prerelease[$i];
-            if($a instanceof String) $a = $a->valueOf();
+            if($a instanceof JString) $a = $a->valueOf();
             $b = $other->prerelease[$i];
-            if($b instanceof String) $b = $b->valueOf();
+            if($b instanceof JString) $b = $b->valueOf();
 
             if ($a === null && $b === null)
               return 0;
@@ -555,7 +555,7 @@ function lte($a, $b, $loose = false)
 
 function cmp($a, $op, $b, $loose = false)
 {
-    if($op instanceof String)
+    if($op instanceof JString)
         $op = $op->valueOf();
     switch ($op) {
         case '===': $ret = $a === $b; break;
@@ -574,7 +574,7 @@ function cmp($a, $op, $b, $loose = false)
 class Comparator extends Object
 {
     /**
-     * @var String
+     * @var JString
      */
     public $value;
 
@@ -589,7 +589,7 @@ class Comparator extends Object
     public $semver;
 
     /**
-     * @var String
+     * @var JString
      */
     public $operator;
 
@@ -599,17 +599,17 @@ class Comparator extends Object
         if($comp instanceof Comparator)
             $comp = $comp->value;
 
-        $comp = new String($comp);
+        $comp = new JString($comp);
 
         $this->parse($comp);
 
         if(!$this->semver instanceof SemVer)
-            $this->value = new String('');
+            $this->value = new JString('');
         else
-            $this->value = new String($this->operator.$this->semver->version);
+            $this->value = new JString($this->operator.$this->semver->version);
     }
 
-    public function parse(String $comp)
+    public function parse(JString $comp)
     {
         $r = $this->loose?Exports::$re[COMPARATORLOOSE]:Exports::$re[COMPARATOR];
         $m = $comp->match($r);
@@ -662,7 +662,7 @@ class Range extends Object
     public $loose;
 
     /**
-     * @var String
+     * @var JString
      */
     public $raw;
 
@@ -673,7 +673,7 @@ class Range extends Object
 
     /**
      *
-     * @var String
+     * @var JString
      */
     public $range;
 
@@ -683,7 +683,7 @@ class Range extends Object
         if($range instanceof Range)
             $range = $range->raw;
 
-        $range = new String($range);
+        $range = new JString($range);
 
         $this->raw = $range;
 
@@ -720,7 +720,7 @@ class Range extends Object
         return $this->range->valueOf();
     }
 
-    public function parseRange(String $range)
+    public function parseRange(JString $range)
     {
         $loose = $this->loose;
         $range = $range->trim();
@@ -790,7 +790,7 @@ function toComparators($range, $loose = false)
 // comprised of xranges, tildes, stars, and gtlt's at this point.
 // already replaced the hyphen ranges
 // turn into a set of JUST comparators.
-function parseComparator(String $comp, $loose = false)
+function parseComparator(JString $comp, $loose = false)
 {
     $comp = replaceCarets($comp, $loose);
     $comp = replaceTildes($comp, $loose);
@@ -799,7 +799,7 @@ function parseComparator(String $comp, $loose = false)
     return $comp;
 }
 
-function isX(String $id = null)
+function isX(JString $id = null)
 {
     return !$id || $id->toLowerCase()->valueOf() === 'x' || $id->valueOf() === '*';
 }
@@ -810,15 +810,15 @@ function isX(String $id = null)
 // ~1.2, ~1.2.x, ~>1.2, ~>1.2.x --> >=1.2.0 <1.3.0
 // ~1.2.3, ~>1.2.3 --> >=1.2.3 <1.3.0
 // ~1.2.0, ~>1.2.0 --> >=1.2.0 <1.3.0
-function replaceTildes(String $comp, $loose = false) {
+function replaceTildes(JString $comp, $loose = false) {
     return $comp->trim()->split(new RegExp('\\s+'))->map(function($comp)use($loose) {
         return replaceTilde($comp, $loose);
     })->join(' ');
 }
 
-function replaceTilde(String $comp, $loose = false) {
+function replaceTilde(JString $comp, $loose = false) {
   $r = $loose ? Exports::$re[TILDELOOSE] : Exports::$re[TILDE];
-  return $comp->replace($r, function(String $_, String $M = null, String $m = null, String $p = null, String $pr = null) {
+  return $comp->replace($r, function(JString $_, JString $M = null, JString $m = null, JString $p = null, JString $pr = null) {
     if (isX($M))
       $ret = '';
     else if (isX($m))
@@ -846,15 +846,15 @@ function replaceTilde(String $comp, $loose = false) {
 // ^1.2, ^1.2.x --> >=1.2.0 <2.0.0
 // ^1.2.3 --> >=1.2.3 <2.0.0
 // ^1.2.0 --> >=1.2.0 <2.0.0
-function replaceCarets(String $comp, $loose = false) {
+function replaceCarets(JString $comp, $loose = false) {
   return $comp->trim()->split(new RegExp('\\s+'))->map(function($comp)use($loose) {
     return replaceCaret($comp, $loose);
   })->join(' ');
 }
 
-function replaceCaret(String $comp, $loose = false) {
+function replaceCaret(JString $comp, $loose = false) {
   $r = $loose ? Exports::$re[CARETLOOSE] : Exports::$re[CARET];
-  return $comp->replace($r, function(String $_, String $M = null, String $m = null, String $p = null, String $pr = null) {
+  return $comp->replace($r, function(JString $_, JString $M = null, JString $m = null, JString $p = null, JString $pr = null) {
     if (isX($M))
       $ret = '';
     else if (isX($m))
@@ -892,16 +892,16 @@ function replaceCaret(String $comp, $loose = false) {
   });
 }
 
-function replaceXRanges(String $comp, $loose = false) {
+function replaceXRanges(JString $comp, $loose = false) {
   return $comp->split(new RegExp('\\s+'))->map(function($comp)use($loose) {
     return replaceXRange($comp, $loose);
   })->join(' ');
 }
 
-function replaceXRange(String $comp, $loose = false) {
+function replaceXRange(JString $comp, $loose = false) {
   $comp = $comp->trim();
   $r = $loose ? Exports::$re[XRANGELOOSE] : Exports::$re[XRANGE];
-  return $comp->replace($r, function(String $ret, String $gtlt, String $M = null, String $m = null, String $p = null, String $pr=null) {
+  return $comp->replace($r, function(JString $ret, JString $gtlt, JString $M = null, JString $m = null, JString $p = null, JString $pr=null) {
     $xM = isX($M);
     $xm = $xM || isX($m);
     $xp = $xm || isX($p);
@@ -957,7 +957,7 @@ function replaceXRange(String $comp, $loose = false) {
 
 // Because * is AND-ed with everything else in the comparator,
 // and '' means "any version", just remove the *s entirely.
-function replaceStars(String $comp, $loose = false) {
+function replaceStars(JString $comp, $loose = false) {
   // Looseness is ignored here.  star is always as loose as it gets!
   return $comp->trim()->replace(Exports::$re[STAR], '');
 }
@@ -967,9 +967,9 @@ function replaceStars(String $comp, $loose = false) {
 // 1.2 - 3.4.5 => >=1.2.0-0 <=3.4.5
 // 1.2.3 - 3.4 => >=1.2.0-0 <3.5.0-0 Any 3.4.x will do
 // 1.2 - 3.4 => >=1.2.0-0 <3.5.0-0
-function hyphenReplace(String $_,
-                       String $from = null, String $fM = null, String $fm = null, String $fp = null, String $fpr = null, String $fb = null,
-                       String $to = null, String $tM = null, String $tm = null, String $tp = null, String $tpr = null, String $tb = null) {
+function hyphenReplace(JString $_,
+                       JString $from = null, JString $fM = null, JString $fm = null, JString $fp = null, JString $fpr = null, JString $fb = null,
+                       JString $to = null, JString $tM = null, JString $tm = null, JString $tp = null, JString $tpr = null, JString $tb = null) {
 
   if (isX($fM))
     $from = '';
@@ -991,7 +991,7 @@ function hyphenReplace(String $_,
   else
     $to = '<=' . $to;
 
-  $s = new String($from.' '.$to);
+  $s = new JString($from.' '.$to);
   return $s->trim();
 }
 
@@ -1029,7 +1029,7 @@ function validRange($range, $loose = false) {
     // Return '*' instead of '' so that truthiness works.
     // This will throw if it's invalid anyway
     $r = new Range($range, $loose);
-    return (string)Util::JSor($r->range, new String('*'));
+    return (string)Util::JSor($r->range, new JString('*'));
   } catch (\Exception $e) {
     return null;
   }

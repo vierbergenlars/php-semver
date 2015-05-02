@@ -78,12 +78,12 @@ class JSArray extends Object implements \ArrayAccess, \Iterator
 
     /**
      *
-     * @param String $c
-     * @return String
+     * @param JString $c
+     * @return JString
      */
     public function join($c)
     {
-        return new String(implode($c, $this->array));
+        return new JString(implode($c, $this->array));
     }
 
     /**

@@ -31,13 +31,13 @@ class Object
     /**
      *
      * @param type $something
-     * @return \vierbergenlars\LibJs\String|\vierbergenlars\LibJs\JSArray
+     * @return \vierbergenlars\LibJs\JString|\vierbergenlars\LibJs\JSArray
      * @private
      */
     public function _convert($something)
     {
         if(is_string($something)) {
-            return new String($something);
+            return new JString($something);
         } elseif(is_array($something)) {
             return new JSArray($something);
         } else {
@@ -47,7 +47,7 @@ class Object
 
     public function toString()
     {
-        return new String((string)$this);
+        return new JString((string)$this);
     }
 
     public function valueOf()

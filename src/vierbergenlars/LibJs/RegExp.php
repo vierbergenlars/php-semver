@@ -62,7 +62,7 @@ class RegExp extends Object
 
     /**
      *
-     * @param string|String $str
+     * @param string|JString $str
      */
     public function exec($str)
     {
@@ -78,7 +78,7 @@ class RegExp extends Object
 
     /**
      *
-     * @param string|String $str
+     * @param string|JString $str
      */
     public function test($str)
     {

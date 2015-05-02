@@ -26,7 +26,7 @@
 
 namespace vierbergenlars\LibJs;
 
-class String extends Object implements \ArrayAccess
+class JString extends Object implements \ArrayAccess
 {
     /**
      * Wrapped string
@@ -69,7 +69,7 @@ class String extends Object implements \ArrayAccess
 
     /**
      *
-     * @return String
+     * @return JString
      */
     public function concat()
     {
@@ -101,7 +101,7 @@ class String extends Object implements \ArrayAccess
      *
      * @param RegExp|string $regexOrSubstr
      * @param \Closure|string $newSubstrOrFunction
-     * @return String
+     * @return JString
      */
     public function replace($regexOrSubstr, $newSubstrOrFunction)
     {
@@ -109,7 +109,7 @@ class String extends Object implements \ArrayAccess
             if($newSubstrOrFunction instanceof \Closure) {
                 $wrap = function($matches)use($newSubstrOrFunction) {
                     $matches = array_map(function($s) {
-                        return new String($s);
+                        return new JString($s);
                     }, $matches);
                     return call_user_func_array($newSubstrOrFunction, $matches);
                 };
@@ -132,7 +132,7 @@ class String extends Object implements \ArrayAccess
 
     /**
      *
-     * @param string|String|RegExp $c
+     * @param string|JString|RegExp $c
      * @return JSArray
      */
     public function split($c)
@@ -147,7 +147,7 @@ class String extends Object implements \ArrayAccess
 
     /**
      *
-     * @return String
+     * @return JString
      */
     public function toLowerCase()
     {
@@ -156,7 +156,7 @@ class String extends Object implements \ArrayAccess
 
     /**
      *
-     * @return String
+     * @return JString
      */
     public function toString()
     {
@@ -165,7 +165,7 @@ class String extends Object implements \ArrayAccess
 
     /**
      *
-     * @return String
+     * @return JString
      */
     public function toUpperCase()
     {
@@ -174,7 +174,7 @@ class String extends Object implements \ArrayAccess
 
     /**
      *
-     * @return String
+     * @return JString
      */
     public function trim()
     {
