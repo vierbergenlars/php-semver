@@ -1,25 +1,25 @@
 {
-    "name":"vierbergenlars/php-semver",
-    "description":"The Semantic Versioner for PHP",
+    "name": "vierbergenlars/php-semver",
+    "description": "The Semantic Versioner for PHP",
     "keywords": ["semver", "versioning", "semantic"],
-    "type":"library",
+    "type": "library",
     "license": "MIT",
     "authors": [
-    {
-        "name":"Lars Vierbergen",
-        "email":"vierbergenlars@gmail.com"
-    }
+        {
+            "name": "Lars Vierbergen",
+            "email": "vierbergenlars@gmail.com"
+        }
     ],
     "require": {
         "php": ">=5.3.0"
     },
     "require-dev": {
-        "simpletest/simpletest":"1.1.*"
+        "phpunit/phpunit": "~4"
     },
     "autoload": {
         "psr-0": {
-            "vierbergenlars\\SemVer\\":"src/",
-            "vierbergenlars\\LibJs\\": "src/"
+            "vierbergenlars\\SemVer\\": "src/",
+            "vierbergenlars\\LibJs\\":  "src/"
         },
         "classmap": [
             "src/vierbergenlars/SemVer/internal.php"
