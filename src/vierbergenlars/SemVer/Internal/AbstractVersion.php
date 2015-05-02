@@ -120,6 +120,15 @@ abstract class AbstractVersion
         return $t;
     }
 
+    public function unsetToZero()
+    {
+        $t = clone $this;
+        $t->M = (int)$t->M;
+        $t->m = (int)$t->m;
+        $t->p = (int)$t->p;
+        return $t;
+    }
+
     /**
      *
      * @param Version $other
@@ -252,11 +261,11 @@ abstract class AbstractVersion
 
     public function __toString()
     {
-        $v = (string)$this->M;
+        $v = (int)$this->M;
         if($this->m !== null) {
-            $v.='.'.$this->m;
+            $v.='.'.(int)$this->m;
             if($this->p !== null) {
-                $v.='.'.$this->p;
+                $v.='.'.(int)$this->p;
             }
         }
         if($this->r !== array()) {
@@ -267,7 +276,7 @@ abstract class AbstractVersion
             $v .= '+' . implode('.', $this->b);
         }
 
-        return $v;
+        return (string)$v;
     }
 
 }

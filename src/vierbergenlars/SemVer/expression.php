@@ -84,4 +84,9 @@ class expression
         usort($matching, array('vierbergenlars\SemVer\version','rcompare'));
         return current($matching);
     }
+
+    public function getNormalized()
+    {
+      return $this->expression->getNormalized();
+    }
 }

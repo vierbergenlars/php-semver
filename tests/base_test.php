@@ -8,10 +8,10 @@ class versioningTest extends \UnitTestCase
     public function testKeepSimpleversion()
     {
         $t=array(
-                '1',
-                '2.0',
-                '1.0.1-',
-                '1.3.2-',
+                '1.0.0',
+                '2.0.0',
+                '1.0.1',
+                '1.3.2',
                 '1.02.0'=>'1.2.0',
                 '0.2.5',
                 '01.2.6'=>'1.2.6',
@@ -20,7 +20,7 @@ class versioningTest extends \UnitTestCase
         );
         foreach ($t as $original=>$result) {
             if(!is_string($original)) $original=$result;
-            $v=new SemVer\version($original);
+            $v=new SemVer\version($original, true);
             $this->assertEqual($v->__toString(),$result,'['.$original.'] %s');
         }
     }
@@ -50,89 +50,89 @@ class versioningTest extends \UnitTestCase
         );
         foreach ($t as $original=>$result) {
             if(!is_string($original)) $original=$result;
-            $v=new SemVer\expression($original);
-            $this->assertEqual($v->getString(),$result,'['.$original.'] %s');
+            $v=new SemVer\expression($original, true);
+            $this->assertEqual($v->getNormalized(),$result,'['.$original.'] %s');
         }
     }
-    public function testShortSimpleversion()
+    /*public function testShortSimpleversion()
     {
         $t=array(
-                '1'=>'>=1 <2.0.0-',
-                '1.2'=>'>=1.2 <1.3.0-',
-                '1.0'=>'>=1.0 <1.1.0-',
-                '501'=>'>=501 <502.0.0-'
+                '1'=>'>=1.0.0 <2.0.0',
+                '1.2'=>'>=1.2.0 <1.3.0',
+                '1.0'=>'>=1.0.0 <1.1.0',
+                '501'=>'>=501.0.0 <502.0.0'
         );
         foreach ($t as $original=>$result) {
             $v=new SemVer\expression($original);
-            $this->assertEqual($v->getString(),$result,'['.$original.'] %s');
+            $this->assertEqual($v->getNormalized(),$result,'['.$original.'] %s');
         }
     }
     public function testShortSimpleversionComparator()
     {
         $t=array(
-                '>1'=>'>1',
-                '<2.0'=>'<2.0',
-                '<=5.2'=>'<=5.2',
-                '>=3'=>'>=3'
+                '>1'=>'>1.0.0',
+                '<2.0'=>'<2.0.0',
+                '<=5.2'=>'<=5.2.0',
+                '>=3'=>'>=3.0.0'
         );
         foreach ($t as $original=>$result) {
             $v=new SemVer\expression($original);
-            $this->assertEqual($v->getString(),$result,'['.$original.'] %s');
+            $this->assertEqual($v->getNormalized(),$result,'['.$original.'] %s');
         }
-    }
+    }*/
     public function testSimpleversionWildcard()
     {
         $t=array(
-                '1.x.x'=>'>=1 <2.0.0-',
-                '1.x'=>'>=1 <2.0.0-',
-                '1.x.5'=>'>=1 <2.0.0-',
-                '3.x'=>'>=3 <4.0.0-',
-                '1.X.X'=>'>=1 <2.0.0-',
-                '1.*.*'=>'>=1 <2.0.0-',
-                '2.X.x'=>'>=2 <3.0.0-',
-                '5.*.x'=>'>=5 <6.0.0-',
-                'x'=>'>=0'
+                '1.x.x'=>'>=1.0.0 <2.0.0',
+                '1.x'=>'>=1.0.0 <2.0.0',
+                '1.x.5'=>'>=1.0.0 <2.0.0',
+                '3.x'=>'>=3.0.0 <4.0.0',
+                '1.X.X'=>'>=1.0.0 <2.0.0',
+                '1.*.*'=>'>=1.0.0 <2.0.0',
+                '2.X.x'=>'>=2.0.0 <3.0.0',
+                '5.*.x'=>'>=5.0.0 <6.0.0',
+//                'x'=>'>=0.0.0'
         );
         foreach ($t as $original=>$result) {
             $v=new SemVer\expression($original);
-            $this->assertEqual($v->getString(),$result,'['.$original.'] %s');
+            $this->assertEqual($v->getNormalized(),$result,'['.$original.'] %s');
         }
     }
     public function testSimpleversionRange()
     {
         $t=array(
-                '1.0.0 - 2.0.0'=>'>=1.0.0 <=2.0.0',
-                '1.2.3 - 1.3.0'=>'>=1.2.3 <=1.3.0',
-                '4.3.0 - 4.3.1'=> '>=4.3.0 <=4.3.1'
+                '1.0.0 - 2.0.0'=>'>=1.0.0 <2.0.0',
+                '1.2.3 - 1.3.0'=>'>=1.2.3 <1.3.0',
+                '4.3.0 - 4.3.1'=> '>=4.3.0 <4.3.1'
         );
         foreach ($t as $original=>$result) {
             $v=new SemVer\expression($original);
-            $this->assertEqual($v->getString(),$result,'['.$original.'] %s');
+            $this->assertEqual($v->getNormalized(),$result,'['.$original.'] %s');
         }
     }
     public function testShortversionRange()
     {
         $t=array(
-                '1 - 2'=>'>=1 <=2',
-                '1.2 - 2.1'=>'>=1.2 <=2.1'
+                '1 - 2'=>'>=1.0.0 <3.0.0',
+                '1.2 - 2.1'=>'>=1.2.0 <2.2.0'
         );
         foreach ($t as $original=>$result) {
             $v=new SemVer\expression($original);
-            $this->assertEqual($v->getString(),$result,'['.$original.'] %s');
+            $this->assertEqual($v->getNormalized(),$result,'['.$original.'] %s');
         }
     }
     public function testSpermies()
     {
         $t=array(
-            '~1'=>'>=1 <2.0.0-',
-            '~2.3'=>'>=2.3 <2.4.0-',
-            '~3.7.2'=>'>=3.7.2 <3.8.0-',
-            '~1.x'=>'>=1 <2.0.0-',
-            '~1.2.x'=>'>=1.2 <1.3.0-',
+            '~1'=>'>=1.0.0 <2.0.0',
+            '~2.3'=>'>=2.3.0 <2.4.0',
+            '~3.7.2'=>'>=3.7.2 <3.8.0',
+            '~1.x'=>'>=1.0.0 <2.0.0',
+            '~1.2.x'=>'>=1.2.0 <1.3.0',
         );
         foreach ($t as $original=>$result) {
             $v=new SemVer\expression($original);
-            $this->assertEqual($v->getString(),$result,'['.$original.'] %s');
+            $this->assertEqual($v->getNormalized(),$result,'['.$original.'] %s');
         }
     }
     public function testInvalidVersion()
@@ -150,19 +150,23 @@ class versioningTest extends \UnitTestCase
             '1.5.6.7'
         );
         foreach ($t as $original) {
-            $this->expectException(new SemVer\SemVerException('Invalid version string given'));
-            $v=new SemVer\expression($original);
+            try {
+                $v=new SemVer\expression($original);
+                $this->fail();
+            } catch(SemVer\SemVerException $ex) {
+                $this->pass();
+            }
         }
     }
     public function testComplexExpessions()
     {
         $t=array(
-                '1.x || 2.0 - 2.3 || >4.x.x'=>'>=1 <2.0.0-||>=2.0 <=2.3||>4',
-                '2.0.x || 2.1 - 4 || 4 - 4.5' => '>=2.0 <2.1.0-||>=2.1 <=4||>=4 <=4.5'
+                '1.x || 2.0 - 2.3 || >4.x.x'=>'>=1.0.0 <2.0.0||>=2.0.0 <2.4.0||>4.x.x',
+                '2.0.x || 2.1 - 4 || 4 - 4.5' => '>=2.0.0 <2.1.0||>=2.1.0 <5.0.0||>=4.0.0 <4.6.0'
         );
         foreach ($t as $original=>$result) {
             $v=new SemVer\expression($original);
-            $this->assertEqual($v->getString(),$result,'['.$original.'] %s');
+            $this->assertEqual($v->getNormalized(),$result,'['.$original.'] %s');
         }
     }
     public function testSatisfiedBy()

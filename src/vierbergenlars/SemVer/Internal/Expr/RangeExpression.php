@@ -8,16 +8,14 @@ class RangeExpression implements ExpressionInterface
 {
     private $start;
     private $end;
+    private $normalized;
 
     public function __construct(AbstractVersion $start, AbstractVersion $end)
     {
-        $this->start = $start;
+        $this->start = $start->unsetToZero();
         $this->end = $end;
-    }
 
-    public function matches(AbstractVersion $version)
-    {
-        $endexpr = $this->end;
+        $endexpr = new LessThanExpression($this->end->unsetToZero());
         if($this->end->getPatch() === null) {
             $endexpr = new LessThanExpression($this->end->increment(Version::MINOR));
         }
@@ -33,11 +31,21 @@ class RangeExpression implements ExpressionInterface
             $endexpr,
         ));
 
-        return $expr->matches($version);
+        $this->normalized = $expr;
+    }
+
+    public function matches(AbstractVersion $version)
+    {
+        return $this->normalized->matches($version);
     }
 
     public function __toString()
     {
         return $this->start.' - '.$this->end;
     }
+    public function getNormalized()
+    {
+        return $this->normalized->getNormalized();
+    }
+
 }

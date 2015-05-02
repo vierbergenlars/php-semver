@@ -31,4 +31,12 @@ class OrExpression implements ExpressionInterface
     {
         return implode('||', $this->expressions);
     }
+
+    public function getNormalized()
+    {
+        return implode('||', array_map(function(ExpressionInterface $expression) {
+            return $expression->getNormalized();
+        }, $this->expressions));
+    }
+
 }

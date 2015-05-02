@@ -25,5 +25,9 @@ class LessThanExpression implements ExpressionInterface
     public function __toString()
     {
         return '<'.$this->version;
-    }
+    }public function getNormalized()
+{
+    return '<'.$this->version->getNormalized();
+}
+
 }

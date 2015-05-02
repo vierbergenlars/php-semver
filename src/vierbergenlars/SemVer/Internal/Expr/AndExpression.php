@@ -37,4 +37,15 @@ class AndExpression implements ExpressionInterface
             return $expression;
         }, $this->expressions));
     }
+
+    public function getNormalized()
+    {
+        return implode(' ', array_map(function(ExpressionInterface $expression) {
+            if($expression instanceof OrExpression) {
+                return '('.$expression->getNormalized().')';
+            }
+
+            return $expression->getNormalized();
+        }, $this->expressions));
+    }
 }

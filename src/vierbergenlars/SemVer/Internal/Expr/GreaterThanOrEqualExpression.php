@@ -26,4 +26,9 @@ class GreaterThanOrEqualExpression implements ExpressionInterface
     {
         return '>='.$this->version;
     }
+public function getNormalized()
+{
+    return '>='.$this->version->getNormalized();
+}
+
 }

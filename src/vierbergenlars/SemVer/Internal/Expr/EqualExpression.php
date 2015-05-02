@@ -26,4 +26,9 @@ class EqualExpression implements ExpressionInterface
     {
         return (string)$this->version;
     }
+
+public function getNormalized()
+{
+    return $this->version->getNormalized();
+}
 }

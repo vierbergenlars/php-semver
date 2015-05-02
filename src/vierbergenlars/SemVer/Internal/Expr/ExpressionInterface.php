@@ -8,4 +8,5 @@ interface ExpressionInterface
 {
     public function matches(AbstractVersion $v);
     public function __toString();
+    public function getNormalized();
 }
