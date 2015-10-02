@@ -387,4 +387,23 @@ class version extends expression
     {
         return self::compare($v2, $v1);
     }
+
+    /**
+     * Shorthand function to match a version against an expression.
+     * @param string|version    $version The version to match.
+     * @param string|expression $range The expression to be matched against.
+     * @return bool             True on a matching pair, false otherwise.
+     */
+    public static function satisfiesRange($version, $range)
+    {
+        if (!$version instanceof version) {
+            $version = new version($version, true);
+        }
+
+        if (!$range instanceof expression) {
+            $range = new expression($expression);
+        }
+
+        return $version->satisfies($range);
+    }
 }
