@@ -394,7 +394,7 @@ class version extends expression
      * @param string|expression $range The expression to be matched against.
      * @return bool             True on a matching pair, false otherwise.
      */
-    public static function satisfies($version, $range)
+    public static function satisfiesRange($version, $range)
     {
         if (!$version instanceof version) {
             $version = new version($version, true);
