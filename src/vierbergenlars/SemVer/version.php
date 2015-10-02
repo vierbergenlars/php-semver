@@ -401,7 +401,7 @@ class version extends expression
         }
 
         if (!$range instanceof expression) {
-            $range = new expression($expression);
+            $range = new expression($range);
         }
 
         return $version->satisfies($range);
