@@ -180,6 +180,14 @@ class SemVerTest extends \UnitTestCase
         , array('1.2.3 >=1.2.1', '1.2.3')
         , array('>=1.2.3 >=1.2.1', '1.2.3')
         , array('>=1.2.1 >=1.2.3', '1.2.3')
+        , array('^1.2.3', '1.8.1')
+        , array('^0.1.2', '0.1.2')
+        , array('^0.1', '0.1.2')
+        , array('^1.2', '1.4.2')
+        , array('^1.2 ^1', '1.4.2')
+        , array('^1.2.3-alpha', '1.2.3-pre')
+        , array('^1.2.0-alpha', '1.2.0-pre')
+        , array('^0.0.1-alpha', '0.0.1-beta')
         );
         foreach ($compare as $set) {
             $v=new SemVer\version($set[1]);
@@ -236,6 +244,11 @@ class SemVerTest extends \UnitTestCase
         , array('=0.7.x', '0.8.2')
         , array('>=0.7.x', '0.6.2')
         , array('<=0.7.x', '0.7.2')
+        , array('^1', '0.0.0-0')
+        , array('^3.0.0', '2.0.0')
+        , array('^1.0.0 || ~2.0.1', '2.0.0')
+        , array('^0.1.0 || 5.0.0', '3.2.0')
+        , array('^0.1.0 || >4 <=5.0.0', '3.5.0')
         );
         foreach ($compare as $set) {
             $v=new SemVer\version($set[1]);

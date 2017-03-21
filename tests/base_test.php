@@ -135,6 +135,28 @@ class versioningTest extends \UnitTestCase
             $this->assertEqual($v->getString(),$result,'['.$original.'] %s');
         }
     }
+    public function testCaret()
+    {
+        $t=array(
+            '^0'=>'>=0 <1.0.0-',
+            '^1'=>'>=1 <2.0.0-',
+            '^0.1'=>'>=0.1 <0.2.0-',
+            '^1.0'=>'>=1.0 <2.0.0-',
+            '^1.2'=>'>=1.2 <2.0.0-',
+            '^0.0.1'=>'>=0.0.1 <0.0.2-',
+            '^0.0.1-beta'=>'>=0.0.1-beta <0.0.2-',
+            '^0.1.2'=>'>=0.1.2 <0.2.0-',
+            '^1.2.3'=>'>=1.2.3 <2.0.0-',
+            '^0.2.3'=>'>=0.2.3 <0.3.0-',
+            '^0.0.3'=>'>=0.0.3 <0.0.4-',
+            '^1.2.3-beta.2'=>'>=1.2.3-beta.2 <2.0.0-',
+            '^0.0.3-beta'=>'>=0.0.3-beta <0.0.4-',
+        );
+        foreach ($t as $original=>$result) {
+            $v=new SemVer\expression($original);
+            $this->assertEqual($v->getString(),$result,'['.$original.'] %s');
+        }
+    }
     public function testInvalidVersion()
     {
         $t=array(

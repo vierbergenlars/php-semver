@@ -8,6 +8,7 @@ class expression
     protected static $global_single_xrange = '(([0-9]+|[xX*])(\\.([0-9]+|[xX*])(\\.([0-9]+|[xX*])(-([0-9]+))?(-?([a-zA-Z-+][a-zA-Z0-9\\.\\-:]*)?)?)?)?)';
     protected static $global_single_comparator = '([<>]=?)?\\s*';
     protected static $global_single_spermy = '(~?)>?\\s*';
+    protected static $global_single_caret = '(\^?)>?\\s*';
     protected static $range_mask = '%1$s\\s+-\\s+%1$s';
     protected static $regexp_mask = '/%s/';
     protected static $dirty_regexp_mask = '/^[v= ]*%s$/';
@@ -31,6 +32,10 @@ class expression
         if (strstr($versions, '~')) {
             //Replace all spermies with comparators
             $versions = self::spermiesToComparators($versions);
+        }
+        if (strstr($versions, '^')) {
+            //Replace all caret with comparators
+            $versions = self::caretToComparators($versions);
         }
         if (strstr($versions, 'x') && (strstr($versions, '<')|| strstr($versions, '>'))) {
             // x-ranges and comparators in the same string
@@ -305,6 +310,43 @@ class expression
     }
 
     /**
+     * standardizes a bunch of ^-ranges to comparators
+     * @param  string $caret
+     * @return string
+     */
+    protected static function caretToComparators($caret)
+    {
+        $expression = sprintf(self::$regexp_mask, self::$global_single_caret . self::$global_single_xrange);
+
+        return preg_replace_callback($expression, array('self', 'caretToComparatorsCallback'), $caret);
+    }
+
+    /**
+     * Callback for caretToComparators()
+     * @internal
+     * @param  unknown_type $matches
+     * @return string
+     */
+    private static function caretToComparatorsCallback($matches)
+    {
+        self::matchesToVersionParts($matches, $major, $minor, $patch, $build, $prtag, 'x', 3);
+        if ($build !== '') {
+            $build = '-' . $build;
+        }
+        if ($major === 'x') {
+            return '>=0';
+        }
+        if ($minor === 'x') {
+            return '>=' . $major . ' <' . ($major + 1) . '.0.0-';
+        }
+        if ($patch === 'x') {
+            return '>=' . $major . '.' . $minor . ' <' . ($minor === 0 && $major === 0 || $major === 0 ? '0' :  $major + 1) . '.' . ($minor === 0 && $major === 0 || $major === 0 ? $minor + 1 : '0') . '.0-';
+        }
+
+        return '>=' . $major . '.' . $minor . '.' . $patch . $build . $prtag . ' <' . ($major >= 1 ? $major+1 : 0) . '.' . ($major == 0 && $minor!=0 ? $minor+1 : 0) . '.'.($major == 0 && $minor == 0 ? $patch+1 : 0).'-';
+    }
+
+    /**
      * standardizes a bunch of ~-ranges to comparators
      * @param  string $spermies
      * @return string
@@ -448,6 +490,7 @@ class expression
      * @param int  $p       The patch number
      * @param int  $b       The build number
      * @param int  $t       The version tag
+     * @return string
      */
     protected static function constructVersionFromParts($padZero = true, $ma = null, $mi = null, $p = null, $b = null, $t = null)
     {
