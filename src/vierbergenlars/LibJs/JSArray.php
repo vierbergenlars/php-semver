@@ -26,7 +26,7 @@
 
 namespace vierbergenlars\LibJs;
 
-class JSArray extends Object implements \ArrayAccess, \Iterator
+class JSArray extends JObject implements \ArrayAccess, \Iterator
 {
     /**
      *

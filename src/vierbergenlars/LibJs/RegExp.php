@@ -26,7 +26,7 @@
 
 namespace vierbergenlars\LibJs;
 
-class RegExp extends Object
+class RegExp extends JObject
 {
     /**
      *
