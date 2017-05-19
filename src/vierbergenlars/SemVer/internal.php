@@ -4,7 +4,7 @@ namespace vierbergenlars\SemVer\Internal;
 use vierbergenlars\LibJs\JSArray;
 use vierbergenlars\LibJs\JString;
 use vierbergenlars\LibJs\RegExp;
-use vierbergenlars\LibJs\Object;
+use vierbergenlars\LibJs\JObject;
 use vierbergenlars\LibJs\Util;
 
 class G
@@ -262,7 +262,7 @@ function clean(JString $version, $loose = false)
     return $s?$s->version:null;
 }
 
-class SemVer extends Object
+class SemVer extends JObject
 {
     /**
      * @var JString
@@ -571,7 +571,7 @@ function cmp($a, $op, $b, $loose = false)
     return $ret;
 }
 
-class Comparator extends Object
+class Comparator extends JObject
 {
     /**
      * @var JString
@@ -654,7 +654,7 @@ class Comparator extends Object
     }
 }
 
-class Range extends Object
+class Range extends JObject
 {
     /**
      * @var bool

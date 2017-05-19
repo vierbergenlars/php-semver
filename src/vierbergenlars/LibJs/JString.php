@@ -26,7 +26,7 @@
 
 namespace vierbergenlars\LibJs;
 
-class JString extends Object implements \ArrayAccess
+class JString extends JObject implements \ArrayAccess
 {
     /**
      * Wrapped string
