@@ -26,12 +26,12 @@
 
 namespace vierbergenlars\LibJs;
 
-class Object
+class JObject
 {
     /**
      *
-     * @param type $something
-     * @return \vierbergenlars\LibJs\JString|\vierbergenlars\LibJs\JSArray
+     * @param mixed $something
+     * @return \vierbergenlars\LibJs\JString|\vierbergenlars\LibJs\JSArray|mixed
      * @private
      */
     public function _convert($something)
