@@ -2,7 +2,7 @@
 
 Ported from [node-semver 1.1.2](https://github.com/isaacs/node-semver/tree/v1.1.2) to PHP
 
-[![Build Status](https://secure.travis-ci.org/vierbergenlars/php-semver.png?branch=master)](http://travis-ci.org/vierbergenlars/php-semver)
+[![Build Status](https://github.com/vierbergenlars/php-semver/actions/workflows/tests.yml/badge.svg)](https://github.com/vierbergenlars/php-semver/actions/workflows/tests.yml)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/vierbergenlars/php-semver/badges/quality-score.png?s=89ff49019cde97e70228ae14d2dc08b727e72157)](https://scrutinizer-ci.com/g/vierbergenlars/php-semver/)
 [![Latest Stable Version](https://poser.pugx.org/vierbergenlars/php-semver/v/stable.png)](https://packagist.org/packages/vierbergenlars/php-semver)
 [![Total Downloads](https://poser.pugx.org/vierbergenlars/php-semver/downloads.png)](https://packagist.org/packages/vierbergenlars/php-semver)
