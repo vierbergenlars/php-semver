@@ -2,9 +2,10 @@
 
 namespace vierbergenlars\SemVer\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vierbergenlars\SemVer;
 
-class RegressionTest extends \PHPUnit_Framework_TestCase
+class RegressionTest extends TestCase
 {
     public function testBug23()
     {
