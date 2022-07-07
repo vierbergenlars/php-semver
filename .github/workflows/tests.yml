@@ -1,0 +1,42 @@
+name: tests
+
+on:
+  push:
+    branches: [ 2.x, master ]
+  pull_request:
+    branches: [ 2.x, master ]
+
+jobs:
+  tests:
+    strategy:
+      matrix:
+        php-versions: ['7.3', '7.4']
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        uses: php-actions/composer@v6
+        with:
+          version: 2
+          php_version: ${{ matrix.php-versions }}
+
+      - name: Run test suite
+        run: php tests/all_tests.php
