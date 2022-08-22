@@ -194,7 +194,7 @@ class JSArray extends JObject implements \ArrayAccess, \Iterator
 
     public function valid()
     {
-        return each($this->array)!== false;
+        return key($this->array) !== null;
     }
 
     public function valueOf()

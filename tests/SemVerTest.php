@@ -2,9 +2,10 @@
 
 namespace vierbergenlars\SemVer\Tests\Internal;
 
+use PHPUnit\Framework\TestCase;
 use vierbergenlars\SemVer\Internal as SemVer;
 
-class SemVerTest extends \PHPUnit_Framework_TestCase
+class SemVerTest extends TestCase
 {
     public function testComparison()
     {

@@ -2,9 +2,10 @@
 
 namespace vierbergenlars\SemVer\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vierbergenlars\SemVer;
 
-class VersionTest extends \PHPUnit_Framework_TestCase
+class VersionTest extends TestCase
 {
     public function testKeepSimpleversion()
     {
@@ -238,19 +239,19 @@ class VersionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider invalidSemanticVersionProvider
-     * @expectedException \vierbergenlars\SemVer\SemVerException
      */
     public function testInvalidExpressionString($version)
     {
+        $this->expectException(SemVer\SemVerException::class);
         new SemVer\expression($version);
     }
 
     /**
      * @dataProvider invalidSemanticVersionProvider
-     * @expectedException \vierbergenlars\SemVer\SemVerException
      */
     public function testInvalidVersionString($version)
     {
+        $this->expectException(SemVer\SemVerException::class);
         new SemVer\version($version);
     }
 
