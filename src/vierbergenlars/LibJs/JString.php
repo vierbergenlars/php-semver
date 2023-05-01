@@ -207,21 +207,25 @@ class JString extends JObject implements \ArrayAccess
         }
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->str[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->str[$offset];
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->str[$offset] = $value;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         throw new \LogicException('Cannot unset a position in a string');
