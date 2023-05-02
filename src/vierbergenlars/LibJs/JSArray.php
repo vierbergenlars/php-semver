@@ -149,27 +149,31 @@ class JSArray extends JObject implements \ArrayAccess, \Iterator
         }
     }
 
-
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->_convert(current($this->array));
     }
 
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->_convert(key($this->array));
     }
 
+    #[\ReturnTypeWillChange]
     public function next()
     {
         return $this->_convert(next($this->array));
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->array[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if(!$this->offsetExists($offset))
@@ -177,21 +181,25 @@ class JSArray extends JObject implements \ArrayAccess, \Iterator
         return $this->_convert($this->array[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->array[$offset] = $value;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->array[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         return reset($this->array);
     }
 
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return key($this->array) !== null;
